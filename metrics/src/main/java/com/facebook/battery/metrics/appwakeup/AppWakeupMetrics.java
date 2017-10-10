@@ -12,7 +12,12 @@ import android.support.v4.util.SimpleArrayMap;
 import com.facebook.battery.metrics.api.SystemMetrics;
 import com.facebook.battery.metrics.api.SystemMetricsLogger;
 
-/** Information about app wakeup reasons */
+/**
+ * This class contains the metrics to measure the usage of different background scheduling
+ * mechanisms like Alarms, Jobschedulers, GCMNetworkManager. This is not an exhaustive list and we
+ * can add more reasons in the future. We record the number of times and the total duration of
+ * execution for each of these wakeups.
+ */
 public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
 
   public enum WakeupReason {
@@ -39,10 +44,6 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
     if (b == null) {
       output.set(this);
     } else {
-      // TODO:
-      // We can avoid clear and reallocation by intersecting the output.appWakeups and
-      // this.appWakeups. Not sure if the code complexity and computation cost is worth the
-      // savings. Hence, will do it if needed in the future.
       output.appWakeups.clear();
       for (int i = 0; i < appWakeups.size(); i++) {
         String tag = appWakeups.keyAt(i);
@@ -120,6 +121,10 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
     return sb.toString();
   }
 
+  /**
+   * A utility class to store details related to a single wakeup - total count and total time of
+   * execution in ms for the wakeup.
+   */
   public static class WakeupDetails {
     public WakeupReason reason;
     public long count;

@@ -19,8 +19,9 @@ import com.facebook.infer.annotation.ThreadSafe;
 import javax.annotation.concurrent.GuardedBy;
 
 /**
- * Collects data about device battery metrics. This collector should be used only before Android N
- * since broadcasts are disabled in Doze mode which can cause the state machine to be incorrect.
+ * Collects data about {@link DeviceBatteryMetrics}. This relies on maintaining the charging state
+ * and hence will probably not work in Doze mode (N+) where the broadcasts for power
+ * connected/disconnected are not guranteed to be relayed to the app.
  */
 @ThreadSafe
 public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<DeviceBatteryMetrics> {
@@ -134,6 +135,12 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
         || status == BatteryManager.BATTERY_STATUS_FULL;
   }
 
+  /**
+   * Log an error if we get two intents for POWER_CONNECTED or POWER_DISCONNECTED in a row
+   *
+   * @param intentType
+   * @param now
+   */
   private void logIncorrectSequence(String intentType, long now) {
     SystemMetricsLogger.wtf(
         TAG, "Consecutive " + intentType + "broadcasts: (" + mLastUpdateMs + ", " + now + ")");

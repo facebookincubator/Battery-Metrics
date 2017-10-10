@@ -10,13 +10,20 @@ package com.facebook.battery.metrics.devicebattery;
 import android.support.annotation.Nullable;
 import com.facebook.battery.metrics.api.SystemMetrics;
 
-/** Information about device level battery usage */
+/**
+ * This class contains the metrics for measuring the device level battery metrics. This is cheap to
+ * record and can be a useful addition to modeled battery drain. We also measure the time spent on
+ * battery and while charging since the start of the app
+ */
 public class DeviceBatteryMetrics extends SystemMetrics<DeviceBatteryMetrics> {
 
   private static final long serialVersionUID = 0;
 
+  // Device battery level
   public float batteryLevelPct;
+  // Elapsed Realtime on battery since the start of the app
   public long batteryRealtimeMs;
+  // Elapsed realtime while charging since the start of the app
   public long chargingRealtimeMs;
 
   public DeviceBatteryMetrics() {}

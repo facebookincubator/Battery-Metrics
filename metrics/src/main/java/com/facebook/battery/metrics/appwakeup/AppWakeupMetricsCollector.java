@@ -15,8 +15,9 @@ import com.facebook.battery.metrics.api.SystemMetricsLogger;
 import com.facebook.infer.annotation.ThreadSafe;
 
 /**
- * Collects data about app wakeup counts, duration and the reasons. Used for attribution for alarms,
- * jobscheduler.
+ * This class is used to record and aggregate the wakeups in the app. It exposes methods to record
+ * start {@link #recordWakeupStart(AppWakeupMetrics.WakeupReason, String)} and end {@link
+ * #recordWakeupEnd(String)} of a wakeup
  */
 @ThreadSafe
 public class AppWakeupMetricsCollector extends SystemMetricsCollector<AppWakeupMetrics> {
@@ -51,6 +52,13 @@ public class AppWakeupMetricsCollector extends SystemMetricsCollector<AppWakeupM
     return new AppWakeupMetrics();
   }
 
+  /**
+   * Record the start of a wakeup. If this method is called twice without calling recordWakeupEnd in
+   * between, we ignore the second recordWakeupStart call.
+   *
+   * @param reason One of the wakeup types defined in {@link WakeupReason}
+   * @param id Identifier of the wakeup
+   */
   public synchronized void recordWakeupStart(AppWakeupMetrics.WakeupReason reason, String id) {
     if (mRunningWakeups.appWakeups.containsKey(id)) {
       // This condition is possible depending on the usage of tags. We can see from this soft
@@ -63,6 +71,12 @@ public class AppWakeupMetricsCollector extends SystemMetricsCollector<AppWakeupM
         id, new AppWakeupMetrics.WakeupDetails(reason, 1, SystemClock.elapsedRealtime()));
   }
 
+  /**
+   * Record the end of a wakeup. If this method is called without calling a corresponding
+   * recordWakeupStart, then we do nothing.
+   *
+   * @param id Identifier of the wakeup
+   */
   public synchronized void recordWakeupEnd(String id) {
     if (!mRunningWakeups.appWakeups.containsKey(id)) {
       SystemMetricsLogger.wtf(TAG, "Wakeup stopped before starting for " + id);
