@@ -48,7 +48,7 @@ Building further on this, there are many more metrics to collect, and some utili
 - [Roadmap](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/roadmap.md) -- our planned, but unprioritized roadmap. Give us feedback!
 - [Additional reading](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/references.md) -- some sources we've found useful.
 - [API description](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/API.md) -- a brief description of the terms used throughout the project.
-- [Getting started](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/API.md) -- the core of the sample app described. Make sure you check out [sample/../BatteryApplication.java](https://github.com/facebookincubator/Battery-Metrics/blob/master/sample/src/main/java/com/facebook/battery/sample/BatteryApplication.java).
+- [Getting started](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/gettingstarted.md) -- the core of the sample app described. Make sure you check out [sample/../BatteryApplication.java](https://github.com/facebookincubator/Battery-Metrics/blob/master/sample/src/main/java/com/facebook/battery/sample/BatteryApplication.java).
 - [Mistrusting battery level](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/mistrustbatterylevel.md) -- why we don't rely on the os reported battery level
 - [Contribution guidelines](https://github.com/facebookincubator/Battery-Metrics/blob/master/CONTRIBUTING.md) -- we'd love to see contributions to the project.
 
