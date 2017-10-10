@@ -1,0 +1,42 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    // Use 'jcenter' for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
+}
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+    compile 'com.facebook.infer.annotation:infer-annotation:0.11.0'
+    compile 'com.android.support:support-core-utils:26.1.0'
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.assertj:assertj-core:2.8.0'
+    testCompile 'org.mockito:mockito-core:1.9.5'
+    testCompile 'org.robolectric:robolectric:3.4.2'
+}

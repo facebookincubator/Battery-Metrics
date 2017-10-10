@@ -1,0 +1,26 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+ext {
+    compileSdkVersion = 25
+    buildToolsVersion = '25.0.3'
+    minSdkVersion = 15
+    targetSdkVersion = 25
+    versionCode = 1
+    versionName = '1.0'
+}

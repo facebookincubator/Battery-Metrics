@@ -1,0 +1,7 @@
+rootProject.name = 'batterymetrics'
+
+include ':metrics'
+include ':reporters'
+include ':serializers'
+
+include ':sample'
