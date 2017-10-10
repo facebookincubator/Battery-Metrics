@@ -3,6 +3,8 @@ id: roadmap
 title: Roadmap
 ---
 
+# Roadmap
+
 ## Collecting feedback
 
 We're currently collecting feedback and observing how useful everyone finds the battery metrics project, and will prioritize/structure our next steps based on the feedback received for the alpha version.
@@ -21,7 +23,7 @@ Periodically measures cpu utilization, logging a snapshot of active threads if t
 - A convenience class to estimate energy consumed using the android power profile that ships on the device.
 
 ### HealthStats integration
-- Provide access to the [[healthstats][https://developer.android.com/reference/android/os/health/HealthStats.html]] API through the snapshot model.
+- Provide access to the [healthstats](https://developer.android.com/reference/android/os/health/HealthStats.html) API through the snapshot model.
 
 ## Extensions (we'd love contributions!)
 

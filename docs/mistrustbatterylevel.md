@@ -1,7 +1,9 @@
 ---
 id: mistrustosbattery
-title: Mistrusting OS Level Battery Drain
+title: Mistrusting OS Level Battery Levels
 ---
+
+# Mistrusting OS Level Battery Levels
 
 In a perfect, engineer-friendly world, we would be able to precisely determine the energy consumed by our application in production with a breakdown allocating energy to different hardware components and even source code, independent of physical conditions.
 

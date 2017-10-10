@@ -6,13 +6,13 @@ As a developer, it's surprisingly hard to understand how your application affect
 The library helps instrument hardware utilization to be able to understand how the application is behaving -- most of the underlying hardware metrics are either exposed by the OS, or not directly accessible -- which is where this library comes into play. We've written several metrics collectors that read from procfiles, or provide a consistent way to call into to instrument your application.
 
 ## Alpha
-This is an initial release coinciding with our tech talk at Mobile@Scale Boston to get feedback, tweak the API and make the library more useful; we'll firm up the code and keep tweaking it till a full release of the library. Make sure to check out our roadmap!
+This is an initial release coinciding with our tech talk at Mobile@Scale Boston to get feedback, tweak the API and make the library more useful; we'll firm up the code and keep tweaking it till a full release of the library. Make sure to check out our [roadmap](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/roadmap.md) to help us prioritize!
 
 ## Quick Start
 
 As a simple quickstart, let's instrument sample activity to check CPU time while the activity is being used in the foreground --
 
-```
+```java
 class SampleActivity extends Activity {
 
   private static final CpuMetricsCollector sCollector = new CpuMetricsCollector();
@@ -37,15 +37,24 @@ class SampleActivity extends Activity {
 
 And foregrounding and background the application prints the metrics to logcat --
 
-```
+```java
 CpuMetrics{userTimeS=0.06, systemTimeS=0.04, childUserTimeS=0.0, childSystemTimeS=0.0}
 ```
 
-Building further on this, there are many more metrics to collect, and some utility classes to reduce boilerplate -- a more detailed deep dive into using the API is in the sample app: check out sample/../BatteryApplication.java; and a detailed reference in the javadocs at /docs/javadocs.
+Building further on this, there are many more metrics to collect, and some utility classes to reduce boilerplate -- a more detailed deep dive into using the API is in the sample app: check out [sample/../BatteryApplication.java](https://github.com/facebookincubator/Battery-Metrics/blob/master/sample/src/main/java/com/facebook/battery/sample/BatteryApplication.java).
+
+## Documentation
+- [JavaDocs](https://facebookincubator.github.io/Battery-Metrics/) -- a reasonably comprehensive reference to all the exposed APIs.
+- [Roadmap](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/roadmap.md) -- our planned, but unprioritized roadmap. Give us feedback!
+- [Additional reading](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/references.md) -- some sources we've found useful.
+- [API description](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/API.md) -- a brief description of the terms used throughout the project.
+- [Getting started](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/API.md) -- the core of the sample app described. Make sure you check out [sample/../BatteryApplication.java](https://github.com/facebookincubator/Battery-Metrics/blob/master/sample/src/main/java/com/facebook/battery/sample/BatteryApplication.java).
+- [Mistrusting battery level](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/mistrustbatterylevel.md) -- why we don't rely on the os reported battery level
+- [Contribution guidelines](https://github.com/facebookincubator/Battery-Metrics/blob/master/CONTRIBUTING.md) -- we'd love to see contributions to the project.
 
 ## Community
-- Find us on (unsurprisingly) [[Facebook][https://www.facebook.com/groups/batterymetrics/?ref=bookmarks]].
-- And [[Slack][https://batterymetrics.slack.com/]]
+- Find us on (unsurprisingly) [Facebook](https://www.facebook.com/groups/batterymetrics/?ref=bookmarks).
+- And [Slack](https://batterymetrics.slack.com/) -- and the [invite](https://goo.gl/Rb3kty).
 
 ## License
 BatteryMetrics is BSD-licensed. We also provide an additional patent grant.

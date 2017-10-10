@@ -1,16 +1,15 @@
 ---
-id:gettingstarted
-title:Getting Started
+id: gettingstarted
+title: Getting Started
 ---
 
 A more detailed guide than the quick start: the best way to follow along is to clone the repo and install the sample app attached; you can also look at the source code for BatteryApplication.java to see the inline documentation which mirrors this page.
-
 
 ## Using metrics and the collectors
 
 Creating a metrics collector is simply choosing which metrics you want to instrument and collecting all of them into a composite metrics collector. The ones in this example rely on underlying os exposed files or Android APIs; see the inline documentation for hooking up instrumentation to the other, manual collectors.
 
-```
+```java
    mMetricsCollector =
         new CompositeMetricsCollector.Builder()
             .addMetricsCollector(TimeMetrics.class, new TimeMetricsCollector())
@@ -22,13 +21,13 @@ Creating a metrics collector is simply choosing which metrics you want to instru
 
 The way to access information from a collector is to simply `getSnapshot()` on it, passing in a Metrics object to store values. The API was designed in this way to prevent having to constantly reallocate metrics objects and being able to simply reuse them.
 
-```
+```java
   CompositeMetrics metrics = mMetricsCollector.createMetrics();
   mMetricsCollector.getSnapshot(metrics);
 ```
 
 The snapshots represent the values of all metrics at a given point of time -- they're most useful when compared against values at a previous moment. So the most common pattern of use we observed was:
-```
+```java
   CompositeMetrics first = mMetricsCollector.createMetrics();
   CompositeMetrics second = mMetricsCollector.createMetrics();
 
@@ -40,13 +39,13 @@ The snapshots represent the values of all metrics at a given point of time -- th
 ```
 
 and then logging the difference
-```
+```java
   Log.d("BatteryMetrics", first.diff(second).toString())
 ```
 
 
 Instead of maintaining our own copies of metrics objects, this can all be simplified using a `StatefulSystemMetricsCollector`:
-```
+```java
   // At app startup
   mStatefulCollector = new StatefulSystemMetricsCollector<>(mMetricsCollector);
 
