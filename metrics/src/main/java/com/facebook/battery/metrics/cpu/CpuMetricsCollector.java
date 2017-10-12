@@ -83,11 +83,20 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
   @Nullable
   protected String readProcFile() {
     StrictMode.ThreadPolicy originalPolicy = StrictMode.allowThreadDiskReads();
-    try (RandomAccessFile procFile = new RandomAccessFile(PROC_STAT_FILE_PATH, "r")) {
+    RandomAccessFile procFile = null;
+    try {
+      procFile = new RandomAccessFile(PROC_STAT_FILE_PATH, "r");
       return procFile.readLine();
     } catch (IOException ioe) {
       return null;
     } finally {
+      if (procFile != null) {
+        try {
+          procFile.close();
+        } catch (IOException ignored) {
+          // ignored
+        }
+      }
       StrictMode.setThreadPolicy(originalPolicy);
     }
   }

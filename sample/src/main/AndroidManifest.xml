@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.facebook.battery.sample"
-    android:versionCode="1"
-    android:versionName="1.0">
-
-  <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="25"/>
+    xmlns:tools="http://schemas.android.com/tools" package="com.facebook.battery.sample">
 
   <application
-      android:name="com.facebook.battery.sample.BatteryApplication"
-      android:allowBackup="false"
-      android:label="Battery Metrics">
+          android:name="com.facebook.battery.sample.BatteryApplication"
+          android:allowBackup="false"
+          android:icon="@mipmap/ic_launcher"
+      android:roundIcon="@mipmap/ic_launcher_round"
+          android:label="Battery Metrics" tools:ignore="GoogleAppIndexingWarning">
     <activity
         android:name=".MainActivity"
         android:exported="true">

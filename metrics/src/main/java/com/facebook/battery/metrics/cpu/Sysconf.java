@@ -7,6 +7,7 @@
  */
 package com.facebook.battery.metrics.cpu;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.system.Os;
 import android.system.OsConstants;
@@ -29,6 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 
   private static final String TAG = "Sysconf";
 
+  @SuppressLint("ObsoleteSdkInt")
   public static long getScClkTck(long fallback) {
     long result = fallback;
     if (Build.VERSION.SDK_INT >= 21) {
@@ -40,6 +42,7 @@ import java.lang.reflect.InvocationTargetException;
     return result > 0 ? result : fallback;
   }
 
+  @SuppressLint("ObsoleteSdkInt")
   public static long getScNProcessorsConf(long fallback) {
     if (Build.VERSION.SDK_INT >= 21) {
       return Os.sysconf(OsConstants._SC_NPROCESSORS_CONF);

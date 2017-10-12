@@ -7,6 +7,7 @@
  */
 package com.facebook.battery.metrics.network;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 
@@ -14,6 +15,7 @@ abstract public class NetworkBytesCollector {
 
   abstract boolean getTotalBytes(long[] bytes);
 
+  @SuppressLint("ObsoleteSdkInt")
   public static NetworkBytesCollector create(Context context) {
     if (Build.VERSION.SDK_INT >= 14) {
       long[] bytes = new long[4];

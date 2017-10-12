@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 26
+    buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "com.facebook.battery.sample"
         minSdkVersion 25
@@ -17,13 +17,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
-        abortOnError false
-    }
 }
 
 dependencies {
-    compile project(':metrics')
-    compile project(':reporters')
-    compile project(':serializers')
+    implementation project(':metrics')
+    implementation project(':reporters')
+    implementation project(':serializers')
+    implementation 'com.android.support:support-core-utils:26.1.0'
 }
