@@ -7,7 +7,7 @@
  */
 package com.facebook.battery.metrics.camera;
 
-import com.facebook.battery.metrics.common.SystemMetricsTest;
+import com.facebook.battery.metrics.core.SystemMetricsTest;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 

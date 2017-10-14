@@ -5,7 +5,7 @@
  * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
  * file in the same directory.
  */
-package com.facebook.battery.metrics.api;
+package com.facebook.battery.metrics.core;
 
 import android.support.annotation.Nullable;
 
@@ -19,7 +19,7 @@ import android.support.annotation.Nullable;
  * <p>{@code SystemMetricsCollector collector = ...; StatefulSystemMetricsCollector collector = new
  * StatefulSystemMetricsCollector(collector);
  *
- * <p><p>// Every call gets the difference from the last call SystemMetrics metrics =
+ * <p><p><p>// Every call gets the difference from the last call SystemMetrics metrics =
  * collector.getLatestDiffAndReset(); }
  *
  * <p>Note - creating a Stateful collector immediately takes an initial snapshot. - this class is
@@ -42,10 +42,7 @@ public class StatefulSystemMetricsCollector<
    */
   public StatefulSystemMetricsCollector(S collector) {
     this(
-        collector,
-        collector.createMetrics(),
-        collector.createMetrics(),
-        collector.createMetrics());
+        collector, collector.createMetrics(), collector.createMetrics(), collector.createMetrics());
   }
 
   /**

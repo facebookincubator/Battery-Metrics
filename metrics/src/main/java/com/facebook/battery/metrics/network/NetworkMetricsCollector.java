@@ -8,7 +8,7 @@
 package com.facebook.battery.metrics.network;
 
 import android.content.Context;
-import com.facebook.battery.metrics.api.SystemMetricsCollector;
+import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.infer.annotation.ThreadSafe;
 
 /**

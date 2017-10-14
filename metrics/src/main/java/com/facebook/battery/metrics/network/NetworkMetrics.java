@@ -8,11 +8,11 @@
 package com.facebook.battery.metrics.network;
 
 import android.support.annotation.Nullable;
-import com.facebook.battery.metrics.api.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 
 /**
- * Information about network metrics: bytes sent/received on mobile radio and WiFi, as well as
- * radio uptime.
+ * Information about network metrics: bytes sent/received on mobile radio and WiFi, as well as radio
+ * uptime.
  */
 public class NetworkMetrics extends SystemMetrics<NetworkMetrics> {
 
@@ -79,10 +79,10 @@ public class NetworkMetrics extends SystemMetrics<NetworkMetrics> {
 
     NetworkMetrics that = (NetworkMetrics) other;
 
-    return mobileBytesTx == that.mobileBytesTx &&
-        mobileBytesRx == that.mobileBytesRx &&
-        wifiBytesTx == that.wifiBytesTx &&
-        wifiBytesRx == that.wifiBytesRx;
+    return mobileBytesTx == that.mobileBytesTx
+        && mobileBytesRx == that.mobileBytesRx
+        && wifiBytesTx == that.wifiBytesTx
+        && wifiBytesRx == that.wifiBytesRx;
   }
 
   @Override
@@ -96,11 +96,15 @@ public class NetworkMetrics extends SystemMetrics<NetworkMetrics> {
 
   @Override
   public String toString() {
-    return "NetworkMetrics{" +
-        "mobileBytesTx=" + mobileBytesTx +
-        ", mobileBytesRx=" + mobileBytesRx +
-        ", wifiBytesTx=" + wifiBytesTx +
-        ", wifiBytesRx=" + wifiBytesRx +
-        '}';
+    return "NetworkMetrics{"
+        + "mobileBytesTx="
+        + mobileBytesTx
+        + ", mobileBytesRx="
+        + mobileBytesRx
+        + ", wifiBytesTx="
+        + wifiBytesTx
+        + ", wifiBytesRx="
+        + wifiBytesRx
+        + '}';
   }
 }

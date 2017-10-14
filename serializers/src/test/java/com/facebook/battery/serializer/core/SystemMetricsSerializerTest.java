@@ -9,8 +9,8 @@ package com.facebook.battery.serializer.common;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import com.facebook.battery.metrics.api.SystemMetrics;
-import com.facebook.battery.metrics.common.MetricsUtil;
+import com.facebook.battery.metrics.core.MetricsUtil;
+import com.facebook.battery.metrics.core.SystemMetrics;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;

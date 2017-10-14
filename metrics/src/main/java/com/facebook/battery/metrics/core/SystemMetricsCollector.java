@@ -5,7 +5,7 @@
  * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
  * file in the same directory.
  */
-package com.facebook.battery.metrics.api;
+package com.facebook.battery.metrics.core;
 
 /**
  * Takes snapshots of a given metric. There are generally two types of metrics collectors - - those
@@ -24,7 +24,7 @@ public abstract class SystemMetricsCollector<T extends SystemMetrics> {
    * @param snapshot snapshot on which the data will be written
    * @return true if the snapshot has been updated with valid data.
    */
-  abstract public boolean getSnapshot(T snapshot);
+  public abstract boolean getSnapshot(T snapshot);
 
   /**
    * Creates an empty instance of the corresponding system metrics.

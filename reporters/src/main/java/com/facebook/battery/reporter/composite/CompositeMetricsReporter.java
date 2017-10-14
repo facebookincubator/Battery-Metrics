@@ -8,8 +8,8 @@
 package com.facebook.battery.reporter.composite;
 
 import android.support.v4.util.SimpleArrayMap;
-import com.facebook.battery.metrics.api.SystemMetrics;
 import com.facebook.battery.metrics.composite.CompositeMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.reporter.api.SystemMetricsReporter;
 
 public class CompositeMetricsReporter implements SystemMetricsReporter<CompositeMetrics> {
@@ -30,12 +30,11 @@ public class CompositeMetricsReporter implements SystemMetricsReporter<Composite
    * Add a metric and its reporter to the CompositeMetricsReporter.
    *
    * @param metricsClass Class of the metric
-   * @param reporter     Reporter that reports the metrics class
+   * @param reporter Reporter that reports the metrics class
    * @return Instance of this CompositeMetricsReporter
    */
   public <T extends SystemMetrics<T>> CompositeMetricsReporter addMetricsReporter(
-      Class<T> metricsClass,
-      SystemMetricsReporter<T> reporter) {
+      Class<T> metricsClass, SystemMetricsReporter<T> reporter) {
     mMetricsReporterMap.put(metricsClass, reporter);
     return this;
   }

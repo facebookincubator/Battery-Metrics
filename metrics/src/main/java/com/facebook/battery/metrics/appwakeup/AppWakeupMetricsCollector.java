@@ -10,8 +10,8 @@ package com.facebook.battery.metrics.appwakeup;
 import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupDetails;
 
 import android.os.SystemClock;
-import com.facebook.battery.metrics.api.SystemMetricsCollector;
-import com.facebook.battery.metrics.api.SystemMetricsLogger;
+import com.facebook.battery.metrics.core.SystemMetricsCollector;
+import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.infer.annotation.ThreadSafe;
 
 /**

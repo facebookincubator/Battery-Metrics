@@ -8,7 +8,7 @@
 package com.facebook.battery.metrics.time;
 
 import android.os.SystemClock;
-import com.facebook.battery.metrics.api.SystemMetricsCollector;
+import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.infer.annotation.ThreadSafe;
 
 /**

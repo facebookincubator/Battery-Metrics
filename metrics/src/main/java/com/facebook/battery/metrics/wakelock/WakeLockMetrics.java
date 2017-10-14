@@ -9,7 +9,7 @@ package com.facebook.battery.metrics.wakelock;
 
 import android.support.annotation.Nullable;
 import android.support.v4.util.SimpleArrayMap;
-import com.facebook.battery.metrics.api.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 
 /**
  * Maintains state about total active wakelocks and the current time available.
@@ -49,8 +49,7 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
           String tag = tagTimeMs.keyAt(i);
           Long currentTimeMs = b.tagTimeMs.get(tag);
           output.tagTimeMs.put(
-              tag,
-              tagTimeMs.valueAt(i) + (currentTimeMs == null ? 0 : currentTimeMs));
+              tag, tagTimeMs.valueAt(i) + (currentTimeMs == null ? 0 : currentTimeMs));
         }
         for (int i = 0, size = b.tagTimeMs.size(); i < size; i++) {
           String tag = b.tagTimeMs.keyAt(i);
@@ -65,8 +64,7 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
   }
 
   @Override
-  public WakeLockMetrics diff(
-      @Nullable WakeLockMetrics b, @Nullable WakeLockMetrics output) {
+  public WakeLockMetrics diff(@Nullable WakeLockMetrics b, @Nullable WakeLockMetrics output) {
     if (output == null) {
       output = new WakeLockMetrics(isAttributionEnabled);
     }
@@ -113,8 +111,7 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
 
     WakeLockMetrics that = (WakeLockMetrics) o;
 
-    if (isAttributionEnabled != that.isAttributionEnabled ||
-        heldTimeMs != that.heldTimeMs) {
+    if (isAttributionEnabled != that.isAttributionEnabled || heldTimeMs != that.heldTimeMs) {
       return false;
     }
 
@@ -150,10 +147,13 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
 
   @Override
   public String toString() {
-    return "WakeLockMetrics{" +
-        "isAttributionEnabled=" + isAttributionEnabled +
-        ", tagTimeMs=" + tagTimeMs +
-        ", heldTimeMs=" + heldTimeMs +
-        '}';
+    return "WakeLockMetrics{"
+        + "isAttributionEnabled="
+        + isAttributionEnabled
+        + ", tagTimeMs="
+        + tagTimeMs
+        + ", heldTimeMs="
+        + heldTimeMs
+        + '}';
   }
 }

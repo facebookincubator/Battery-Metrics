@@ -9,7 +9,7 @@ package com.facebook.battery.metrics.time;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import com.facebook.battery.metrics.common.ShadowSystemClock;
+import com.facebook.battery.metrics.core.ShadowSystemClock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;

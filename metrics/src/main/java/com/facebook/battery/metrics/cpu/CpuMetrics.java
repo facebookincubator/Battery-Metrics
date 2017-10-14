@@ -8,7 +8,7 @@
 package com.facebook.battery.metrics.cpu;
 
 import android.support.annotation.Nullable;
-import com.facebook.battery.metrics.api.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 
 /** Information about system and user cpu metrics: maintains a double per type of CPU time. */
 public class CpuMetrics extends SystemMetrics<CpuMetrics> {
@@ -20,8 +20,7 @@ public class CpuMetrics extends SystemMetrics<CpuMetrics> {
   public double childUserTimeS;
   public double childSystemTimeS;
 
-  public CpuMetrics() {
-  }
+  public CpuMetrics() {}
 
   @Override
   public CpuMetrics set(CpuMetrics metrics) {
@@ -79,10 +78,10 @@ public class CpuMetrics extends SystemMetrics<CpuMetrics> {
 
     CpuMetrics that = (CpuMetrics) other;
 
-    return Double.compare(that.systemTimeS, systemTimeS) == 0 &&
-      Double.compare(that.userTimeS, userTimeS) == 0 &&
-      Double.compare(that.childSystemTimeS, childSystemTimeS) == 0 &&
-      Double.compare(that.childUserTimeS, childUserTimeS) == 0;
+    return Double.compare(that.systemTimeS, systemTimeS) == 0
+        && Double.compare(that.userTimeS, userTimeS) == 0
+        && Double.compare(that.childSystemTimeS, childSystemTimeS) == 0
+        && Double.compare(that.childUserTimeS, childUserTimeS) == 0;
   }
 
   @Override
@@ -102,11 +101,15 @@ public class CpuMetrics extends SystemMetrics<CpuMetrics> {
 
   @Override
   public String toString() {
-    return "CpuMetrics{" +
-        "userTimeS=" + userTimeS +
-        ", systemTimeS=" + systemTimeS +
-        ", childUserTimeS=" + childUserTimeS +
-        ", childSystemTimeS=" + childSystemTimeS +
-        '}';
+    return "CpuMetrics{"
+        + "userTimeS="
+        + userTimeS
+        + ", systemTimeS="
+        + systemTimeS
+        + ", childUserTimeS="
+        + childUserTimeS
+        + ", childSystemTimeS="
+        + childSystemTimeS
+        + '}';
   }
 }

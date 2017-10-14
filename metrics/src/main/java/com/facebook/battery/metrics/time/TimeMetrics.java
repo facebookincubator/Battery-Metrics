@@ -8,7 +8,7 @@
 package com.facebook.battery.metrics.time;
 
 import android.support.annotation.Nullable;
-import com.facebook.battery.metrics.api.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 
 /**
  * Maintain uptime and realtime for the application: remember to use real time for normalizing
@@ -21,8 +21,7 @@ public class TimeMetrics extends SystemMetrics<TimeMetrics> {
   public long uptimeMs;
   public long realtimeMs;
 
-  public TimeMetrics() {
-  }
+  public TimeMetrics() {}
 
   @Override
   public TimeMetrics set(TimeMetrics metrics) {
@@ -73,8 +72,7 @@ public class TimeMetrics extends SystemMetrics<TimeMetrics> {
 
     TimeMetrics that = (TimeMetrics) o;
 
-    return uptimeMs == that.uptimeMs &&
-      realtimeMs == that.realtimeMs;
+    return uptimeMs == that.uptimeMs && realtimeMs == that.realtimeMs;
   }
 
   @Override
@@ -86,9 +84,6 @@ public class TimeMetrics extends SystemMetrics<TimeMetrics> {
 
   @Override
   public String toString() {
-    return "TimeMetrics{" +
-        "uptimeMs=" + uptimeMs +
-        ", realtimeMs=" + realtimeMs +
-        '}';
+    return "TimeMetrics{" + "uptimeMs=" + uptimeMs + ", realtimeMs=" + realtimeMs + '}';
   }
 }

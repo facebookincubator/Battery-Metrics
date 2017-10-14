@@ -9,7 +9,7 @@ package com.facebook.battery.metrics.cpu;
 
 import android.support.annotation.VisibleForTesting;
 import android.util.SparseIntArray;
-import com.facebook.battery.metrics.api.SystemMetricsCollector;
+import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.infer.annotation.ThreadSafe;
 import java.io.File;
 import java.io.FilenameFilter;

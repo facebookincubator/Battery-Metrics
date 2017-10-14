@@ -7,7 +7,7 @@
  */
 package com.facebook.battery.metrics.composite;
 
-import com.facebook.battery.metrics.api.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,8 +21,7 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
 
   private final Map<Class<? extends SystemMetrics>, SystemMetrics> mMetricsMap = new HashMap<>();
 
-  public CompositeMetrics() {
-  }
+  public CompositeMetrics() {}
 
   @Override
   public CompositeMetrics diff(CompositeMetrics b, CompositeMetrics result) {

@@ -8,7 +8,7 @@
 package com.facebook.battery.metrics.devicebattery;
 
 import android.support.annotation.Nullable;
-import com.facebook.battery.metrics.api.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 
 /**
  * This class contains the metrics for measuring the device level battery metrics. This is cheap to

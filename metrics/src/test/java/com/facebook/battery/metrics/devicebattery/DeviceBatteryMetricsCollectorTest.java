@@ -18,7 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
-import com.facebook.battery.metrics.common.ShadowSystemClock;
+import com.facebook.battery.metrics.core.ShadowSystemClock;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Rule;

@@ -13,8 +13,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.SystemClock;
-import com.facebook.battery.metrics.api.SystemMetricsCollector;
-import com.facebook.battery.metrics.api.SystemMetricsLogger;
+import com.facebook.battery.metrics.core.SystemMetricsCollector;
+import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.infer.annotation.ThreadSafe;
 import javax.annotation.concurrent.GuardedBy;
 

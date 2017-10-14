@@ -8,7 +8,7 @@
 package com.facebook.battery.reporter.api;
 
 import android.support.annotation.Nullable;
-import com.facebook.battery.metrics.api.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 
 /**
  * SystemMetricsReporters attempt to standardize the values logged by different metrics objects
@@ -24,10 +24,15 @@ public interface SystemMetricsReporter<T extends SystemMetrics<T>> {
 
   interface Event {
     boolean isSampled();
+
     void acquireEvent(@Nullable String moduleName, String eventName);
+
     void add(String key, String value);
+
     void add(String key, int value);
+
     void add(String key, double value);
+
     void logAndRelease();
   }
 }

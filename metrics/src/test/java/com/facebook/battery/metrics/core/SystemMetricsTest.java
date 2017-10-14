@@ -5,17 +5,16 @@
  * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
  * file in the same directory.
  */
-package com.facebook.battery.metrics.common;
+package com.facebook.battery.metrics.core;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import com.facebook.battery.metrics.api.SystemMetrics;
 import java.lang.reflect.Field;
 import org.junit.Test;
 
 /**
- * Very opinionated base set of tests for SystemMetrics to reduce boilerplate at the
- * cost of some extra reflection.
+ * Very opinionated base set of tests for SystemMetrics to reduce boilerplate at the cost of some
+ * extra reflection.
  */
 public abstract class SystemMetricsTest<T extends SystemMetrics<T>> {
 

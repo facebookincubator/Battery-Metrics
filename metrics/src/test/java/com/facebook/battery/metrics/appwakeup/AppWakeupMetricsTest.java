@@ -12,7 +12,7 @@ import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupReas
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import android.support.v4.util.SimpleArrayMap;
-import com.facebook.battery.metrics.common.SystemMetricsTest;
+import com.facebook.battery.metrics.core.SystemMetricsTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;

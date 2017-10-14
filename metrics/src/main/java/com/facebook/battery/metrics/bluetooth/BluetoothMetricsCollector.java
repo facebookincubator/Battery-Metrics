@@ -7,7 +7,7 @@
  */
 package com.facebook.battery.metrics.bluetooth;
 
-import com.facebook.battery.metrics.api.SystemMetricsCollector;
+import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.infer.annotation.ThreadSafe;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 

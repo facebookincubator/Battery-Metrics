@@ -8,7 +8,7 @@
 package com.facebook.battery.metrics.bluetooth;
 
 import android.support.annotation.Nullable;
-import com.facebook.battery.metrics.api.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 
 public class BluetoothMetrics extends SystemMetrics<BluetoothMetrics> {
 
@@ -76,9 +76,11 @@ public class BluetoothMetrics extends SystemMetrics<BluetoothMetrics> {
 
   @Override
   public String toString() {
-    return "BluetoothMetrics{" +
-        "bleScanCount=" + bleScanCount +
-        ", bleScanDurationMs=" + bleScanDurationMs +
-        '}';
+    return "BluetoothMetrics{"
+        + "bleScanCount="
+        + bleScanCount
+        + ", bleScanDurationMs="
+        + bleScanDurationMs
+        + '}';
   }
 }

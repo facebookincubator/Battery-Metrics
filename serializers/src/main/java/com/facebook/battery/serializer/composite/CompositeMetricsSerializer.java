@@ -9,8 +9,8 @@ package com.facebook.battery.serializer.composite;
 
 import android.support.v4.util.SimpleArrayMap;
 import android.util.SparseArray;
-import com.facebook.battery.metrics.api.SystemMetrics;
 import com.facebook.battery.metrics.composite.CompositeMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.serializer.common.SystemMetricsSerializer;
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -20,14 +20,13 @@ public class CompositeMetricsSerializer extends SystemMetricsSerializer<Composit
 
   private final SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetricsSerializer<?>>
       mSerializers = new SimpleArrayMap<>();
-  private final SparseArray<SystemMetricsSerializer<? extends SystemMetrics<?>>>
-      mDeserializers = new SparseArray<>();
-  private final SparseArray<Class<? extends SystemMetrics<?>>>
-      mDeserializerClasses = new SparseArray<>();
+  private final SparseArray<SystemMetricsSerializer<? extends SystemMetrics<?>>> mDeserializers =
+      new SparseArray<>();
+  private final SparseArray<Class<? extends SystemMetrics<?>>> mDeserializerClasses =
+      new SparseArray<>();
 
   public <T extends SystemMetrics<T>> CompositeMetricsSerializer addMetricsSerializer(
-      Class<T> metricsClass,
-      SystemMetricsSerializer<T> serializer) {
+      Class<T> metricsClass, SystemMetricsSerializer<T> serializer) {
     mSerializers.put(metricsClass, serializer);
     mDeserializers.put(serializer.getTag(), serializer);
     mDeserializerClasses.put(serializer.getTag(), metricsClass);

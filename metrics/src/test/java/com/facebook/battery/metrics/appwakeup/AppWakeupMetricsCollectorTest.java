@@ -11,7 +11,7 @@ import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupDeta
 import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupReason;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import com.facebook.battery.metrics.common.ShadowSystemClock;
+import com.facebook.battery.metrics.core.ShadowSystemClock;
 import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;

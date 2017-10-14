@@ -11,7 +11,7 @@ import android.annotation.SuppressLint;
 import android.os.Build;
 import android.system.Os;
 import android.system.OsConstants;
-import com.facebook.battery.metrics.api.SystemMetricsLogger;
+import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import java.lang.reflect.InvocationTargetException;
 
 /**

@@ -5,26 +5,23 @@
  * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
  * file in the same directory.
  */
-package com.facebook.battery.metrics.common;
+package com.facebook.battery.metrics.core;
 
 import com.facebook.battery.reporter.api.SystemMetricsReporter;
 import java.util.HashMap;
 import javax.annotation.Nullable;
 
 /**
- * This class implements SystemMetricsReporter.Event for testing purpose
- * of all metrics reporters.
+ * This class implements SystemMetricsReporter.Event for testing purpose of all metrics reporters.
  */
 public class ReporterEvent implements SystemMetricsReporter.Event {
 
   public HashMap<String, Object> eventMap = new HashMap<>();
 
-  public ReporterEvent() {
-  }
+  public ReporterEvent() {}
 
   @Override
-  public void acquireEvent(@Nullable String moduleName, String eventName) {
-  }
+  public void acquireEvent(@Nullable String moduleName, String eventName) {}
 
   @Override
   public void add(String key, String value) {
@@ -47,6 +44,5 @@ public class ReporterEvent implements SystemMetricsReporter.Event {
   }
 
   @Override
-  public void logAndRelease() {
-  }
+  public void logAndRelease() {}
 }

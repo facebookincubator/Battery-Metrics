@@ -10,8 +10,8 @@ package com.facebook.battery.metrics.cpu;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
-import com.facebook.battery.metrics.api.SystemMetricsCollector;
-import com.facebook.battery.metrics.api.SystemMetricsLogger;
+import com.facebook.battery.metrics.core.SystemMetricsCollector;
+import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.infer.annotation.ThreadSafe;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -26,16 +26,14 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
   private static final String TAG = "CpuMetricsCollector";
   private static final String PROC_STAT_FILE_PATH = "/proc/self/stat";
 
-  /**
-   * See http://man7.org/linux/man-pages/man5/proc.5.html for a description of these fields.
-   */
+  /** See http://man7.org/linux/man-pages/man5/proc.5.html for a description of these fields. */
   private static final int PROC_USER_TIME_FIELD = 13;
+
   private static final int PROC_SYSTEM_TIME_FIELD = 14;
   private static final int PROC_CHILD_USER_TIME_FIELD = 15;
   private static final int PROC_CHILD_SYSTEM_TIME_FIELD = 16;
 
-  @VisibleForTesting
-  protected static final long DEFAULT_CLOCK_TICKS_PER_SECOND = 100;
+  @VisibleForTesting protected static final long DEFAULT_CLOCK_TICKS_PER_SECOND = 100;
 
   public CpuMetricsCollector() {}
 
@@ -47,9 +45,10 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
     }
 
     String procFileContents = readProcFile();
-    String[] fields = procFileContents != null ?
-        procFileContents.split(" ", PROC_CHILD_SYSTEM_TIME_FIELD + 2) :
-        null;
+    String[] fields =
+        procFileContents != null
+            ? procFileContents.split(" ", PROC_CHILD_SYSTEM_TIME_FIELD + 2)
+            : null;
 
     if (fields == null || fields.length < PROC_CHILD_SYSTEM_TIME_FIELD + 1) {
       return false;
@@ -65,8 +64,10 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
       return false;
     }
 
-    if (snapshot.userTimeS < 0 || snapshot.systemTimeS < 0 ||
-        snapshot.childUserTimeS < 0 || snapshot.childSystemTimeS < 0) {
+    if (snapshot.userTimeS < 0
+        || snapshot.systemTimeS < 0
+        || snapshot.childUserTimeS < 0
+        || snapshot.childSystemTimeS < 0) {
       SystemMetricsLogger.wtf(TAG, "Negative CPU time field");
       return false;
     }

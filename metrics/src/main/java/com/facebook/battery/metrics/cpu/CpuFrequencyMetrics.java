@@ -9,7 +9,7 @@ package com.facebook.battery.metrics.cpu;
 
 import android.support.annotation.Nullable;
 import android.util.SparseIntArray;
-import com.facebook.battery.metrics.api.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 import java.util.AbstractMap;
 import java.util.Arrays;
 

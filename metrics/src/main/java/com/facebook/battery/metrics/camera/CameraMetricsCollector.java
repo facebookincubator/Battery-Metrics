@@ -14,8 +14,8 @@ import android.hardware.camera2.CaptureRequest;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.SparseArray;
-import com.facebook.battery.metrics.api.SystemMetricsCollector;
-import com.facebook.battery.metrics.api.SystemMetricsLogger;
+import com.facebook.battery.metrics.core.SystemMetricsCollector;
+import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
@@ -48,8 +48,7 @@ public class CameraMetricsCollector extends SystemMetricsCollector<CameraMetrics
   private long mTotalCameraOpenTimeMs;
   private long mTotalCameraPreviewTimeMs;
 
-  public CameraMetricsCollector() {
-  }
+  public CameraMetricsCollector() {}
 
   @Override
   public synchronized boolean getSnapshot(CameraMetrics snapshot) {
@@ -94,14 +93,14 @@ public class CameraMetricsCollector extends SystemMetricsCollector<CameraMetrics
     mCameraPreviewTimes.delete(cameraHash);
   }
 
-  private synchronized static void startRecord(int hash, SparseArray<Long> container) {
+  private static synchronized void startRecord(int hash, SparseArray<Long> container) {
     long startTimeMs = SystemClock.uptimeMillis();
     if (container.get(hash) == null) {
       container.append(hash, startTimeMs);
     }
   }
 
-  private synchronized static long stopRecord(int hash, SparseArray<Long> container) {
+  private static synchronized long stopRecord(int hash, SparseArray<Long> container) {
     long stopTimeMs = SystemClock.uptimeMillis();
     long totalTimeMs = 0;
 
@@ -111,15 +110,13 @@ public class CameraMetricsCollector extends SystemMetricsCollector<CameraMetrics
       container.remove(hash);
     } else {
       SystemMetricsLogger.wtf(
-          TAG,
-          "Stopped recording details for a camera that hasn't been added yet");
+          TAG, "Stopped recording details for a camera that hasn't been added yet");
     }
     return totalTimeMs;
   }
 
   private static void validateArgument(Object camera) {
-    if (!(camera instanceof Camera) &&
-        !(camera instanceof CameraDevice)) {
+    if (!(camera instanceof Camera) && !(camera instanceof CameraDevice)) {
       throw new IllegalArgumentException("Must pass in a Camera or a CameraDevice");
     }
   }

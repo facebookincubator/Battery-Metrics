@@ -7,7 +7,7 @@
  */
 package com.facebook.battery.serializer.common;
 
-import com.facebook.battery.metrics.api.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -33,9 +33,7 @@ public abstract class SystemMetricsSerializer<T extends SystemMetrics<T>> {
 
   /** Deserialize the given object from the input stream. */
   public final boolean deserialize(T metrics, DataInput input) throws IOException {
-    if (input.readShort() != MAGIC ||
-        input.readShort() != VERSION ||
-        input.readInt() != getTag()) {
+    if (input.readShort() != MAGIC || input.readShort() != VERSION || input.readInt() != getTag()) {
       return false;
     }
 

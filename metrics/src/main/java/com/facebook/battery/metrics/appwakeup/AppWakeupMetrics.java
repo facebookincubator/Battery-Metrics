@@ -9,8 +9,8 @@ package com.facebook.battery.metrics.appwakeup;
 
 import android.support.annotation.Nullable;
 import android.support.v4.util.SimpleArrayMap;
-import com.facebook.battery.metrics.api.SystemMetrics;
-import com.facebook.battery.metrics.api.SystemMetricsLogger;
+import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetricsLogger;
 
 /**
  * This class contains the metrics to measure the usage of different background scheduling

@@ -8,7 +8,7 @@
 package com.facebook.battery.metrics.camera;
 
 import android.support.annotation.Nullable;
-import com.facebook.battery.metrics.api.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 
 public class CameraMetrics extends SystemMetrics<CameraMetrics> {
 
@@ -56,10 +56,12 @@ public class CameraMetrics extends SystemMetrics<CameraMetrics> {
 
   @Override
   public String toString() {
-    return "CameraMetrics{" +
-        "cameraPreviewTimeMs=" + cameraPreviewTimeMs +
-        ", cameraOpenTimeMs=" + cameraOpenTimeMs +
-        '}';
+    return "CameraMetrics{"
+        + "cameraPreviewTimeMs="
+        + cameraPreviewTimeMs
+        + ", cameraOpenTimeMs="
+        + cameraOpenTimeMs
+        + '}';
   }
 
   @Override
@@ -72,9 +74,8 @@ public class CameraMetrics extends SystemMetrics<CameraMetrics> {
     }
 
     CameraMetrics that = (CameraMetrics) o;
-    return
-      cameraPreviewTimeMs == that.cameraPreviewTimeMs &&
-      cameraOpenTimeMs == that.cameraOpenTimeMs;
+    return cameraPreviewTimeMs == that.cameraPreviewTimeMs
+        && cameraOpenTimeMs == that.cameraOpenTimeMs;
   }
 
   @Override

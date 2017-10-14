@@ -9,7 +9,7 @@ package com.facebook.battery.metrics.wakelock;
 
 import android.os.PowerManager;
 import android.os.SystemClock;
-import com.facebook.battery.metrics.api.SystemMetricsLogger;
+import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import java.lang.ref.WeakReference;
 
 /**

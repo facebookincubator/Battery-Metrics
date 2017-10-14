@@ -8,7 +8,7 @@
 package com.facebook.battery.metrics.network;
 
 import android.support.annotation.Nullable;
-import com.facebook.battery.metrics.api.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 
 /** Entity that contains info about radio uptime. */
 public class RadioStateMetrics extends SystemMetrics<RadioStateMetrics> {

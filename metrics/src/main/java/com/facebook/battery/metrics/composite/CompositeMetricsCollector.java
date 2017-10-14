@@ -8,8 +8,8 @@
 package com.facebook.battery.metrics.composite;
 
 import android.support.v4.util.SimpleArrayMap;
-import com.facebook.battery.metrics.api.SystemMetrics;
-import com.facebook.battery.metrics.api.SystemMetricsCollector;
+import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.infer.annotation.ThreadSafe;
 
 /**
@@ -60,11 +60,12 @@ public class CompositeMetricsCollector extends SystemMetricsCollector<CompositeM
 
   /**
    * Get the metrics collector associated with a metrics type
-   * @param  metricsClass  Type of metric
-   * @return               Instance of metric collector if metrics class present in map, else null
+   *
+   * @param metricsClass Type of metric
+   * @return Instance of metric collector if metrics class present in map, else null
    */
-  public <S extends SystemMetrics<S>, T extends SystemMetricsCollector<S>>
-  T getMetricsCollector(Class<S> metricsClass) {
+  public <S extends SystemMetrics<S>, T extends SystemMetricsCollector<S>> T getMetricsCollector(
+      Class<S> metricsClass) {
     return (T) mMetricsCollectorMap.get(metricsClass);
   }
 

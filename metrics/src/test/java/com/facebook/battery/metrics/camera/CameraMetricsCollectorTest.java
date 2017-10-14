@@ -10,7 +10,7 @@ package com.facebook.battery.metrics.camera;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import android.hardware.Camera;
-import com.facebook.battery.metrics.common.ShadowSystemClock;
+import com.facebook.battery.metrics.core.ShadowSystemClock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -80,8 +80,7 @@ public class CameraMetricsCollectorTest {
   }
 
   /**
-   * Check when a camera exception happens before its release, we don't
-   * record any camera open time.
+   * Check when a camera exception happens before its release, we don't record any camera open time.
    */
   @Test
   public void testCameraOpenExceptionWithRelease() {
@@ -106,8 +105,8 @@ public class CameraMetricsCollectorTest {
   }
 
   /**
-   * Check when a camera exception happens and no camera release is called,
-   * we also don't record any camera open time.
+   * Check when a camera exception happens and no camera release is called, we also don't record any
+   * camera open time.
    */
   @Test
   public void testCameraOpenExceptionWithoutRelease() {
