@@ -37,3 +37,5 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:1.9.5'
     testImplementation 'org.robolectric:robolectric:3.4.2'
 }
+
+apply from: rootProject.file('release.gradle')
