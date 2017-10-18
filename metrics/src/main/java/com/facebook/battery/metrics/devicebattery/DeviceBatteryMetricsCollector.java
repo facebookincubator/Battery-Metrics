@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.infer.annotation.ThreadSafe;
@@ -44,6 +45,7 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
 
   public DeviceBatteryMetricsCollector(Context context) {
     mContext = context;
+
     // Initialize the current state
     mIsCurrentlyCharging = isCharging(getBatteryIntent());
     mLastUpdateMs = SystemClock.elapsedRealtime();
@@ -116,11 +118,16 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
     return new DeviceBatteryMetrics();
   }
 
-  private Intent getBatteryIntent() {
+  /** This can be null for devices without any battery (like a TV) or because of buggy firmware. */
+  private @Nullable Intent getBatteryIntent() {
     return mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
   }
 
-  private static float getBatteryLevel(Intent batteryStatus) {
+  private static float getBatteryLevel(@Nullable Intent batteryStatus) {
+    if (batteryStatus == null) {
+      return UNKNOWN_LEVEL;
+    }
+
     int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
     int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
     if (level < 0 || scale <= 0) {
@@ -129,8 +136,9 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
     return (((float) level / scale) * 100);
   }
 
-  private static boolean isCharging(Intent batteryStatus) {
-    int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+  private static boolean isCharging(@Nullable Intent batteryStatus) {
+    int status =
+        batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1) : -1;
     return status == BatteryManager.BATTERY_STATUS_CHARGING
         || status == BatteryManager.BATTERY_STATUS_FULL;
   }

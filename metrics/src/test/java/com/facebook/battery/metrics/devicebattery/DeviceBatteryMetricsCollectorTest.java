@@ -55,6 +55,14 @@ public class DeviceBatteryMetricsCollectorTest {
     verifySnapshot(metrics, 20, 0, 5000);
   }
 
+  /** Sanity check that no NPEs are thrown if the battery intent is null. */
+  @Test
+  public void testEmptyBatteryIntent() {
+    DeviceBatteryMetrics metrics = new DeviceBatteryMetrics();
+    DeviceBatteryMetricsCollector collector = new DeviceBatteryMetricsCollector(mContext);
+    collector.getSnapshot(metrics);
+  }
+
   @Test
   public void testNullSnapshot() {
     when(mContext.registerReceiver(
