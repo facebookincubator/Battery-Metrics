@@ -19,7 +19,7 @@ public class WakeLockMetricsReporter implements SystemMetricsReporter<WakeLockMe
   public static final String TAG_TIME_MS = "wakelock_tag_time_ms";
 
   @Override
-  public void reportTo(WakeLockMetrics metrics, Event event) {
+  public void reportTo(WakeLockMetrics metrics, SystemMetricsReporter.Event event) {
     if (metrics.heldTimeMs != 0) {
       event.add(HELD_TIME_MS, metrics.heldTimeMs);
     }

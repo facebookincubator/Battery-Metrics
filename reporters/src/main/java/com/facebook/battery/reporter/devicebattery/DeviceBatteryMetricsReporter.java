@@ -17,7 +17,7 @@ public class DeviceBatteryMetricsReporter implements SystemMetricsReporter<Devic
   public static final String CHARGING_REALTIME_MS = "charging_realtime_ms";
 
   @Override
-  public void reportTo(DeviceBatteryMetrics metrics, Event event) {
+  public void reportTo(DeviceBatteryMetrics metrics, SystemMetricsReporter.Event event) {
     event.add(BATTERY_PCT, metrics.batteryLevelPct);
     event.add(BATTERY_REALTIME_MS, metrics.batteryRealtimeMs);
     event.add(CHARGING_REALTIME_MS, metrics.chargingRealtimeMs);

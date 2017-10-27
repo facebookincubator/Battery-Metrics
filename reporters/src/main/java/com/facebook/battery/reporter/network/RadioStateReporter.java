@@ -19,7 +19,7 @@ public class RadioStateReporter implements SystemMetricsReporter<RadioStateMetri
   public static final String WIFI_RADIO_WAKEUP_COUNT = "wifi_radio_wakeup_count";
 
   @Override
-  public void reportTo(RadioStateMetrics metrics, Event event) {
+  public void reportTo(RadioStateMetrics metrics, SystemMetricsReporter.Event event) {
     if (metrics.mobileHighPowerActiveS != 0L) {
       event.add(MOBILE_HIGH_POWER_ACTIVE_S, metrics.mobileHighPowerActiveS);
     }

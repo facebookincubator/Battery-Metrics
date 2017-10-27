@@ -28,7 +28,7 @@ public class CpuFrequencyMetricsReporter implements SystemMetricsReporter<CpuFre
   @VisibleForTesting static final String CPU_TIME_IN_STATE_S = "cpu_time_in_state_s";
 
   @Override
-  public void reportTo(CpuFrequencyMetrics metrics, Event event) {
+  public void reportTo(CpuFrequencyMetrics metrics, SystemMetricsReporter.Event event) {
     if (metrics.timeInStateS.length == 0) {
       return;
     }

@@ -16,7 +16,7 @@ public class TimeMetricsReporter implements SystemMetricsReporter<TimeMetrics> {
   public static final String UPTIME_MS = "uptime_ms";
 
   @Override
-  public void reportTo(TimeMetrics metrics, Event event) {
+  public void reportTo(TimeMetrics metrics, SystemMetricsReporter.Event event) {
     if (metrics.realtimeMs != 0) {
       event.add(REALTIME_MS, metrics.realtimeMs);
     }
