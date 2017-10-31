@@ -139,7 +139,7 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
       this(reason, 0, 0);
     }
 
-    public WakeupDetails(WakeupReason reason, int count, long wakeupTimeMs) {
+    public WakeupDetails(WakeupReason reason, long count, long wakeupTimeMs) {
       this.reason = reason;
       this.count = count;
       this.wakeupTimeMs = wakeupTimeMs;
