@@ -9,7 +9,7 @@ package com.facebook.battery.reporter.wakelock;
 
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.wakelock.WakeLockMetrics;
-import com.facebook.battery.reporter.api.SystemMetricsReporter;
+import com.facebook.battery.reporter.core.SystemMetricsReporter;
 import org.json.JSONException;
 import org.json.JSONObject;
 

@@ -8,7 +8,7 @@
 package com.facebook.battery.reporter.cpu;
 
 import com.facebook.battery.metrics.cpu.CpuMetrics;
-import com.facebook.battery.reporter.api.SystemMetricsReporter;
+import com.facebook.battery.reporter.core.SystemMetricsReporter;
 
 public class CpuMetricsReporter implements SystemMetricsReporter<CpuMetrics> {
 

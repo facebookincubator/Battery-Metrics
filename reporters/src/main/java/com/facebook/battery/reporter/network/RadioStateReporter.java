@@ -8,7 +8,7 @@
 package com.facebook.battery.reporter.network;
 
 import com.facebook.battery.metrics.network.RadioStateMetrics;
-import com.facebook.battery.reporter.api.SystemMetricsReporter;
+import com.facebook.battery.reporter.core.SystemMetricsReporter;
 
 public class RadioStateReporter implements SystemMetricsReporter<RadioStateMetrics> {
 

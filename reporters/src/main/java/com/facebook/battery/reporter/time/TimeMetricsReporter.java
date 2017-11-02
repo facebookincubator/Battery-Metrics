@@ -8,7 +8,7 @@
 package com.facebook.battery.reporter.time;
 
 import com.facebook.battery.metrics.time.TimeMetrics;
-import com.facebook.battery.reporter.api.SystemMetricsReporter;
+import com.facebook.battery.reporter.core.SystemMetricsReporter;
 
 public class TimeMetricsReporter implements SystemMetricsReporter<TimeMetrics> {
 

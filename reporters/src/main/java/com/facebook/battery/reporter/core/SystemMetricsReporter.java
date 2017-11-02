@@ -5,7 +5,7 @@
  * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
  * file in the same directory.
  */
-package com.facebook.battery.reporter.api;
+package com.facebook.battery.reporter.core;
 
 import android.support.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;

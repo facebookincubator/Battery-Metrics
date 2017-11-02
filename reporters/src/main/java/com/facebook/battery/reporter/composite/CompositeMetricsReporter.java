@@ -10,7 +10,7 @@ package com.facebook.battery.reporter.composite;
 import android.support.v4.util.SimpleArrayMap;
 import com.facebook.battery.metrics.composite.CompositeMetrics;
 import com.facebook.battery.metrics.core.SystemMetrics;
-import com.facebook.battery.reporter.api.SystemMetricsReporter;
+import com.facebook.battery.reporter.core.SystemMetricsReporter;
 
 public class CompositeMetricsReporter implements SystemMetricsReporter<CompositeMetrics> {
 

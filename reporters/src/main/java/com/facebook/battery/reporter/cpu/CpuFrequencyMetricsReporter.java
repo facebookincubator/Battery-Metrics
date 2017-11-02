@@ -11,7 +11,7 @@ import android.support.annotation.VisibleForTesting;
 import android.util.SparseIntArray;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.cpu.CpuFrequencyMetrics;
-import com.facebook.battery.reporter.api.SystemMetricsReporter;
+import com.facebook.battery.reporter.core.SystemMetricsReporter;
 import org.json.JSONException;
 import org.json.JSONObject;
 

@@ -7,7 +7,7 @@
  */
 package com.facebook.battery.metrics.core;
 
-import com.facebook.battery.reporter.api.SystemMetricsReporter;
+import com.facebook.battery.reporter.core.SystemMetricsReporter;
 import java.util.HashMap;
 import javax.annotation.Nullable;
 

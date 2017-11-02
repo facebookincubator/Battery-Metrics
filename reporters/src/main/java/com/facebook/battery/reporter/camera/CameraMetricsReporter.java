@@ -8,7 +8,7 @@
 package com.facebook.battery.reporter.camera;
 
 import com.facebook.battery.metrics.camera.CameraMetrics;
-import com.facebook.battery.reporter.api.SystemMetricsReporter;
+import com.facebook.battery.reporter.core.SystemMetricsReporter;
 
 public class CameraMetricsReporter implements SystemMetricsReporter<CameraMetrics> {
 

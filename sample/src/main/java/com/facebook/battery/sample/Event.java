@@ -9,7 +9,7 @@ package com.facebook.battery.sample;
 
 import android.support.annotation.Nullable;
 import android.util.Log;
-import com.facebook.battery.reporter.api.SystemMetricsReporter;
+import com.facebook.battery.reporter.core.SystemMetricsReporter;
 
 /** Poor man's analytics: also known as Logcat. */
 public class Event implements SystemMetricsReporter.Event {

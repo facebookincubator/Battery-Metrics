@@ -8,7 +8,7 @@
 package com.facebook.battery.reporter.bluetooth;
 
 import com.facebook.battery.metrics.bluetooth.BluetoothMetrics;
-import com.facebook.battery.reporter.api.SystemMetricsReporter;
+import com.facebook.battery.reporter.core.SystemMetricsReporter;
 
 public class BluetoothMetricsReporter implements SystemMetricsReporter<BluetoothMetrics> {
 
