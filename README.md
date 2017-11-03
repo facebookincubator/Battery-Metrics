@@ -8,6 +8,26 @@ The library helps instrument hardware utilization to be able to understand how t
 ## Alpha
 This is an initial release coinciding with our tech talk at Mobile@Scale Boston to get feedback, tweak the API and make the library more useful; we'll firm up the code and keep tweaking it till a full release of the library. Make sure to check out our [roadmap](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/roadmap.md) to help us prioritize!
 
+## Adding BatteryMetrics 
+
+Add `jcenter` to your repositories –
+
+```groovy
+repositories {
+  jcenter()
+}
+```
+
+And add dependencies on the projects you'd like to use in `build.gradle` –
+
+```groovy
+dependencies {
+    implementation 'com.facebook.battery:metrics:0.0.1'
+    implementation 'com.facebook.battery:reporters:0.0.1' // optional
+    implementation 'com.facebook.battery:serializers:0.0.1' // optional
+}
+```
+
 ## Quick Start
 
 As a simple quickstart, let's instrument sample activity to check CPU time while the activity is being used in the foreground --
@@ -41,7 +61,15 @@ And foregrounding and background the application prints the metrics to logcat --
 CpuMetrics{userTimeS=0.06, systemTimeS=0.04, childUserTimeS=0.0, childSystemTimeS=0.0}
 ```
 
+
+## Sample App
+
 Building further on this, there are many more metrics to collect, and some utility classes to reduce boilerplate -- a more detailed deep dive into using the API is in the sample app: check out [sample/../BatteryApplication.java](https://github.com/facebookincubator/Battery-Metrics/blob/master/sample/src/main/java/com/facebook/battery/sample/BatteryApplication.java).
+
+You can quickly install and run the app --
+```
+./gradlew :sample:installDebug
+```
 
 ## Documentation
 - [JavaDocs](https://facebookincubator.github.io/Battery-Metrics/) -- a reasonably comprehensive reference to all the exposed APIs.
