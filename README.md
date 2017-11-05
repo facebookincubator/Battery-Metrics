@@ -1,6 +1,7 @@
 # Battery Metrics
-
-![Battery Metrics](/logo/logo.png?raw=true "Battery Metrics Logo")
+<p align="center">
+  <img src="/logo/logo.png?raw=true" title="Battery Metrics Logo"/>
+</p>
 
 Battery Metrics is a lightweight android library to quickly instrument several metrics for understanding battery consumption.
 
