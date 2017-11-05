@@ -1,4 +1,8 @@
 # Battery Metrics
+<p align="center">
+  <img src="/logo/logo.png?raw=true" title="Battery Metrics Logo"/>
+</p>
+
 Battery Metrics is a lightweight android library to quickly instrument several metrics for understanding battery consumption.
 
 As a developer, it's surprisingly hard to understand how your application affects battery life on Android &mdash; relying on the operating system level reported battery level tends to be inaccurate (because the reported levels are fairly coarse, affected by every app running on the device and smoothed out) and while it's possible to get really good measurements locally you don't really know what sort of experience users are having in the wild.
@@ -8,7 +12,7 @@ The library helps instrument hardware utilization to be able to understand how t
 ## Alpha
 This is an initial release coinciding with our tech talk at Mobile@Scale Boston to get feedback, tweak the API and make the library more useful; we'll firm up the code and keep tweaking it till a full release of the library. Make sure to check out our [roadmap](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/roadmap.md) to help us prioritize!
 
-## Adding BatteryMetrics 
+## Adding BatteryMetrics
 
 Add `jcenter` to your repositories –
 
