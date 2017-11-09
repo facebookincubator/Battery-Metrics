@@ -20,15 +20,15 @@ public abstract class SystemMetricsTest<T extends SystemMetrics<T>> {
 
   @Test
   public void testEquals() throws Exception {
-    T instanceA = MetricsUtil.createInitializedInstance(getClazz());
-    T instanceB = MetricsUtil.createInitializedInstance(getClazz());
+    T instanceA = createInitializedInstance();
+    T instanceB = createInitializedInstance();
 
     assertThat(instanceA).isEqualTo(instanceB);
   }
 
   @Test
   public void testDefaultValues() throws Exception {
-    T t = getClazz().newInstance();
+    T t = createInstance();
     for (Field field : getClazz().getFields()) {
       if (MetricsUtil.isNumericField(field)) {
         MetricsUtil.testValue(t, field, 0);
@@ -38,8 +38,8 @@ public abstract class SystemMetricsTest<T extends SystemMetrics<T>> {
 
   @Test
   public void testSet() throws Exception {
-    T a = MetricsUtil.createInitializedInstance(getClazz());
-    T empty = getClazz().newInstance();
+    T a = createInitializedInstance();
+    T empty = createInstance();
     empty.set(a);
 
     assertThat(empty).isEqualTo(a);
@@ -47,7 +47,7 @@ public abstract class SystemMetricsTest<T extends SystemMetrics<T>> {
 
   @Test
   public void testSum() throws Exception {
-    T a = MetricsUtil.createInitializedInstance(getClazz());
+    T a = createInitializedInstance();
     int increment = 1;
     for (Field field : getClazz().getFields()) {
       if (MetricsUtil.isNumericField(field)) {
@@ -56,8 +56,8 @@ public abstract class SystemMetricsTest<T extends SystemMetrics<T>> {
       }
     }
 
-    T b = MetricsUtil.createInitializedInstance(getClazz());
-    T sum = getClazz().newInstance();
+    T b = createInitializedInstance();
+    T sum = createInstance();
 
     a.sum(b, sum);
     increment = 1;
@@ -71,9 +71,9 @@ public abstract class SystemMetricsTest<T extends SystemMetrics<T>> {
 
   @Test
   public void testDiff() throws Exception {
-    T a = MetricsUtil.createInitializedInstance(getClazz());
-    T b = MetricsUtil.createInitializedInstance(getClazz());
-    T diff = MetricsUtil.createInitializedInstance(getClazz());
+    T a = createInitializedInstance();
+    T b = createInitializedInstance();
+    T diff = createInitializedInstance();
 
     int index = 1;
     for (Field field : getClazz().getFields()) {
@@ -96,8 +96,8 @@ public abstract class SystemMetricsTest<T extends SystemMetrics<T>> {
 
   @Test
   public void testNullOutput() throws Exception {
-    T instanceA = MetricsUtil.createInitializedInstance(getClazz());
-    T instanceB = MetricsUtil.createInitializedInstance(getClazz());
+    T instanceA = createInitializedInstance();
+    T instanceB = createInitializedInstance();
 
     T diff = instanceA.diff(instanceB, null);
     assertThat(diff).isNotNull();
@@ -105,11 +105,19 @@ public abstract class SystemMetricsTest<T extends SystemMetrics<T>> {
 
   @Test
   public void testNullSubtrahend() throws Exception {
-    T instanceA = MetricsUtil.createInitializedInstance(getClazz());
-    T diff = MetricsUtil.createInitializedInstance(getClazz());
+    T instanceA = createInitializedInstance();
+    T diff = createInitializedInstance();
     instanceA.diff(null, diff);
     assertThat(instanceA).isEqualTo(diff);
   }
 
   protected abstract Class<T> getClazz();
+
+  protected T createInstance() throws Exception {
+    return getClazz().newInstance();
+  }
+
+  protected T createInitializedInstance() throws Exception {
+    return MetricsUtil.createInitializedInstance(getClazz());
+  }
 }

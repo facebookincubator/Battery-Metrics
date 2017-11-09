@@ -70,21 +70,33 @@ public class CompositeMetricsCollector extends SystemMetricsCollector<CompositeM
   }
 
   /**
-   * Gets the snapshot for all the metrics and returns a CompositeMetrics object with the value
+   * Gets the snapshot for all the metrics and returns a CompositeMetrics object with the value.
+   *
+   * <p>Snapshots are only taken of metrics requested in the composite metrics objects; any
+   * snapshots that fail or are not supported by this collector are marked invalid. The underlying
+   * collectors are expected to report any errors they might encounter.
    *
    * @param snapshot snapshot to reuse
-   * @return CompositeMetrics object containing all the snapshot values
+   * @return whether _any_ underlying snapshot succeeded
    */
   @Override
   @ThreadSafe(enableChecks = false)
   public boolean getSnapshot(CompositeMetrics snapshot) {
-    boolean result = true;
-    for (int i = 0; i < mMetricsCollectorMap.size(); i++) {
-      Class<? extends SystemMetrics> metricsClass = mMetricsCollectorMap.keyAt(i);
+    boolean result = false;
+    SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetrics> snapshotMetrics =
+        snapshot.getMetrics();
+    for (int i = 0, size = snapshotMetrics.size(); i < size; i++) {
+      Class<? extends SystemMetrics> metricsClass = snapshotMetrics.keyAt(i);
       SystemMetricsCollector collector = mMetricsCollectorMap.get(metricsClass);
-      SystemMetrics metric = snapshot.getMetric(metricsClass);
-      result &= collector.getSnapshot(metric);
+      boolean snapshotResult = false;
+      if (collector != null) {
+        SystemMetrics metric = snapshot.getMetric(metricsClass);
+        snapshotResult = collector.getSnapshot(metric);
+      }
+      snapshot.setIsValid(metricsClass, snapshotResult);
+      result |= snapshotResult;
     }
+
     return result;
   }
 

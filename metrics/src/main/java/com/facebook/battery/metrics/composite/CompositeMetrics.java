@@ -7,9 +7,10 @@
  */
 package com.facebook.battery.metrics.composite;
 
+import android.support.annotation.Nullable;
+import android.support.v4.util.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetrics;
-import java.util.HashMap;
-import java.util.Map;
+import com.facebook.battery.metrics.core.Utilities;
 
 /**
  * Maintains a set of metrics internally that can be simply iterated over and used by being wrapped
@@ -17,38 +18,66 @@ import java.util.Map;
  */
 public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
 
-  private static final long serialVersionUID = 0;
-
-  private final Map<Class<? extends SystemMetrics>, SystemMetrics> mMetricsMap = new HashMap<>();
-
-  public CompositeMetrics() {}
+  private final SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetrics> mMetricsMap =
+      new SimpleArrayMap<>();
+  private final SimpleArrayMap<Class<? extends SystemMetrics>, Boolean> mMetricsValid =
+      new SimpleArrayMap<>();
 
   @Override
-  public CompositeMetrics diff(CompositeMetrics b, CompositeMetrics result) {
-    for (Class<? extends SystemMetrics> c : mMetricsMap.keySet()) {
-      getMetric(c).diff(b.getMetric(c), result.getMetric(c));
+  public CompositeMetrics diff(@Nullable CompositeMetrics b, CompositeMetrics result) {
+    if (result == null) {
+      throw new IllegalArgumentException("CompositeMetrics doesn't support nullable results");
+    }
+
+    if (b == null) {
+      result.set(this);
+    } else {
+      for (int i = 0, size = mMetricsMap.size(); i < size; i++) {
+        Class c = mMetricsMap.keyAt(i);
+        boolean valid = isValid(c) && b.isValid(c);
+        if (valid) {
+          getMetric(c).diff(b.getMetric(c), result.getMetric(c));
+        }
+        result.setIsValid(c, valid);
+      }
     }
     return result;
   }
 
   @Override
-  public CompositeMetrics sum(CompositeMetrics b, CompositeMetrics result) {
-    for (Class<? extends SystemMetrics> c : mMetricsMap.keySet()) {
-      getMetric(c).sum(b.getMetric(c), result.getMetric(c));
+  public CompositeMetrics sum(@Nullable CompositeMetrics b, CompositeMetrics result) {
+    if (result == null) {
+      throw new IllegalArgumentException("CompositeMetrics doesn't support nullable results");
+    }
+
+    if (b == null) {
+      result.set(this);
+    } else {
+      for (int i = 0, size = mMetricsMap.size(); i < size; i++) {
+        Class c = mMetricsMap.keyAt(i);
+        boolean valid = isValid(c) && b.isValid(c);
+        if (valid) {
+          getMetric(c).sum(b.getMetric(c), result.getMetric(c));
+        }
+        result.setIsValid(c, valid);
+      }
     }
     return result;
   }
 
   @Override
-  public CompositeMetrics set(CompositeMetrics b) {
-    for (Class<? extends SystemMetrics> c : mMetricsMap.keySet()) {
-      getMetric(c).set(b.getMetric(c));
+  public CompositeMetrics set(CompositeMetrics result) {
+    for (int i = 0, size = mMetricsMap.size(); i < size; i++) {
+      Class c = mMetricsMap.keyAt(i);
+      getMetric(c).set(result.getMetric(c));
+      setIsValid(c, result.isValid(c));
     }
     return this;
   }
 
   public <T extends SystemMetrics<T>> CompositeMetrics putMetric(Class<T> metricsClass, T metric) {
     mMetricsMap.put(metricsClass, metric);
+    mMetricsValid.put(metricsClass, Boolean.FALSE);
     return this;
   }
 
@@ -56,34 +85,52 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
     return metricsClass.cast(mMetricsMap.get(metricsClass));
   }
 
-  public Map<Class<? extends SystemMetrics>, SystemMetrics> getMetrics() {
+  public boolean isValid(Class c) {
+    Boolean value = mMetricsValid.get(c);
+    return value != null && value;
+  }
+
+  public void setIsValid(Class c, boolean isValid) {
+    mMetricsValid.put(c, isValid ? Boolean.TRUE : Boolean.FALSE);
+  }
+
+  public SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetrics> getMetrics() {
     return mMetricsMap;
   }
 
   @Override
   public String toString() {
     StringBuilder b = new StringBuilder();
-    b.append("Composite Metrics:\n");
-    for (Class<? extends SystemMetrics> c : mMetricsMap.keySet()) {
-      SystemMetrics m = getMetric(c);
-      b.append(m.toString());
-      b.append("\n");
+    b.append("Composite Metrics{\n");
+    for (int i = 0, size = mMetricsMap.size(); i < size; i++) {
+      b.append(mMetricsMap.valueAt(i))
+          .append(isValid(mMetricsMap.keyAt(i)) ? " [valid]" : " [invalid]")
+          .append('\n');
     }
+    b.append("}");
+
     return b.toString();
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
 
     CompositeMetrics that = (CompositeMetrics) o;
 
-    return mMetricsMap.equals(that.mMetricsMap);
+    return Utilities.simpleArrayMapEquals(mMetricsValid, that.mMetricsValid)
+        && Utilities.simpleArrayMapEquals(mMetricsMap, that.mMetricsMap);
   }
 
   @Override
   public int hashCode() {
-    return mMetricsMap.hashCode();
+    int result = mMetricsMap.hashCode();
+    result = 31 * result + mMetricsValid.hashCode();
+    return result;
   }
 }

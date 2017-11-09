@@ -36,21 +36,32 @@ public class CompositeMetricsSerializer extends SystemMetricsSerializer<Composit
   @Override
   public void serializeContents(CompositeMetrics metrics, DataOutput output) throws IOException {
     int size = mSerializers.size();
-    output.writeInt(size);
+    int validMetrics = 0;
     for (int i = 0; i < size; i++) {
-      SystemMetricsSerializer serializer = mSerializers.valueAt(i);
-      output.writeInt(serializer.getTag());
-      serializer.serializeContents(metrics.getMetric(mSerializers.keyAt(i)), output);
+      if (metrics.isValid(mSerializers.keyAt(i))) {
+        validMetrics++;
+      }
+    }
+    output.writeInt(validMetrics);
+    for (int i = 0; i < size; i++) {
+      Class metricsClass = mSerializers.keyAt(i);
+      if (metrics.isValid(metricsClass)) {
+        SystemMetricsSerializer serializer = mSerializers.valueAt(i);
+        output.writeInt(serializer.getTag());
+        serializer.serializeContents(metrics.getMetric(metricsClass), output);
+      }
     }
   }
 
   @Override
   public boolean deserializeContents(CompositeMetrics metrics, DataInput input) throws IOException {
-    int size = input.readInt();
-    if (size != mDeserializers.size()) {
-      return false;
+    // First, reset the metrics object to expect all invalid metrics
+    SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetrics> all = metrics.getMetrics();
+    for (int i = 0, size = metrics.getMetrics().size(); i < size; i++) {
+      metrics.setIsValid(all.keyAt(i), false);
     }
 
+    int size = input.readInt();
     for (int i = 0; i < size; i++) {
       int tag = input.readInt();
       SystemMetricsSerializer deserializer = mDeserializers.get(tag);
@@ -63,6 +74,8 @@ public class CompositeMetricsSerializer extends SystemMetricsSerializer<Composit
       if (!deserializer.deserializeContents(metric, input)) {
         return false;
       }
+
+      metrics.setIsValid(metricsClass, true);
     }
     return true;
   }

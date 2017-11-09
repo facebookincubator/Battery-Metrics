@@ -20,9 +20,11 @@ public class CompositeMetricsReporter implements SystemMetricsReporter<Composite
   public void reportTo(CompositeMetrics metrics, SystemMetricsReporter.Event event) {
     for (int i = 0; i < mMetricsReporterMap.size(); i++) {
       Class<? extends SystemMetrics> metricsClass = mMetricsReporterMap.keyAt(i);
-      SystemMetrics systemMetrics = metrics.getMetric(metricsClass);
-      SystemMetricsReporter reporter = mMetricsReporterMap.get(metricsClass);
-      reporter.reportTo(systemMetrics, event);
+      if (metrics.isValid(metricsClass)) {
+        SystemMetrics systemMetrics = metrics.getMetric(metricsClass);
+        SystemMetricsReporter reporter = mMetricsReporterMap.get(metricsClass);
+        reporter.reportTo(systemMetrics, event);
+      }
     }
   }
 

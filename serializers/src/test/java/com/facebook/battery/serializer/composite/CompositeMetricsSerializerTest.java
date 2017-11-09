@@ -39,6 +39,24 @@ public class CompositeMetricsSerializerTest extends SystemMetricsSerializerTest<
         .deserialize(metrics, new DataInputStream(new ByteArrayInputStream(byteArray)))).isFalse();
   }
 
+  @Test
+  public void testInvalidMetricsSkipped() throws Exception {
+    CompositeMetrics instance = createInstance();
+    instance.setIsValid(TimeMetrics.class, false);
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    getSerializer().serialize(instance, new DataOutputStream(baos));
+
+    byte[] byteArray = baos.toByteArray();
+
+    CompositeMetrics metrics = createInstance();
+    assertThat(
+            getSerializer()
+                .deserialize(metrics, new DataInputStream(new ByteArrayInputStream(byteArray))))
+        .isTrue();
+    assertThat(metrics.isValid(TimeMetrics.class)).isFalse();
+  }
+
   @Override
   protected Class<CompositeMetrics> getClazz() {
     return CompositeMetrics.class;
@@ -55,6 +73,7 @@ public class CompositeMetricsSerializerTest extends SystemMetricsSerializerTest<
     CompositeMetrics metrics = createInstance();
     metrics.getMetric(TimeMetrics.class).uptimeMs = 1;
     metrics.getMetric(TimeMetrics.class).realtimeMs = 2;
+    metrics.setIsValid(TimeMetrics.class, true);
     return metrics;
   }
 
