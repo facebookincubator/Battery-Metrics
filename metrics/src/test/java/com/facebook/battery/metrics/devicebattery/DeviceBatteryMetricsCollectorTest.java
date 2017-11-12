@@ -43,7 +43,7 @@ public class DeviceBatteryMetricsCollectorTest {
   }
 
   @Test
-  public void testInitalSnapshot() {
+  public void testInitialSnapshot() {
     ShadowSystemClock.setElapsedRealtime(5000);
     when(mContext.registerReceiver(
             Matchers.isNull(BroadcastReceiver.class), Matchers.any(IntentFilter.class)))

@@ -10,7 +10,9 @@ package com.facebook.battery.metrics.bluetooth;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
@@ -18,11 +20,19 @@ import org.robolectric.RobolectricTestRunner;
 @RunWith(RobolectricTestRunner.class)
 public class BluetoothMetricsCollectorTest {
 
+  @Rule public final ExpectedException mExpectedException = ExpectedException.none();
+
   private BluetoothMetricsCollector mBluetoothMetricsCollector;
 
   @Before
   public void setup() {
     mBluetoothMetricsCollector = new BluetoothMetricsCollector();
+  }
+
+  @Test
+  public void testNullSnapshot() {
+    mExpectedException.expect(IllegalArgumentException.class);
+    mBluetoothMetricsCollector.getSnapshot(null);
   }
 
   @Test

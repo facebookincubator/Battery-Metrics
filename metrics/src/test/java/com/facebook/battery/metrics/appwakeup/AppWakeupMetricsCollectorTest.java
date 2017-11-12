@@ -14,7 +14,9 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import com.facebook.battery.metrics.core.ShadowSystemClock;
 import java.io.IOException;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
@@ -23,6 +25,8 @@ import org.robolectric.annotation.Config;
 @Config(shadows = {ShadowSystemClock.class})
 public class AppWakeupMetricsCollectorTest {
 
+  @Rule public final ExpectedException mExpectedException = ExpectedException.none();
+
   private AppWakeupMetricsCollector mAppWakeupMetricsCollector;
   private AppWakeupMetrics mAppWakeupMetrics;
 
@@ -30,6 +34,12 @@ public class AppWakeupMetricsCollectorTest {
   public void setUp() throws IOException {
     mAppWakeupMetricsCollector = new AppWakeupMetricsCollector();
     mAppWakeupMetrics = new AppWakeupMetrics();
+  }
+
+  @Test
+  public void testNullSnapshot() {
+      mExpectedException.expect(IllegalArgumentException.class);
+      mAppWakeupMetricsCollector.getSnapshot(null);
   }
 
   @Test

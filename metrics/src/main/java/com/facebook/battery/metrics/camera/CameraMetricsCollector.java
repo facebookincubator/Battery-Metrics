@@ -19,6 +19,8 @@ import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.infer.annotation.ThreadSafe;
 
+import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
+
 /**
  * CameraMetricsCollector internally maintains how long the camera was open and previewed; this is
  * simply a helper class to maintain state and can't automatically instrument camera usage.
@@ -53,6 +55,7 @@ public class CameraMetricsCollector extends SystemMetricsCollector<CameraMetrics
 
   @Override
   public synchronized boolean getSnapshot(CameraMetrics snapshot) {
+    checkNotNull(snapshot, "Null value passed to getSnapshot!");
     long timestampMs = SystemClock.uptimeMillis();
     snapshot.cameraOpenTimeMs =
         mTotalCameraOpenTimeMs + sumElapsedTime(timestampMs, mCameraOpenTimes);

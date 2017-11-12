@@ -13,12 +13,16 @@ import android.support.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
 public class CompositeMetricsCollectorTest {
+
+  @Rule public final ExpectedException mExpectedException = ExpectedException.none();
 
   private ACollector mACollector;
   private BCollector mBCollector;
@@ -36,6 +40,12 @@ public class CompositeMetricsCollectorTest {
             .addMetricsCollector(B.class, mBCollector)
             .build();
     mMetrics = new CompositeMetrics().putMetric(A.class, new A()).putMetric(B.class, new B());
+  }
+
+  @Test
+  public void testNullSnapshot() {
+    mExpectedException.expect(IllegalArgumentException.class);
+    mCollector.getSnapshot(null);
   }
 
   @Test

@@ -15,7 +15,9 @@ import android.support.annotation.Nullable;
 import com.facebook.battery.metrics.core.ShadowSystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -24,6 +26,8 @@ import org.robolectric.annotation.Config;
 @RunWith(RobolectricTestRunner.class)
 @Config(shadows = {ShadowSystemClock.class})
 public class WakeLockMetricsCollectorTest {
+
+  @Rule public final ExpectedException mExpectedException = ExpectedException.none();
 
   private PowerManager mPowerManager;
   private WakeLockMetricsCollector mCollector;
@@ -41,6 +45,12 @@ public class WakeLockMetricsCollectorTest {
             throw new RuntimeException(tag + " " + message, cause);
           }
         });
+  }
+
+  @Test
+  public void testNullSnapshot() {
+      mExpectedException.expect(IllegalArgumentException.class);
+      mCollector.getSnapshot(null);
   }
 
   @Test

@@ -16,6 +16,8 @@ import com.facebook.infer.annotation.ThreadSafe;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
+
 /**
  * Collects data about cpu metrics.
  *
@@ -40,10 +42,7 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
   @Override
   @ThreadSafe(enableChecks = false)
   public boolean getSnapshot(CpuMetrics snapshot) {
-    if (snapshot == null) {
-      throw new IllegalArgumentException("Null value passed to getSnapshot!");
-    }
-
+    checkNotNull(snapshot, "Null value passed to getSnapshot!");
     String procFileContents = readProcFile();
     String[] fields =
         procFileContents != null

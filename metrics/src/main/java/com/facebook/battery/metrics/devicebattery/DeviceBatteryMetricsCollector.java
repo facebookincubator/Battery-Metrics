@@ -19,6 +19,8 @@ import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.infer.annotation.ThreadSafe;
 import javax.annotation.concurrent.GuardedBy;
 
+import static com.facebook.battery.metrics.core.Utilities.*;
+
 /**
  * Collects data about {@link DeviceBatteryMetrics}. This relies on maintaining the charging state
  * and hence will probably not work in Doze mode (N+) where the broadcasts for power
@@ -96,9 +98,7 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
   @Override
   @ThreadSafe(enableChecks = false)
   public boolean getSnapshot(DeviceBatteryMetrics snapshot) {
-    if (snapshot == null) {
-      throw new IllegalArgumentException("Null value passed to getSnapshot!");
-    }
+    checkNotNull(snapshot, "Null value passed to getSnapshot!");
     snapshot.batteryLevelPct = getBatteryLevel(getBatteryIntent());
     long now = SystemClock.elapsedRealtime();
     synchronized (this) {

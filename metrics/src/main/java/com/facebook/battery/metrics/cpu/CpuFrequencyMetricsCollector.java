@@ -16,6 +16,8 @@ import java.io.FilenameFilter;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 
+import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
+
 /**
  * Capture CPU frequency statistics.
  *
@@ -40,6 +42,7 @@ public class CpuFrequencyMetricsCollector extends SystemMetricsCollector<CpuFreq
   @Override
   @ThreadSafe(enableChecks = false)
   public boolean getSnapshot(CpuFrequencyMetrics snapshot) {
+    checkNotNull(snapshot, "Null value passed to getSnapshot!");
     boolean hasAnyValid = false;
     for (int i = 0, cores = getTotalCores(); i < cores; i++) {
       hasAnyValid |= readCoreStats(snapshot.timeInStateS[i], getReader(i));
