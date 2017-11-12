@@ -48,15 +48,24 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
   private long mWakeLockAcquireTimeMs;
   private long mWakeLocksHeldTimeMs;
   private int mActiveWakeLocks;
+  private boolean mIsEnabled = true;
 
   public synchronized void newWakeLock(
       PowerManager.WakeLock wakelock, int levelAndFlags, String tag) {
+    if (!mIsEnabled) {
+      return;
+    }
+
     WakeLockDetails details = new WakeLockDetails(wakelock, tag, levelAndFlags);
     mWakeLocks.put(wakelock, details);
     mActiveWakeLockDetails.add(details);
   }
 
   public synchronized void acquire(PowerManager.WakeLock wakelock, long timeout) {
+    if (!mIsEnabled) {
+      return;
+    }
+
     updateWakeLockCounts();
     WakeLockDetails details = mWakeLocks.get(wakelock);
     if (details == null) {
@@ -74,6 +83,10 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
   }
 
   public synchronized void release(PowerManager.WakeLock wakelock, int flags) {
+    if (!mIsEnabled) {
+      return;
+    }
+
     updateWakeLockCounts();
 
     WakeLockDetails details = mWakeLocks.get(wakelock);
@@ -92,6 +105,10 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
   }
 
   public synchronized void setReferenceCounted(PowerManager.WakeLock wakelock, boolean value) {
+    if (!mIsEnabled) {
+      return;
+    }
+
     WakeLockDetails details = mWakeLocks.get(wakelock);
     if (details == null) {
       SystemMetricsLogger.wtf(TAG, "Unknown wakelock modified");
@@ -99,6 +116,17 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
     }
 
     details.setIsReferenceCounted(value);
+  }
+
+  /**
+   * Stop collecting any data and clear all saved information: note that this is only one way and
+   * metric collection can't be started again after starting the collector.
+   */
+  public synchronized void disable() {
+    mIsEnabled = false;
+
+    mPrevWakeLockMs.clear();
+    mActiveWakeLockDetails.clear();
   }
 
   /**
@@ -138,6 +166,10 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
 
   @Override
   public synchronized boolean getSnapshot(WakeLockMetrics snapshot) {
+    if (!mIsEnabled) {
+      return false;
+    }
+
     updateWakeLockCounts();
 
     snapshot.heldTimeMs =

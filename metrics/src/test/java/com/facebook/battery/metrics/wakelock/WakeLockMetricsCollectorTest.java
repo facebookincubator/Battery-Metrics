@@ -128,4 +128,20 @@ public class WakeLockMetricsCollectorTest {
     assertThat(metrics.tagTimeMs.get("testA")).isEqualTo(90);
     assertThat(metrics.tagTimeMs.get("testB")).isEqualTo(30);
   }
+
+  @Test
+  public void testDisabling() {
+    WakeLockMetrics metrics = new WakeLockMetrics(true);
+    PowerManager.WakeLock wakeLockA = mPowerManager.newWakeLock(0, "testA");
+    mCollector.newWakeLock(wakeLockA, 0, "testA");
+
+    assertThat(mCollector.getSnapshot(metrics)).isTrue();
+
+    mCollector.disable();
+    assertThat(mCollector.getSnapshot(metrics)).isFalse();
+
+    // Sanity check that nothing throws an exception or logs after disabling
+    mCollector.release(wakeLockA, 0);
+    mCollector.acquire(wakeLockA, 100);
+  }
 }
