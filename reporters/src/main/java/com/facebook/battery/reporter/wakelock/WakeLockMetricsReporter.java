@@ -17,11 +17,16 @@ public class WakeLockMetricsReporter implements SystemMetricsReporter<WakeLockMe
 
   public static final String HELD_TIME_MS = "wakelock_held_time_ms";
   public static final String TAG_TIME_MS = "wakelock_tag_time_ms";
+  public static final String ACQUIRED_COUNT = "wakelock_acquired_count";
 
   @Override
   public void reportTo(WakeLockMetrics metrics, SystemMetricsReporter.Event event) {
     if (metrics.heldTimeMs != 0) {
       event.add(HELD_TIME_MS, metrics.heldTimeMs);
+    }
+
+    if (metrics.acquiredCount != 0) {
+      event.add(ACQUIRED_COUNT, metrics.acquiredCount);
     }
 
     // Creates a JSON Blob as a string of nested values that we can then process on thes server.

@@ -43,7 +43,7 @@ import java.lang.ref.WeakReference;
   }
 
   /**
-   * Returns false if the wakelock was already acquired, and true if this actaully enabled the
+   * Returns false if the wakelock was already acquired, and true if this actually enabled the
    * wakelock.
    */
   public boolean acquire(long timeoutMs) {

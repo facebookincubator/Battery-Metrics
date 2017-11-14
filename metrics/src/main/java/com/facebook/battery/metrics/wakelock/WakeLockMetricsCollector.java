@@ -9,6 +9,7 @@ package com.facebook.battery.metrics.wakelock;
 
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.support.annotation.GuardedBy;
 import android.support.v4.util.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
@@ -45,8 +46,16 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
   /** Details about currently active wakelocks */
   private final ArrayList<WakeLockDetails> mActiveWakeLockDetails = new ArrayList<>();
 
+  @GuardedBy("this")
   private long mWakeLockAcquireTimeMs;
+
+  @GuardedBy("this")
   private long mWakeLocksHeldTimeMs;
+
+  @GuardedBy("this")
+  private long mTotalWakeLocksAcquired;
+
+  @GuardedBy("this")
   private int mActiveWakeLocks;
   private boolean mIsEnabled = true;
 
@@ -67,6 +76,8 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
     }
 
     updateWakeLockCounts();
+    mTotalWakeLocksAcquired++;
+
     WakeLockDetails details = mWakeLocks.get(wakelock);
     if (details == null) {
       SystemMetricsLogger.wtf(TAG, "Unknown wakelock modified");
@@ -171,6 +182,8 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
     }
 
     updateWakeLockCounts();
+
+    snapshot.acquiredCount = mTotalWakeLocksAcquired;
 
     snapshot.heldTimeMs =
         mWakeLocksHeldTimeMs

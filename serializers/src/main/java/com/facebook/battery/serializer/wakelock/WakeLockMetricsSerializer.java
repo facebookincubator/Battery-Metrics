@@ -18,6 +18,7 @@ public class WakeLockMetricsSerializer extends SystemMetricsSerializer<WakeLockM
   @Override
   public void serializeContents(WakeLockMetrics metrics, DataOutput output) throws IOException {
     output.writeLong(metrics.heldTimeMs);
+    output.writeLong(metrics.acquiredCount);
     output.writeBoolean(metrics.isAttributionEnabled);
     if (metrics.isAttributionEnabled) {
       int size = metrics.tagTimeMs.size();
@@ -34,10 +35,10 @@ public class WakeLockMetricsSerializer extends SystemMetricsSerializer<WakeLockM
 
   @Override
   public boolean deserializeContents(WakeLockMetrics metrics, DataInput input) throws IOException {
-    metrics.heldTimeMs = 0;
     metrics.tagTimeMs.clear();
 
     metrics.heldTimeMs = input.readLong();
+    metrics.acquiredCount = input.readLong();
     metrics.isAttributionEnabled = input.readBoolean();
     if (metrics.isAttributionEnabled) {
       int size = input.readInt();

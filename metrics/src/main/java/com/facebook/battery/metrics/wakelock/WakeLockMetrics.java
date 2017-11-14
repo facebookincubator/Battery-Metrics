@@ -20,9 +20,17 @@ import com.facebook.battery.metrics.core.Utilities;
  */
 public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
 
-  public final SimpleArrayMap<String, Long> tagTimeMs = new SimpleArrayMap<>();
+  /** Whether this object should also record attribution */
   public boolean isAttributionEnabled;
+
+  /** Attribution data */
+  public final SimpleArrayMap<String, Long> tagTimeMs = new SimpleArrayMap<>();
+
+  /** Total held time */
   public long heldTimeMs;
+
+  /** How many times wakelocks were acquired */
+  public long acquiredCount;
 
   /** Create a WakeLockMetrics object without attribution enabled. */
   public WakeLockMetrics() {
@@ -44,6 +52,7 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
       output.set(this);
     } else {
       output.heldTimeMs = heldTimeMs + b.heldTimeMs;
+      output.acquiredCount = acquiredCount + b.acquiredCount;
       if (output.isAttributionEnabled) {
         output.tagTimeMs.clear();
         for (int i = 0, size = tagTimeMs.size(); i < size; i++) {
@@ -74,6 +83,7 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
       output.set(this);
     } else {
       output.heldTimeMs = heldTimeMs - b.heldTimeMs;
+      output.acquiredCount = acquiredCount - b.acquiredCount;
       if (output.isAttributionEnabled) {
         output.tagTimeMs.clear();
         for (int i = 0, size = tagTimeMs.size(); i < size; i++) {
@@ -93,6 +103,7 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
   @Override
   public WakeLockMetrics set(WakeLockMetrics b) {
     heldTimeMs = b.heldTimeMs;
+    acquiredCount = b.acquiredCount;
     if (b.isAttributionEnabled && isAttributionEnabled) {
       tagTimeMs.clear();
       tagTimeMs.putAll(b.tagTimeMs);
@@ -112,13 +123,12 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
 
     WakeLockMetrics that = (WakeLockMetrics) o;
 
-    if (isAttributionEnabled != that.isAttributionEnabled || heldTimeMs != that.heldTimeMs) {
+    if (isAttributionEnabled != that.isAttributionEnabled
+        || heldTimeMs != that.heldTimeMs
+        || acquiredCount != that.acquiredCount) {
       return false;
     }
 
-    // SimpleArrayMap has a broken equals implementation up till
-    // https://github.com/android/platform_frameworks_support/commit/5b6d31ca0497e11d9af12810fefbc81a88f75d22?diff=split
-    // Explicitly extracted the relevant comparison code accordingly.
     if (!Utilities.simpleArrayMapEquals(tagTimeMs, that.tagTimeMs)) {
       return false;
     }
@@ -131,6 +141,7 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
     int result = (isAttributionEnabled ? 1 : 0);
     result = 31 * result + tagTimeMs.hashCode();
     result = 31 * result + (int) (heldTimeMs ^ (heldTimeMs >>> 32));
+    result = 31 * result + (int) (acquiredCount ^ (acquiredCount >>> 32));
     return result;
   }
 
@@ -143,6 +154,8 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
         + tagTimeMs
         + ", heldTimeMs="
         + heldTimeMs
+        + ", acquiredCount="
+        + acquiredCount
         + '}';
   }
 }
