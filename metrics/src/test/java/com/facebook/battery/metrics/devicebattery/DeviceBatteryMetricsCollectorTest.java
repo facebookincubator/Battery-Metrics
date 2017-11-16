@@ -74,6 +74,17 @@ public class DeviceBatteryMetricsCollectorTest {
   }
 
   @Test
+  public void testExceptionInRegisterReceiver() {
+    when(mContext.registerReceiver(
+            Matchers.isNull(BroadcastReceiver.class), Matchers.any(IntentFilter.class)))
+        .thenThrow(new SecurityException("Testing exception"));
+    DeviceBatteryMetrics metrics = new DeviceBatteryMetrics();
+    DeviceBatteryMetricsCollector collector = new DeviceBatteryMetricsCollector(mContext);
+    collector.getSnapshot(metrics);
+    assertThat(metrics.batteryLevelPct).isEqualTo(DeviceBatteryMetricsCollector.UNKNOWN_LEVEL);
+  }
+
+  @Test
   public void testSnapshotAfterValidBroadcasts() {
     // Set up the collector
     ShadowSystemClock.setElapsedRealtime(5000);

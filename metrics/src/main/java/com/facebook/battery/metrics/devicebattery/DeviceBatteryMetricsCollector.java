@@ -120,7 +120,14 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
 
   /** This can be null for devices without any battery (like a TV) or because of buggy firmware. */
   private @Nullable Intent getBatteryIntent() {
-    return mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+    try {
+      return mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+    } catch (Exception ex) {
+      // There is a weird bug that causes this to crash sometimes in android versions <= 4.2
+      // with a SecurityException - handling the exception to avoid the crash
+      SystemMetricsLogger.wtf(TAG, "Exception registering receiver for ACTION_BATTERY_CHANGED");
+      return null;
+    }
   }
 
   private static float getBatteryLevel(@Nullable Intent batteryStatus) {
