@@ -13,8 +13,6 @@ import com.facebook.battery.metrics.core.SystemMetrics;
 /** Entity that contains info about radio uptime. */
 public class RadioStateMetrics extends SystemMetrics<RadioStateMetrics> {
 
-  private static final long serialVersionUID = 0;
-
   public long mobileLowPowerActiveS;
   public long mobileHighPowerActiveS;
   public int mobileRadioWakeupCount;

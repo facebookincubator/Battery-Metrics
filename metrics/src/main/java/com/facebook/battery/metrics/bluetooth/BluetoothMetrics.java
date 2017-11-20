@@ -12,8 +12,6 @@ import com.facebook.battery.metrics.core.SystemMetrics;
 
 public class BluetoothMetrics extends SystemMetrics<BluetoothMetrics> {
 
-  private static final long serialVersionUID = 0;
-
   public int bleScanCount;
   public long bleScanDurationMs;
 

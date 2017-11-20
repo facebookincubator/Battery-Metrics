@@ -16,8 +16,6 @@ import com.facebook.battery.metrics.core.SystemMetrics;
  */
 public class TimeMetrics extends SystemMetrics<TimeMetrics> {
 
-  private static final long serialVersionUID = 0;
-
   public long uptimeMs;
   public long realtimeMs;
 

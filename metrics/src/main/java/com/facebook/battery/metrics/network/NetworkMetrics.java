@@ -16,8 +16,6 @@ import com.facebook.battery.metrics.core.SystemMetrics;
  */
 public class NetworkMetrics extends SystemMetrics<NetworkMetrics> {
 
-  private static final long serialVersionUID = 0;
-
   public long mobileBytesTx;
   public long mobileBytesRx;
   public long wifiBytesTx;

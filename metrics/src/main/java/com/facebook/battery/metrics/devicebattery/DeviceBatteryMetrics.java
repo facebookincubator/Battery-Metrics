@@ -17,8 +17,6 @@ import com.facebook.battery.metrics.core.SystemMetrics;
  */
 public class DeviceBatteryMetrics extends SystemMetrics<DeviceBatteryMetrics> {
 
-  private static final long serialVersionUID = 0;
-
   // Device battery level
   public float batteryLevelPct;
   // Elapsed Realtime on battery since the start of the app

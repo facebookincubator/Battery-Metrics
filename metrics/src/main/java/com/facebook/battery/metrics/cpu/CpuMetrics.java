@@ -13,8 +13,6 @@ import com.facebook.battery.metrics.core.SystemMetrics;
 /** Information about system and user cpu metrics: maintains a double per type of CPU time. */
 public class CpuMetrics extends SystemMetrics<CpuMetrics> {
 
-  private static final long serialVersionUID = 0;
-
   public double userTimeS;
   public double systemTimeS;
   public double childUserTimeS;

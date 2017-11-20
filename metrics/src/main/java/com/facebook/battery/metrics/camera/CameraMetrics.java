@@ -12,8 +12,6 @@ import com.facebook.battery.metrics.core.SystemMetrics;
 
 public class CameraMetrics extends SystemMetrics<CameraMetrics> {
 
-  private static final long serialVersionUID = 0;
-
   public long cameraPreviewTimeMs;
   public long cameraOpenTimeMs;
 
