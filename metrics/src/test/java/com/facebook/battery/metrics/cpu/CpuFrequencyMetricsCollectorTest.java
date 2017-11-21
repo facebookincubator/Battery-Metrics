@@ -14,17 +14,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
 
 @RunWith(RobolectricTestRunner.class)
-public class CpuFrequencyMetricsCollectorTest {
-
-  @Rule public final ExpectedException mExpectedException = ExpectedException.none();
+public class CpuFrequencyMetricsCollectorTest
+    extends SystemMetricsCollectorTest<CpuFrequencyMetrics, CpuFrequencyMetricsCollector> {
 
   TemporaryFolder mFolder = new TemporaryFolder();
 
@@ -36,17 +34,6 @@ public class CpuFrequencyMetricsCollectorTest {
   @Before
   public void setUp() throws Exception {
     mFolder.create();
-  }
-
-  @Test
-  public void testNullSnapshot() throws Exception {
-    mExpectedException.expect(IllegalArgumentException.class);
-    final TestableCpuFrequencyMetricsCollector collector =
-        new TestableCpuFrequencyMetricsCollector(
-           new String[] {
-             createFile("null snapshot")
-           });
-    collector.getSnapshot(null);
   }
 
   @Test
@@ -131,6 +118,11 @@ public class CpuFrequencyMetricsCollectorTest {
     FileOutputStream os = new FileOutputStream(file, false);
     os.write(contents.getBytes());
     return file.getAbsolutePath();
+  }
+
+  @Override
+  protected Class<CpuFrequencyMetricsCollector> getClazz() {
+    return CpuFrequencyMetricsCollector.class;
   }
 }
 

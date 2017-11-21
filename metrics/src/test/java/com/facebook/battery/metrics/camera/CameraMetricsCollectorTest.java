@@ -11,24 +11,15 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import android.hardware.Camera;
 import com.facebook.battery.metrics.core.ShadowSystemClock;
-import org.junit.Rule;
+import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
 @org.robolectric.annotation.Config(shadows = {ShadowSystemClock.class})
-public class CameraMetricsCollectorTest {
-
-  @Rule public final ExpectedException mExpectedException = ExpectedException.none();
-
-  @Test
-  public void testNullSnapshot() {
-    mExpectedException.expect(IllegalArgumentException.class);
-    final CameraMetricsCollector collector = new CameraMetricsCollector();
-    collector.getSnapshot(null);
-  }
+public class CameraMetricsCollectorTest
+    extends SystemMetricsCollectorTest<CameraMetrics, CameraMetricsCollector> {
 
   @Test
   public void testSimpleOpenSnapshot() {
@@ -143,5 +134,10 @@ public class CameraMetricsCollectorTest {
     assertThat(collector.getSnapshot(snapshot)).isTrue();
     assertThat(snapshot.cameraOpenTimeMs).isEqualTo(800);
     assertThat(snapshot.cameraPreviewTimeMs).isEqualTo(300);
+  }
+
+  @Override
+  protected Class<CameraMetricsCollector> getClazz() {
+    return CameraMetricsCollector.class;
   }
 }

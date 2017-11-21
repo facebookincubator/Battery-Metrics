@@ -10,25 +10,15 @@ package com.facebook.battery.metrics.time;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import com.facebook.battery.metrics.core.ShadowSystemClock;
-
-import org.junit.Rule;
+import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
 @org.robolectric.annotation.Config(shadows = {ShadowSystemClock.class})
-public class TimeMetricsCollectorTest {
-
-  @Rule public final ExpectedException mExpectedException = ExpectedException.none();
-
-  @Test
-  public void testNullSnapshot() {
-    mExpectedException.expect(IllegalArgumentException.class);
-    TimeMetricsCollector collector = new TimeMetricsCollector();
-    collector.getSnapshot(null);
-  }
+public class TimeMetricsCollectorTest
+    extends SystemMetricsCollectorTest<TimeMetrics, TimeMetricsCollector> {
 
   @Test
   public void testTimes() {
@@ -40,5 +30,10 @@ public class TimeMetricsCollectorTest {
 
     assertThat(snapshot.uptimeMs).isEqualTo(1234);
     assertThat(snapshot.realtimeMs).isEqualTo(9876);
+  }
+
+  @Override
+  protected Class<TimeMetricsCollector> getClazz() {
+    return TimeMetricsCollector.class;
   }
 }

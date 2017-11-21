@@ -13,11 +13,10 @@ import android.content.Context;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import com.facebook.battery.metrics.core.ShadowSystemClock;
+import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -25,9 +24,8 @@ import org.robolectric.annotation.Config;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(shadows = {ShadowSystemClock.class})
-public class WakeLockMetricsCollectorTest {
-
-  @Rule public final ExpectedException mExpectedException = ExpectedException.none();
+public class WakeLockMetricsCollectorTest
+    extends SystemMetricsCollectorTest<WakeLockMetrics, WakeLockMetricsCollector> {
 
   private PowerManager mPowerManager;
   private WakeLockMetricsCollector mCollector;
@@ -45,12 +43,6 @@ public class WakeLockMetricsCollectorTest {
             throw new RuntimeException(tag + " " + message, cause);
           }
         });
-  }
-
-  @Test
-  public void testNullSnapshot() {
-      mExpectedException.expect(IllegalArgumentException.class);
-      mCollector.getSnapshot(null);
   }
 
   @Test
@@ -153,5 +145,10 @@ public class WakeLockMetricsCollectorTest {
     // Sanity check that nothing throws an exception or logs after disabling
     mCollector.release(wakeLockA, 0);
     mCollector.acquire(wakeLockA, 100);
+  }
+
+  @Override
+  protected Class<WakeLockMetricsCollector> getClazz() {
+    return WakeLockMetricsCollector.class;
   }
 }
