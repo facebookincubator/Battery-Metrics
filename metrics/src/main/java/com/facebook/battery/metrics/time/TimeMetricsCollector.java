@@ -11,6 +11,8 @@ import android.os.SystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.infer.annotation.ThreadSafe;
 
+import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
+
 /**
  * Records system uptime (doesn't include time when the phone was asleep) and realtime (actual time
  * elapsed). This is a fairly core collector that can be used to normalize the values obtained by
@@ -22,6 +24,7 @@ public class TimeMetricsCollector extends SystemMetricsCollector<TimeMetrics> {
   @Override
   @ThreadSafe(enableChecks = false)
   public boolean getSnapshot(TimeMetrics snapshot) {
+    checkNotNull(snapshot, "Null value passed to getSnapshot!");
     snapshot.realtimeMs = SystemClock.elapsedRealtime();
     snapshot.uptimeMs = SystemClock.uptimeMillis();
     return true;

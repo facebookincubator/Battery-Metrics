@@ -12,6 +12,8 @@ import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.infer.annotation.ThreadSafe;
 
+import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
+
 /**
  * Composite metrics collector allows batching and using several Metrics Collectors together, keyed
  * by the SystemMetrics they're attached to.
@@ -82,6 +84,7 @@ public class CompositeMetricsCollector extends SystemMetricsCollector<CompositeM
   @Override
   @ThreadSafe(enableChecks = false)
   public boolean getSnapshot(CompositeMetrics snapshot) {
+    checkNotNull(snapshot, "Null value passed to getSnapshot!");
     boolean result = false;
     SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetrics> snapshotMetrics =
         snapshot.getMetrics();

@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.WeakHashMap;
 import javax.annotation.concurrent.ThreadSafe;
 
+import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
+
 /**
  * Records information about currently active wakelocks, including attribution by tag.
  *
@@ -177,6 +179,7 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
 
   @Override
   public synchronized boolean getSnapshot(WakeLockMetrics snapshot) {
+    checkNotNull(snapshot, "Null value passed to getSnapshot!");
     if (!mIsEnabled) {
       return false;
     }

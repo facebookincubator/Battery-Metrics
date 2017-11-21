@@ -18,9 +18,11 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
 
 @RunWith(RobolectricTestRunner.class)
-public class CpuFrequencyMetricsCollectorTest {
+public class CpuFrequencyMetricsCollectorTest
+    extends SystemMetricsCollectorTest<CpuFrequencyMetrics, CpuFrequencyMetricsCollector> {
 
   TemporaryFolder mFolder = new TemporaryFolder();
 
@@ -116,6 +118,11 @@ public class CpuFrequencyMetricsCollectorTest {
     FileOutputStream os = new FileOutputStream(file, false);
     os.write(contents.getBytes());
     return file.getAbsolutePath();
+  }
+
+  @Override
+  protected Class<CpuFrequencyMetricsCollector> getClazz() {
+    return CpuFrequencyMetricsCollector.class;
   }
 }
 

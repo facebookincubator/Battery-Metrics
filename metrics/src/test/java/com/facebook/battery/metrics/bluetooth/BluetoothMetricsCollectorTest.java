@@ -13,10 +13,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
 
 /** Tests for {@link BluetoothMetricsCollector}. */
 @RunWith(RobolectricTestRunner.class)
-public class BluetoothMetricsCollectorTest {
+public class BluetoothMetricsCollectorTest
+    extends SystemMetricsCollectorTest<BluetoothMetrics, BluetoothMetricsCollector> {
 
   private BluetoothMetricsCollector mBluetoothMetricsCollector;
 
@@ -41,5 +43,10 @@ public class BluetoothMetricsCollectorTest {
     assertThat(isSuccess).isTrue();
     assertThat(bluetoothMetrics.bleScanCount).isEqualTo(2);
     assertThat(bluetoothMetrics.bleScanDurationMs).isEqualTo(220);
+  }
+
+  @Override
+  protected Class<BluetoothMetricsCollector> getClazz() {
+    return BluetoothMetricsCollector.class;
   }
 }
