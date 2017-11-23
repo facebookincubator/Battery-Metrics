@@ -7,6 +7,8 @@
  */
 package com.facebook.battery.metrics.wakelock;
 
+import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
+
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.annotation.GuardedBy;
@@ -177,6 +179,7 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
 
   @Override
   public synchronized boolean getSnapshot(WakeLockMetrics snapshot) {
+    checkNotNull(snapshot, "Null value passed to getSnapshot!");
     if (!mIsEnabled) {
       return false;
     }

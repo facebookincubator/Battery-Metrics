@@ -7,6 +7,8 @@
  */
 package com.facebook.battery.metrics.bluetooth;
 
+import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
+
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.infer.annotation.ThreadSafe;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -25,9 +27,7 @@ public class BluetoothMetricsCollector extends SystemMetricsCollector<BluetoothM
   @Override
   @ThreadSafe(enableChecks = false)
   public boolean getSnapshot(BluetoothMetrics snapshot) {
-    if (snapshot == null) {
-      throw new IllegalArgumentException("Null value passed to getSnapshot!");
-    }
+    checkNotNull(snapshot, "Null value passed to getSnapshot!");
     mReadWriteLock.readLock().lock();
     try {
       snapshot.bleScanCount = bleScanCount;

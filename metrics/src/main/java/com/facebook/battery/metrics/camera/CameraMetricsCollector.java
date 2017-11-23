@@ -7,6 +7,8 @@
  */
 package com.facebook.battery.metrics.camera;
 
+import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
+
 import android.hardware.Camera;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraDevice;
@@ -53,6 +55,7 @@ public class CameraMetricsCollector extends SystemMetricsCollector<CameraMetrics
 
   @Override
   public synchronized boolean getSnapshot(CameraMetrics snapshot) {
+    checkNotNull(snapshot, "Null value passed to getSnapshot!");
     long timestampMs = SystemClock.uptimeMillis();
     snapshot.cameraOpenTimeMs =
         mTotalCameraOpenTimeMs + sumElapsedTime(timestampMs, mCameraOpenTimes);

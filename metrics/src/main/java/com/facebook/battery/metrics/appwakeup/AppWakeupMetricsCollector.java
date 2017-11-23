@@ -8,6 +8,7 @@
 package com.facebook.battery.metrics.appwakeup;
 
 import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupDetails;
+import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
 
 import android.os.SystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
@@ -34,9 +35,7 @@ public class AppWakeupMetricsCollector extends SystemMetricsCollector<AppWakeupM
   @Override
   @ThreadSafe(enableChecks = false)
   public synchronized boolean getSnapshot(AppWakeupMetrics snapshot) {
-    if (snapshot == null) {
-      throw new IllegalArgumentException("Null value passed to getSnapshot!");
-    }
+    checkNotNull(snapshot, "Null value passed to getSnapshot!");
     // TODO: Optimize by taking intersection of the two lists
     snapshot.appWakeups.clear();
     for (int i = 0; i < mMetrics.appWakeups.size(); i++) {
@@ -56,7 +55,7 @@ public class AppWakeupMetricsCollector extends SystemMetricsCollector<AppWakeupM
    * Record the start of a wakeup. If this method is called twice without calling recordWakeupEnd in
    * between, we ignore the second recordWakeupStart call.
    *
-   * @param reason One of the wakeup types defined in {@link WakeupReason}
+   * @param reason One of the wakeup types defined in {@link AppWakeupMetrics.WakeupReason}
    * @param id Identifier of the wakeup
    */
   public synchronized void recordWakeupStart(AppWakeupMetrics.WakeupReason reason, String id) {

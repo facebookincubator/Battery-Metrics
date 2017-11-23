@@ -9,17 +9,14 @@ package com.facebook.battery.metrics.cpu;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import org.junit.Rule;
+import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
-public class CpuMetricsCollectorTest {
-
-  @Rule
-  public final ExpectedException mExpectedException = ExpectedException.none();
+public class CpuMetricsCollectorTest
+    extends SystemMetricsCollectorTest<CpuMetrics, CpuMetricsCollector> {
 
   @Test
   public void testBrokenFile() {
@@ -70,16 +67,13 @@ public class CpuMetricsCollectorTest {
     assertThat(collector.getSnapshot(snapshot)).isFalse();
   }
 
-  @Test
-  public void testNullSnapshot() {
-    CpuMetricsCollector collector = new CpuMetricsCollector();
-
-    mExpectedException.expect(IllegalArgumentException.class);
-    collector.getSnapshot(null);
+  @Override
+  protected Class<CpuMetricsCollector> getClazz() {
+    return CpuMetricsCollector.class;
   }
 }
 
-class TestableCpuMetricsCollector extends CpuMetricsCollector  {
+class TestableCpuMetricsCollector extends CpuMetricsCollector {
 
   private String mContents;
 

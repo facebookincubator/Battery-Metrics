@@ -7,6 +7,8 @@
  */
 package com.facebook.battery.metrics.cpu;
 
+import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
+
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
@@ -40,10 +42,7 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
   @Override
   @ThreadSafe(enableChecks = false)
   public boolean getSnapshot(CpuMetrics snapshot) {
-    if (snapshot == null) {
-      throw new IllegalArgumentException("Null value passed to getSnapshot!");
-    }
-
+    checkNotNull(snapshot, "Null value passed to getSnapshot!");
     String procFileContents = readProcFile();
     String[] fields =
         procFileContents != null

@@ -9,6 +9,7 @@ package com.facebook.battery.metrics.cpu;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
+import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,7 +21,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
-public class CpuFrequencyMetricsCollectorTest {
+public class CpuFrequencyMetricsCollectorTest
+    extends SystemMetricsCollectorTest<CpuFrequencyMetrics, CpuFrequencyMetricsCollector> {
 
   TemporaryFolder mFolder = new TemporaryFolder();
 
@@ -116,6 +118,11 @@ public class CpuFrequencyMetricsCollectorTest {
     FileOutputStream os = new FileOutputStream(file, false);
     os.write(contents.getBytes());
     return file.getAbsolutePath();
+  }
+
+  @Override
+  protected Class<CpuFrequencyMetricsCollector> getClazz() {
+    return CpuFrequencyMetricsCollector.class;
   }
 }
 

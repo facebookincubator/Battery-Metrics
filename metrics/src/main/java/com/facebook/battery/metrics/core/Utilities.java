@@ -53,4 +53,10 @@ public abstract class Utilities {
 
     return true;
   }
+
+  public static void checkNotNull(Object o, String message) {
+    if (o == null) {
+      throw new IllegalArgumentException(message);
+    }
+  }
 }

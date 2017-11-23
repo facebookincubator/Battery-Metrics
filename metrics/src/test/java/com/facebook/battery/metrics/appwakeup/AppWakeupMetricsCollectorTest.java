@@ -12,6 +12,7 @@ import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupReas
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import com.facebook.battery.metrics.core.ShadowSystemClock;
+import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
 import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +22,8 @@ import org.robolectric.annotation.Config;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(shadows = {ShadowSystemClock.class})
-public class AppWakeupMetricsCollectorTest {
+public class AppWakeupMetricsCollectorTest
+    extends SystemMetricsCollectorTest<AppWakeupMetrics, AppWakeupMetricsCollector> {
 
   private AppWakeupMetricsCollector mAppWakeupMetricsCollector;
   private AppWakeupMetrics mAppWakeupMetrics;
@@ -91,5 +93,10 @@ public class AppWakeupMetricsCollectorTest {
         .isEqualTo(new WakeupDetails(WakeupReason.JOB_SCHEDULER, 1, 55));
     assertThat(mAppWakeupMetrics.appWakeups.get("key3"))
         .isEqualTo(new WakeupDetails(WakeupReason.JOB_SCHEDULER, 1, 27));
+  }
+
+  @Override
+  protected Class<AppWakeupMetricsCollector> getClazz() {
+    return AppWakeupMetricsCollector.class;
   }
 }

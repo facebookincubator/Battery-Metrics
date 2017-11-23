@@ -7,6 +7,8 @@
  */
 package com.facebook.battery.metrics.devicebattery;
 
+import static com.facebook.battery.metrics.core.Utilities.*;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -96,9 +98,7 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
   @Override
   @ThreadSafe(enableChecks = false)
   public boolean getSnapshot(DeviceBatteryMetrics snapshot) {
-    if (snapshot == null) {
-      throw new IllegalArgumentException("Null value passed to getSnapshot!");
-    }
+    checkNotNull(snapshot, "Null value passed to getSnapshot!");
     snapshot.batteryLevelPct = getBatteryLevel(getBatteryIntent());
     long now = SystemClock.elapsedRealtime();
     synchronized (this) {

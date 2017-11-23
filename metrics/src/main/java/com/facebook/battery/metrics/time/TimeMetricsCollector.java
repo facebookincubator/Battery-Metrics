@@ -7,6 +7,8 @@
  */
 package com.facebook.battery.metrics.time;
 
+import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
+
 import android.os.SystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.infer.annotation.ThreadSafe;
@@ -22,6 +24,7 @@ public class TimeMetricsCollector extends SystemMetricsCollector<TimeMetrics> {
   @Override
   @ThreadSafe(enableChecks = false)
   public boolean getSnapshot(TimeMetrics snapshot) {
+    checkNotNull(snapshot, "Null value passed to getSnapshot!");
     snapshot.realtimeMs = SystemClock.elapsedRealtime();
     snapshot.uptimeMs = SystemClock.uptimeMillis();
     return true;

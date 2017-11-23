@@ -23,6 +23,7 @@ public abstract class SystemMetricsCollector<T extends SystemMetrics> {
    *
    * @param snapshot snapshot on which the data will be written
    * @return true if the snapshot has been updated with valid data.
+   * @throws IllegalArgumentException if snapshot == null.
    */
   public abstract boolean getSnapshot(T snapshot);
 

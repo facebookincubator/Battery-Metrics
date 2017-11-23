@@ -13,6 +13,7 @@ import android.content.Context;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import com.facebook.battery.metrics.core.ShadowSystemClock;
+import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,8 @@ import org.robolectric.annotation.Config;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(shadows = {ShadowSystemClock.class})
-public class WakeLockMetricsCollectorTest {
+public class WakeLockMetricsCollectorTest
+    extends SystemMetricsCollectorTest<WakeLockMetrics, WakeLockMetricsCollector> {
 
   private PowerManager mPowerManager;
   private WakeLockMetricsCollector mCollector;
@@ -143,5 +145,10 @@ public class WakeLockMetricsCollectorTest {
     // Sanity check that nothing throws an exception or logs after disabling
     mCollector.release(wakeLockA, 0);
     mCollector.acquire(wakeLockA, 100);
+  }
+
+  @Override
+  protected Class<WakeLockMetricsCollector> getClazz() {
+    return WakeLockMetricsCollector.class;
   }
 }
