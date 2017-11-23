@@ -11,7 +11,7 @@ import android.support.v4.util.SimpleArrayMap;
 import android.util.SparseArray;
 import com.facebook.battery.metrics.composite.CompositeMetrics;
 import com.facebook.battery.metrics.core.SystemMetrics;
-import com.facebook.battery.serializer.common.SystemMetricsSerializer;
+import com.facebook.battery.serializer.core.SystemMetricsSerializer;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;

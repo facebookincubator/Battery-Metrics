@@ -9,7 +9,7 @@ package com.facebook.battery.serializer.cpu;
 
 import android.util.SparseIntArray;
 import com.facebook.battery.metrics.cpu.CpuFrequencyMetrics;
-import com.facebook.battery.serializer.common.SystemMetricsSerializer;
+import com.facebook.battery.serializer.core.SystemMetricsSerializer;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;

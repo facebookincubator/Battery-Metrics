@@ -10,7 +10,7 @@ package com.facebook.battery.reporter.composite;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import com.facebook.battery.metrics.composite.CompositeMetrics;
-import com.facebook.battery.metrics.core.ReporterEvent;
+import com.facebook.battery.reporter.core.ReporterEvent;
 import com.facebook.battery.metrics.time.TimeMetrics;
 import org.junit.Before;
 import org.junit.Test;
