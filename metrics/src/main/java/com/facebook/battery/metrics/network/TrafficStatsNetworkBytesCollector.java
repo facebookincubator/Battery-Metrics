@@ -39,9 +39,9 @@ class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
   private static final int UID = android.os.Process.myUid();
   private static final int TYPE_NONE = -1;
 
-  private final ConnectivityManager mConnectivityManager;
+  final ConnectivityManager mConnectivityManager;
   private final long[] mTotalBytes = new long[4];
-  private int mCurrentNetworkType;
+  int mCurrentNetworkType;
   private boolean mIsValid = true;
 
   @VisibleForTesting
@@ -83,7 +83,7 @@ class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
     return true;
   }
 
-  private synchronized void updateTotalBytes() {
+  synchronized void updateTotalBytes() {
     long currentTotalTxBytes = TrafficStats.getUidTxBytes(UID);
     long currentTotalRxBytes = TrafficStats.getUidRxBytes(UID);
 

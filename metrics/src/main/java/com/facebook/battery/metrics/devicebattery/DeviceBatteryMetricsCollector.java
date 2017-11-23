@@ -34,16 +34,16 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
   private final Context mContext;
 
   @GuardedBy("this")
-  private long mBatteryRealtimeMs;
+  long mBatteryRealtimeMs;
 
   @GuardedBy("this")
-  private long mChargingRealtimeMs;
+  long mChargingRealtimeMs;
 
   @GuardedBy("this")
-  private long mLastUpdateMs;
+  long mLastUpdateMs;
 
   @GuardedBy("this")
-  private boolean mIsCurrentlyCharging;
+  boolean mIsCurrentlyCharging;
 
   public DeviceBatteryMetricsCollector(Context context) {
     mContext = context;
@@ -156,7 +156,7 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
    * @param intentType
    * @param now
    */
-  private void logIncorrectSequence(String intentType, long now) {
+  void logIncorrectSequence(String intentType, long now) {
     SystemMetricsLogger.wtf(
         TAG, "Consecutive " + intentType + "broadcasts: (" + mLastUpdateMs + ", " + now + ")");
   }
