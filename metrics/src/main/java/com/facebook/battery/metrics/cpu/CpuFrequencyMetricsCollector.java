@@ -33,7 +33,7 @@ import javax.annotation.concurrent.GuardedBy;
 public class CpuFrequencyMetricsCollector extends SystemMetricsCollector<CpuFrequencyMetrics> {
 
   private static final String CPU_DATA_PATH = "/sys/devices/system/cpu/";
-  private static int sCoresForTest = -1;
+  static int sCoresForTest = -1;
 
   @GuardedBy("this")
   @Nullable

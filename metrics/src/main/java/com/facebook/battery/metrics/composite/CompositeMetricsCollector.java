@@ -35,7 +35,7 @@ public class CompositeMetricsCollector extends SystemMetricsCollector<CompositeM
       mMetricsCollectorMap = new SimpleArrayMap<>();
 
   public static class Builder {
-    private final SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetricsCollector<?>>
+    final SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetricsCollector<?>>
         mMetricsCollectorMap = new SimpleArrayMap<>();
 
     /**
