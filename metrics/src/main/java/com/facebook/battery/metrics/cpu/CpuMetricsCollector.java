@@ -114,7 +114,7 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
    * because Collectors can be called/created from any thread.
    */
   private static class Initializer {
-    private static final long CLOCK_TICKS_PER_SECOND =
+    static final long CLOCK_TICKS_PER_SECOND =
         Sysconf.getScClkTck(DEFAULT_CLOCK_TICKS_PER_SECOND);
   }
 }
