@@ -5,7 +5,7 @@
  * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
  * file in the same directory.
  */
-package com.facebook.battery.serializer.common;
+package com.facebook.battery.serializer.core;
 
 import com.facebook.battery.metrics.core.SystemMetrics;
 import java.io.DataInput;

@@ -8,7 +8,7 @@
 package com.facebook.battery.serializer.camera;
 
 import com.facebook.battery.metrics.camera.CameraMetrics;
-import com.facebook.battery.serializer.common.SystemMetricsSerializer;
+import com.facebook.battery.serializer.core.SystemMetricsSerializer;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;

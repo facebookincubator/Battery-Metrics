@@ -5,12 +5,11 @@
  * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
  * file in the same directory.
  */
-package com.facebook.battery.serializer.time;
+package com.facebook.battery.serializer.camera;
 
 import com.facebook.battery.metrics.camera.CameraMetrics;
-import com.facebook.battery.serializer.camera.CameraMetricsSerializer;
-import com.facebook.battery.serializer.common.SystemMetricsSerializer;
-import com.facebook.battery.serializer.common.SystemMetricsSerializerTest;
+import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.battery.serializer.core.SystemMetricsSerializerTest;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
