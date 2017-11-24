@@ -8,8 +8,8 @@
 package com.facebook.battery.serializer.time;
 
 import com.facebook.battery.metrics.time.TimeMetrics;
-import com.facebook.battery.serializer.core.SystemMetricsSerializer;
-import com.facebook.battery.serializer.core.SystemMetricsSerializerTest;
+import com.facebook.battery.serializer.common.SystemMetricsSerializer;
+import com.facebook.battery.serializer.common.SystemMetricsSerializerTest;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 

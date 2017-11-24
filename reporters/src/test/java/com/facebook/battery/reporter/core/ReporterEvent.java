@@ -5,8 +5,9 @@
  * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
  * file in the same directory.
  */
-package com.facebook.battery.reporter.core;
+package com.facebook.battery.metrics.core;
 
+import com.facebook.battery.reporter.core.SystemMetricsReporter;
 import java.util.HashMap;
 import javax.annotation.Nullable;
 

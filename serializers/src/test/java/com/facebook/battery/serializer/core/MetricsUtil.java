@@ -5,7 +5,7 @@
  * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
  * file in the same directory.
  */
-package com.facebook.battery.serializer.core;
+package com.facebook.battery.metrics.core;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 

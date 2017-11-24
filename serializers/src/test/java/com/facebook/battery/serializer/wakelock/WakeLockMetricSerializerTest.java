@@ -8,8 +8,8 @@
 package com.facebook.battery.serializer.wakelock;
 
 import com.facebook.battery.metrics.wakelock.WakeLockMetrics;
-import com.facebook.battery.serializer.core.SystemMetricsSerializer;
-import com.facebook.battery.serializer.core.SystemMetricsSerializerTest;
+import com.facebook.battery.serializer.common.SystemMetricsSerializer;
+import com.facebook.battery.serializer.common.SystemMetricsSerializerTest;
 
 public class WakeLockMetricSerializerTest extends SystemMetricsSerializerTest<WakeLockMetrics> {
 

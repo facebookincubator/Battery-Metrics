@@ -11,7 +11,7 @@ import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupDeta
 import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupReason;
 
 import com.facebook.battery.metrics.appwakeup.AppWakeupMetrics;
-import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.battery.serializer.common.SystemMetricsSerializer;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;

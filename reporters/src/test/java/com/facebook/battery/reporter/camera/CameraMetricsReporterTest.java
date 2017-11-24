@@ -10,7 +10,7 @@ package com.facebook.battery.reporter.camera;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import com.facebook.battery.metrics.camera.CameraMetrics;
-import com.facebook.battery.reporter.core.ReporterEvent;
+import com.facebook.battery.metrics.core.ReporterEvent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;

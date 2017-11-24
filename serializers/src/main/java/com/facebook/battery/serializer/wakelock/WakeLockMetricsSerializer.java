@@ -8,7 +8,7 @@
 package com.facebook.battery.serializer.wakelock;
 
 import com.facebook.battery.metrics.wakelock.WakeLockMetrics;
-import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.battery.serializer.common.SystemMetricsSerializer;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
