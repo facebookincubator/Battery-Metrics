@@ -6,7 +6,7 @@ title: references
 A collection of useful links to understand and reduce battery consumption
 
 ## Tools
-- [Battery Historian](https://developer.qualcomm.com/software/trepn-power-profiler): A really useful tool to visualize and explore Android bug reports.
+- [Battery Historian](https://github.com/google/battery-historian): A really useful tool to visualize and explore Android bug reports.
 - [Trepn](https://developer.qualcomm.com/software/trepn-power-profiler): An on device battery profiler with it's own power model.
 - [AT&T Network Optimizer](https://developer.att.com/video-optimizer/docs): Great for modelling and observing network locally.
 
