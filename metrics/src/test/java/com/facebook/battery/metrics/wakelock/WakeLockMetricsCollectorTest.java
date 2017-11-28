@@ -7,20 +7,20 @@
  */
 package com.facebook.battery.metrics.wakelock;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-
 import android.content.Context;
 import android.os.PowerManager;
-import android.support.annotation.Nullable;
+
 import com.facebook.battery.metrics.core.ShadowSystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
-import com.facebook.battery.metrics.core.SystemMetricsLogger;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(shadows = {ShadowSystemClock.class})
@@ -35,14 +35,6 @@ public class WakeLockMetricsCollectorTest
     mCollector = new WakeLockMetricsCollector();
     mPowerManager =
         (PowerManager) RuntimeEnvironment.application.getSystemService(Context.POWER_SERVICE);
-
-    SystemMetricsLogger.setDelegate(
-        new SystemMetricsLogger.Delegate() {
-          @Override
-          public void wtf(String tag, String message, @Nullable Throwable cause) {
-            throw new RuntimeException(tag + " " + message, cause);
-          }
-        });
   }
 
   @Test
