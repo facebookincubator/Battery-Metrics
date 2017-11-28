@@ -13,6 +13,8 @@ import com.facebook.battery.metrics.core.SystemMetrics;
 /**
  * Information about network metrics: bytes sent/received on mobile radio and WiFi, as well as radio
  * uptime.
+ *
+ * <p>For foreground/background app state distinction, use {@link EnhancedNetworkMetrics}
  */
 public class NetworkMetrics extends SystemMetrics<NetworkMetrics> {
 

@@ -7,24 +7,28 @@
  */
 package com.facebook.battery.metrics.network;
 
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.MOBILE;
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.RX;
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.TX;
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.WIFI;
-import static org.assertj.core.api.Java6Assertions.assertThat;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+
+import static com.facebook.battery.metrics.network.NetworkBytesCollector.BG;
+import static com.facebook.battery.metrics.network.NetworkBytesCollector.FG;
+import static com.facebook.battery.metrics.network.NetworkBytesCollector.MOBILE;
+import static com.facebook.battery.metrics.network.NetworkBytesCollector.RX;
+import static com.facebook.battery.metrics.network.NetworkBytesCollector.TX;
+import static com.facebook.battery.metrics.network.NetworkBytesCollector.WIFI;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
 public class QTagUidNetworkBytesCollectorTest {
@@ -33,7 +37,7 @@ public class QTagUidNetworkBytesCollectorTest {
   private static final String[] INDEXES = HEADERS.split(" ");
 
   TemporaryFolder mFolder = new TemporaryFolder();
-  long[] mBytes = new long[4];
+  long[] mBytes = new long[8];
 
   @Before
   public void setup() throws IOException {
@@ -56,7 +60,7 @@ public class QTagUidNetworkBytesCollectorTest {
     boolean result = collector.getTotalBytes(mBytes);
 
     assertThat(result).isTrue();
-    assertThat(mBytes).isEqualTo(new long[] {0, 0, 0, 0});
+    assertThat(mBytes).isEqualTo(new long[8]);
   }
 
   @Test
@@ -65,6 +69,7 @@ public class QTagUidNetworkBytesCollectorTest {
     contents.append(HEADERS).append("\n");
     contents.append(createEntry(new HashMap<String, String>() { {
       put("iface", "wlan0");
+      put("cnt_set", "1");
       put("rx_bytes", "100");
       put("tx_bytes", "200");
     }}));
@@ -74,10 +79,10 @@ public class QTagUidNetworkBytesCollectorTest {
         .setQTagUidStatsFile(createFile(contents.toString()));
 
     assertThat(collector.getTotalBytes(mBytes)).isTrue();
-    assertThat(mBytes[WIFI | TX]).isEqualTo(200);
-    assertThat(mBytes[WIFI | RX]).isEqualTo(100);
-    assertThat(mBytes[MOBILE | TX]).isEqualTo(0);
-    assertThat(mBytes[MOBILE | RX]).isEqualTo(0);
+    assertThat(mBytes[WIFI | TX | FG]).isEqualTo(200);
+    assertThat(mBytes[WIFI | RX | FG]).isEqualTo(100);
+    assertThat(mBytes[MOBILE | TX | FG]).isEqualTo(0);
+    assertThat(mBytes[MOBILE | RX | FG]).isEqualTo(0);
   }
 
   @Test
@@ -86,6 +91,7 @@ public class QTagUidNetworkBytesCollectorTest {
     contents.append(HEADERS).append("\n");
     contents.append(createEntry(new HashMap<String, String>() { {
       put("iface", "rmnet0");
+      put("cnt_set", "1");
       put("rx_bytes", "100");
       put("tx_bytes", "200");
     }}));
@@ -95,10 +101,10 @@ public class QTagUidNetworkBytesCollectorTest {
         .setQTagUidStatsFile(createFile(contents.toString()));
 
     assertThat(collector.getTotalBytes(mBytes)).isTrue();
-    assertThat(mBytes[WIFI | TX]).isEqualTo(0);
-    assertThat(mBytes[WIFI | RX]).isEqualTo(0);
-    assertThat(mBytes[MOBILE | TX]).isEqualTo(200);
-    assertThat(mBytes[MOBILE | RX]).isEqualTo(100);
+    assertThat(mBytes[WIFI | TX | FG]).isEqualTo(0);
+    assertThat(mBytes[WIFI | RX | FG]).isEqualTo(0);
+    assertThat(mBytes[MOBILE | TX | FG]).isEqualTo(200);
+    assertThat(mBytes[MOBILE | RX | FG]).isEqualTo(100);
   }
 
   @Test
@@ -117,10 +123,7 @@ public class QTagUidNetworkBytesCollectorTest {
         .setQTagUidStatsFile(createFile(contents.toString()));
 
     assertThat(collector.getTotalBytes(mBytes)).isTrue();
-    assertThat(mBytes[WIFI | TX]).isEqualTo(0);
-    assertThat(mBytes[WIFI | RX]).isEqualTo(0);
-    assertThat(mBytes[MOBILE | TX]).isEqualTo(0);
-    assertThat(mBytes[MOBILE | RX]).isEqualTo(0);
+    assertThat(mBytes).isEqualTo(new long[8]);
   }
 
   @Test
@@ -138,10 +141,40 @@ public class QTagUidNetworkBytesCollectorTest {
         .setQTagUidStatsFile(createFile(contents.toString()));
 
     assertThat(collector.getTotalBytes(mBytes)).isTrue();
-    assertThat(mBytes[WIFI | TX]).isEqualTo(0);
-    assertThat(mBytes[WIFI | RX]).isEqualTo(0);
-    assertThat(mBytes[MOBILE | TX]).isEqualTo(0);
-    assertThat(mBytes[MOBILE | RX]).isEqualTo(0);
+    assertThat(mBytes).isEqualTo(new long[8]);
+  }
+
+  @Test
+  public void testCntSet() throws Exception {
+    StringBuilder contents = new StringBuilder();
+    contents.append(HEADERS).append("\n");
+    contents.append(createEntry(new HashMap<String, String>() { {
+      put("iface", "rmnet0");
+      put("cnt_set", "1");
+      put("rx_bytes", "100");
+      put("tx_bytes", "200");
+    }}));
+    contents.append("\n");
+    contents.append(createEntry(new HashMap<String, String>() { {
+      put("iface", "rmnet0");
+      put("cnt_set", "0");
+      put("rx_bytes", "1");
+      put("tx_bytes", "2");
+    }}));
+    contents.append("\n");
+
+    QTagUidNetworkBytesCollector collector =
+        new TestableCollector().setQTagUidStatsFile(createFile(contents.toString()));
+
+    assertThat(collector.getTotalBytes(mBytes)).isTrue();
+
+    long[] expected = new long[8];
+    Arrays.fill(expected, 0);
+    expected[MOBILE | TX | FG] = 200;
+    expected[MOBILE | RX | FG] = 100;
+    expected[MOBILE | TX | BG] = 2;
+    expected[MOBILE | RX | BG] = 1;
+    assertThat(mBytes).isEqualTo(expected);
   }
 
   private RandomAccessFile createFile(String contents) throws IOException {

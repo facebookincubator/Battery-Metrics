@@ -8,10 +8,6 @@
 package com.facebook.battery.metrics.network;
 
 import static android.net.ConnectivityManager.TYPE_WIFI;
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.MOBILE;
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.RX;
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.TX;
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.WIFI;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -70,6 +66,11 @@ class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
         new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
     updateTotalBytes();
+  }
+
+  @Override
+  public boolean supportsBgDistinction() {
+    return false;
   }
 
   @Override

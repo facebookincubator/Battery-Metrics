@@ -8,10 +8,10 @@
 package com.facebook.battery.metrics.network;
 
 import static android.net.TrafficStats.UNSUPPORTED;
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.MOBILE;
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.RX;
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.TX;
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.WIFI;
+import static com.facebook.battery.metrics.network.NetworkBytesCollector.MOBILE;
+import static com.facebook.battery.metrics.network.NetworkBytesCollector.RX;
+import static com.facebook.battery.metrics.network.NetworkBytesCollector.TX;
+import static com.facebook.battery.metrics.network.NetworkBytesCollector.WIFI;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import android.content.Context;

@@ -7,11 +7,6 @@
  */
 package com.facebook.battery.metrics.network;
 
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.MOBILE;
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.RX;
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.TX;
-import static com.facebook.battery.metrics.network.NetworkMetricsCollector.WIFI;
-
 import android.annotation.SuppressLint;
 import android.support.annotation.VisibleForTesting;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
@@ -64,6 +59,11 @@ class QTagUidNetworkBytesCollector extends NetworkBytesCollector {
   }
 
   @Override
+  public boolean supportsBgDistinction() {
+    return true;
+  }
+
+  @Override
   public boolean getTotalBytes(long[] bytes) {
     if (!mIsValid) {
       return false;
@@ -96,8 +96,11 @@ class QTagUidNetworkBytesCollector extends NetworkBytesCollector {
           continue;
         }
 
-        skipPast(' '); // cnt_set
-        int field = isWifi ? WIFI : MOBILE;
+        long cntSet = readNumber();
+
+        int field = 0;
+        field |= (isWifi ? WIFI : MOBILE);
+        field |= (cntSet == 0 ? BG : FG);
         bytes[field | RX] += readNumber();
         skipPast(' '); // rx_packets
         bytes[field | TX] += readNumber();

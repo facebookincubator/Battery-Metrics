@@ -36,6 +36,8 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:2.8.0'
     testImplementation 'org.mockito:mockito-core:1.9.5'
     testImplementation 'org.robolectric:robolectric:3.4.2'
+    testImplementation 'org.powermock:powermock-api-mockito:1.6.1'
+    testImplementation 'org.powermock:powermock-module-junit4:1.6.1'
 }
 
 apply from: rootProject.file('release.gradle')
