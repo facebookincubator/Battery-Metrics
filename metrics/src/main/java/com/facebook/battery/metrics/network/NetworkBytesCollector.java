@@ -12,14 +12,14 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Size;
 
-abstract public class NetworkBytesCollector {
+abstract class NetworkBytesCollector {
 
-  public static final int RX = 0b000;
-  public static final int TX = 0b001;
-  public static final int MOBILE = 0b010;
-  public static final int WIFI = 0b000;
-  public static final int FG = 0b000;
-  public static final int BG = 0b100;
+  static final int RX = 0b000;
+  static final int TX = 0b001;
+  static final int MOBILE = 0b010;
+  static final int WIFI = 0b000;
+  static final int FG = 0b000;
+  static final int BG = 0b100;
 
   public static @Size(8) long[] createByteArray() {
     return new long[8];
