@@ -36,7 +36,7 @@ class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
   private static final int TYPE_NONE = -1;
 
   final ConnectivityManager mConnectivityManager;
-  private final long[] mTotalBytes = new long[4];
+  private final long[] mTotalBytes = new long[8];
   int mCurrentNetworkType;
   private boolean mIsValid = true;
 

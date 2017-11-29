@@ -30,14 +30,14 @@ import org.robolectric.shadows.ShadowNetworkInfo;
 @Config(shadows = {ShadowTrafficStats.class})
 public class TrafficStatsNetworkBytesCollectorTest {
 
-  private final long[] mBytes = new long[4];
+  private final long[] mBytes = new long[8];
 
   @Test
   public void testEmpty() throws Exception {
     TrafficStatsNetworkBytesCollector collector =
         new TrafficStatsNetworkBytesCollector(RuntimeEnvironment.application);
     collector.getTotalBytes(mBytes);
-    assertThat(mBytes).isEqualTo(new long[] {0, 0, 0, 0});
+    assertThat(mBytes).isEqualTo(new long[8]);
   }
 
   @Test
@@ -48,7 +48,7 @@ public class TrafficStatsNetworkBytesCollectorTest {
     TrafficStatsNetworkBytesCollector collector =
         new TrafficStatsNetworkBytesCollector(RuntimeEnvironment.application);
     assertThat(collector.getTotalBytes(mBytes)).isTrue();
-    assertThat(mBytes).isEqualTo(new long[] {0, 0, 10000, 20000});
+    assertThat(mBytes).isEqualTo(new long[] {0, 0, 10000, 20000, 0, 0, 0, 0});
   }
 
   @Test
