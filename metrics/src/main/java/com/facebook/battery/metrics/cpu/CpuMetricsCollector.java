@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
 import com.facebook.infer.annotation.ThreadSafe;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -114,7 +115,7 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
    * because Collectors can be called/created from any thread.
    */
   private static class Initializer {
-    static final long CLOCK_TICKS_PER_SECOND =
-        Sysconf.getScClkTck(DEFAULT_CLOCK_TICKS_PER_SECOND);
+    @VisibleToAvoidSynthetics
+    static final long CLOCK_TICKS_PER_SECOND = Sysconf.getScClkTck(DEFAULT_CLOCK_TICKS_PER_SECOND);
   }
 }
