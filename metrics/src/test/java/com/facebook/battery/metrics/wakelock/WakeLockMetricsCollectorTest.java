@@ -15,6 +15,8 @@ import android.support.annotation.Nullable;
 import com.facebook.battery.metrics.core.ShadowSystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -145,6 +147,11 @@ public class WakeLockMetricsCollectorTest
     // Sanity check that nothing throws an exception or logs after disabling
     mCollector.release(wakeLockA, 0);
     mCollector.acquire(wakeLockA, 100);
+  }
+
+  @After
+  public void tearDown() {
+      SystemMetricsLogger.setDelegate(null);
   }
 
   @Override
