@@ -70,7 +70,7 @@ public class CpuFrequencyMetricsCollector extends SystemMetricsCollector<CpuFreq
     return mFiles[core];
   }
 
-  private static synchronized boolean readCoreStats(SparseIntArray array, ProcFileReader reader) {
+  private synchronized boolean readCoreStats(SparseIntArray array, ProcFileReader reader) {
     array.clear();
 
     // A failure is mostly expected because files become inaccessible in case of
