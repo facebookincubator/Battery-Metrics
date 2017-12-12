@@ -17,6 +17,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.TrafficStats;
 import android.support.annotation.VisibleForTesting;
+import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
@@ -35,9 +36,9 @@ class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
   private static final int UID = android.os.Process.myUid();
   private static final int TYPE_NONE = -1;
 
-  final ConnectivityManager mConnectivityManager;
+  @VisibleToAvoidSynthetics final ConnectivityManager mConnectivityManager;
   private final long[] mTotalBytes = new long[8];
-  int mCurrentNetworkType;
+  @VisibleToAvoidSynthetics int mCurrentNetworkType;
   private boolean mIsValid = true;
 
   @VisibleForTesting
@@ -84,6 +85,7 @@ class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
     return true;
   }
 
+  @VisibleToAvoidSynthetics
   synchronized void updateTotalBytes() {
     long currentTotalTxBytes = TrafficStats.getUidTxBytes(UID);
     long currentTotalRxBytes = TrafficStats.getUidRxBytes(UID);

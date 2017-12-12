@@ -12,6 +12,7 @@ import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
 import android.support.v4.util.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
+import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
 import com.facebook.infer.annotation.ThreadSafe;
 
 /**
@@ -35,6 +36,7 @@ public class CompositeMetricsCollector extends SystemMetricsCollector<CompositeM
       mMetricsCollectorMap = new SimpleArrayMap<>();
 
   public static class Builder {
+    @VisibleToAvoidSynthetics
     final SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetricsCollector<?>>
         mMetricsCollectorMap = new SimpleArrayMap<>();
 

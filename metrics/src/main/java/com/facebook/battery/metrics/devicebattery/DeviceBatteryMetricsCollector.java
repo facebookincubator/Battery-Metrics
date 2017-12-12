@@ -18,6 +18,7 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
 import com.facebook.infer.annotation.ThreadSafe;
 import javax.annotation.concurrent.GuardedBy;
 
@@ -34,15 +35,19 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
   private final Context mContext;
 
   @GuardedBy("this")
+  @VisibleToAvoidSynthetics
   long mBatteryRealtimeMs;
 
   @GuardedBy("this")
+  @VisibleToAvoidSynthetics
   long mChargingRealtimeMs;
 
   @GuardedBy("this")
+  @VisibleToAvoidSynthetics
   long mLastUpdateMs;
 
   @GuardedBy("this")
+  @VisibleToAvoidSynthetics
   boolean mIsCurrentlyCharging;
 
   public DeviceBatteryMetricsCollector(Context context) {
@@ -156,6 +161,7 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
    * @param intentType
    * @param now
    */
+  @VisibleToAvoidSynthetics
   void logIncorrectSequence(String intentType, long now) {
     SystemMetricsLogger.wtf(
         TAG, "Consecutive " + intentType + "broadcasts: (" + mLastUpdateMs + ", " + now + ")");

@@ -12,6 +12,7 @@ import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
 import android.support.annotation.VisibleForTesting;
 import android.util.SparseIntArray;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
+import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
 import com.facebook.infer.annotation.ThreadSafe;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -33,7 +34,7 @@ import javax.annotation.concurrent.GuardedBy;
 public class CpuFrequencyMetricsCollector extends SystemMetricsCollector<CpuFrequencyMetrics> {
 
   private static final String CPU_DATA_PATH = "/sys/devices/system/cpu/";
-  static int sCoresForTest = -1;
+  @VisibleToAvoidSynthetics static int sCoresForTest = -1;
 
   @GuardedBy("this")
   @Nullable
