@@ -43,19 +43,21 @@ public class StatefulSystemMetricsCollector<
   public StatefulSystemMetricsCollector(S collector) {
     this(
         collector, collector.createMetrics(), collector.createMetrics(), collector.createMetrics());
+    mIsValid &= collector.getSnapshot(mPrev);
   }
 
   /**
    * Wraps the underlying collector, but with custom metrics objects: useful for passing in custom
    * metrics objects, such as {@link com.facebook.battery.metrics.wakelock.WakeLockMetrics}.
+   *
+   * <p>Note that this doesn't auto-initialize the previous diff and mainly exists to make it
+   * convenient to set a custom initial snapshot.
    */
   public StatefulSystemMetricsCollector(S collector, R curr, R prev, R diff) {
     mCollector = collector;
     mCurr = curr;
     mPrev = prev;
     mDiff = diff;
-
-    mIsValid &= mCollector.getSnapshot(this.mPrev);
   }
 
   /** Access the underlying collector. */

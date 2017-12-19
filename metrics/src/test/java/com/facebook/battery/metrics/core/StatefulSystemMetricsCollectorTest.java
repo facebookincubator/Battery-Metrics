@@ -18,7 +18,7 @@ import org.robolectric.RobolectricTestRunner;
 public class StatefulSystemMetricsCollectorTest {
 
   @Test
-  public void testGetLatestDiff() {
+  public void testGetLatestDiffAndReset() throws Exception {
     DummyMetricCollector collector = new DummyMetricCollector();
     collector.currentValue = 10;
 
@@ -29,6 +29,40 @@ public class StatefulSystemMetricsCollectorTest {
     collector.currentValue = 20;
     assertThat(statefulCollector.getLatestDiffAndReset().value).isEqualTo(10);
     assertThat(statefulCollector.getLatestDiffAndReset().value).isEqualTo(0);
+  }
+
+  @Test
+  public void testCustomBaseSnapshot() throws Exception {
+    DummyMetric metric = new DummyMetric();
+    metric.value = 0;
+
+    DummyMetricCollector collector = new DummyMetricCollector();
+    collector.currentValue = 10;
+
+    StatefulSystemMetricsCollector<DummyMetric, DummyMetricCollector> withCustomInitialSnapshot =
+        new StatefulSystemMetricsCollector<>(
+            collector, collector.createMetrics(), metric, collector.createMetrics());
+    StatefulSystemMetricsCollector<DummyMetric, DummyMetricCollector> defaultInitialSnapshot =
+        new StatefulSystemMetricsCollector<>(collector);
+
+    assertThat(withCustomInitialSnapshot.getLatestDiff().value).isEqualTo(10);
+    assertThat(defaultInitialSnapshot.getLatestDiff().value).isEqualTo(0);
+  }
+
+  @Test
+  public void testGetLatestDiff() {
+    DummyMetricCollector collector = new DummyMetricCollector();
+    collector.currentValue = 10;
+
+    StatefulSystemMetricsCollector<DummyMetric, DummyMetricCollector> statefulCollector =
+        new StatefulSystemMetricsCollector<>(collector);
+    assertThat(statefulCollector.getLatestDiff().value).isEqualTo(0);
+
+    collector.currentValue = 20;
+    assertThat(statefulCollector.getLatestDiff().value).isEqualTo(10);
+
+    collector.currentValue = 30;
+    assertThat(statefulCollector.getLatestDiff().value).isEqualTo(20);
   }
 }
 
