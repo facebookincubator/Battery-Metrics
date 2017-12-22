@@ -34,6 +34,11 @@ public class ReporterEvent implements SystemMetricsReporter.Event {
   }
 
   @Override
+  public void add(String key, long value) {
+    eventMap.put(key, value);
+  }
+
+  @Override
   public void add(String key, double value) {
     eventMap.put(key, value);
   }

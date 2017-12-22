@@ -31,6 +31,8 @@ public interface SystemMetricsReporter<T extends SystemMetrics<T>> {
 
     void add(String key, int value);
 
+    void add(String key, long value);
+
     void add(String key, double value);
 
     void logAndRelease();
