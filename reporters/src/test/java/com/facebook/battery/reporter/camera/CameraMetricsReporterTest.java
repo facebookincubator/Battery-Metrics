@@ -35,13 +35,13 @@ public class CameraMetricsReporterTest {
     ReporterEvent event = new ReporterEvent();
     mCameraMetricsReporter.reportTo(metrics1, event);
     assertThat(event.eventMap.get(mCameraMetricsReporter.CAMERA_OPEN_TIME_MS)).isNull();
-    assertThat(event.eventMap.get(mCameraMetricsReporter.CAMERA_PREVIEW_TIME_MS)).isEqualTo(200.0);
+    assertThat(event.eventMap.get(mCameraMetricsReporter.CAMERA_PREVIEW_TIME_MS)).isEqualTo(200L);
 
     CameraMetrics metrics2 = new CameraMetrics();
     metrics2.cameraOpenTimeMs = 200;
     metrics2.cameraPreviewTimeMs = 400;
     mCameraMetricsReporter.reportTo(metrics2, event);
-    assertThat(event.eventMap.get(mCameraMetricsReporter.CAMERA_OPEN_TIME_MS)).isEqualTo(200.0);
-    assertThat(event.eventMap.get(mCameraMetricsReporter.CAMERA_PREVIEW_TIME_MS)).isEqualTo(400.0);
+    assertThat(event.eventMap.get(mCameraMetricsReporter.CAMERA_OPEN_TIME_MS)).isEqualTo(200L);
+    assertThat(event.eventMap.get(mCameraMetricsReporter.CAMERA_PREVIEW_TIME_MS)).isEqualTo(400L);
   }
 }
