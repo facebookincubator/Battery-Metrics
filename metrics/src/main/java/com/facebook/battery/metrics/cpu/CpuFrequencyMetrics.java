@@ -10,8 +10,11 @@ package com.facebook.battery.metrics.cpu;
 import android.support.annotation.Nullable;
 import android.util.SparseIntArray;
 import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import java.util.AbstractMap;
 import java.util.Arrays;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Maintains the frequency each core was running, with a sparse int array mapping frequencies to
@@ -197,5 +200,49 @@ public class CpuFrequencyMetrics extends SystemMetrics<CpuFrequencyMetrics> {
   @Override
   public String toString() {
     return "CpuFrequencyMetrics{" + "timeInStateS=" + Arrays.toString(timeInStateS) + '}';
+  }
+
+  public @Nullable JSONObject toJSONObject() {
+    if (timeInStateS.length == 0) {
+      return null;
+    }
+
+    // This is slightly more complex than simply using a hashmap to aggregate frequencies
+    // because SparseIntArray doesn't override equals/hash correctly.
+    // Implemented in a fairly expensive, n^2 way because number of cores is presumably
+    // very low.
+    boolean[] isHandled = new boolean[timeInStateS.length];
+    JSONObject output = new JSONObject();
+    for (int i = 0, cores = timeInStateS.length; i < cores; i++) {
+      SparseIntArray current = timeInStateS[i];
+      if (current.size() == 0 || isHandled[i]) {
+        continue;
+      }
+
+      int cpumask = 1 << i;
+
+      for (int j = i + 1; j < cores; j++) {
+        if (CpuFrequencyMetrics.sparseIntArrayEquals(current, timeInStateS[j])) {
+          cpumask |= 1 << j;
+          isHandled[j] = true;
+        }
+      }
+
+      try {
+        output.put(Integer.toHexString(cpumask), convert(current));
+      } catch (JSONException je) {
+        SystemMetricsLogger.wtf("CpuFrequencyMetricsReporter", "Unable to store event", je);
+      }
+    }
+
+    return output;
+  }
+
+  private static JSONObject convert(SparseIntArray array) throws JSONException {
+    JSONObject result = new JSONObject();
+    for (int j = 0, frequencies = array.size(); j < frequencies; j++) {
+      result.put(Integer.toString(array.keyAt(j)), array.valueAt(j));
+    }
+    return result;
   }
 }

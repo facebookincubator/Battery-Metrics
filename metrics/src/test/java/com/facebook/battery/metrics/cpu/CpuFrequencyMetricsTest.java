@@ -148,4 +148,32 @@ public class CpuFrequencyMetricsTest {
 
     assertThat(metricsA).isEqualTo(output);
   }
+
+  @Test
+  public void testSingleCoreToJSONObject() {
+    CpuFrequencyMetrics metrics = new CpuFrequencyMetrics();
+    metrics.timeInStateS[0].put(100, 100);
+    assertThat(metrics.toJSONObject().toString()).isEqualTo("{\"1\":{\"100\":100}}");
+  }
+
+  @Test
+  public void testMultipleCoresToJSONObject() {
+    CpuFrequencyMetrics metrics = new CpuFrequencyMetrics();
+    metrics.timeInStateS[0].put(100, 100);
+    metrics.timeInStateS[2].put(200, 200);
+    assertThat(metrics.toJSONObject().toString())
+        .isEqualTo("{\"1\":{\"100\":100},\"4\":{\"200\":200}}");
+  }
+
+  @Test
+  public void testCoreCombinationToJSONObject() {
+    CpuFrequencyMetrics metrics = new CpuFrequencyMetrics();
+    metrics.timeInStateS[0].put(100, 100);
+    metrics.timeInStateS[2].put(100, 100);
+    metrics.timeInStateS[1].put(200, 200);
+    metrics.timeInStateS[3].put(200, 200);
+
+    assertThat(metrics.toJSONObject().toString())
+        .isEqualTo("{\"a\":{\"200\":200},\"5\":{\"100\":100}}");
+  }
 }
