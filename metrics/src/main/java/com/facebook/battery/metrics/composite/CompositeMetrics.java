@@ -35,8 +35,12 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
       for (int i = 0, size = mMetricsMap.size(); i < size; i++) {
         Class c = mMetricsMap.keyAt(i);
         boolean valid = isValid(c) && b.isValid(c);
+
         if (valid) {
-          getMetric(c).diff(b.getMetric(c), result.getMetric(c));
+          SystemMetrics resultMetric = result.getMetric(c);
+          if (resultMetric != null) {
+            getMetric(c).diff(b.getMetric(c), resultMetric);
+          }
         }
         result.setIsValid(c, valid);
       }
@@ -56,8 +60,12 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
       for (int i = 0, size = mMetricsMap.size(); i < size; i++) {
         Class c = mMetricsMap.keyAt(i);
         boolean valid = isValid(c) && b.isValid(c);
+
         if (valid) {
-          getMetric(c).sum(b.getMetric(c), result.getMetric(c));
+          SystemMetrics resultMetric = result.getMetric(c);
+          if (resultMetric != null) {
+            getMetric(c).sum(b.getMetric(c), resultMetric);
+          }
         }
         result.setIsValid(c, valid);
       }
@@ -66,11 +74,16 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
   }
 
   @Override
-  public CompositeMetrics set(CompositeMetrics result) {
+  public CompositeMetrics set(CompositeMetrics input) {
     for (int i = 0, size = mMetricsMap.size(); i < size; i++) {
       Class c = mMetricsMap.keyAt(i);
-      getMetric(c).set(result.getMetric(c));
-      setIsValid(c, result.isValid(c));
+      SystemMetrics metric = input.getMetric(c);
+      if (metric != null) {
+        getMetric(c).set(metric);
+        setIsValid(c, input.isValid(c));
+      } else {
+        setIsValid(c, false);
+      }
     }
     return this;
   }

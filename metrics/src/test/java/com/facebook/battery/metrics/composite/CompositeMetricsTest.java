@@ -10,8 +10,10 @@ package com.facebook.battery.metrics.composite;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import com.facebook.battery.metrics.core.SystemMetricsTest;
+import com.facebook.battery.metrics.cpu.CpuMetrics;
 import com.facebook.battery.metrics.time.TimeMetrics;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -74,5 +76,44 @@ public class CompositeMetricsTest extends SystemMetricsTest<CompositeMetrics> {
     metrics.setIsValid(TimeMetrics.class, true);
 
     return metrics;
+  }
+
+  @Test
+  public void testInconsistentSet() throws Exception {
+    CompositeMetrics metricsA =
+        new CompositeMetrics().putMetric(TimeMetrics.class, new TimeMetrics());
+    CompositeMetrics metricsB =
+        new CompositeMetrics().putMetric(CpuMetrics.class, new CpuMetrics());
+    metricsA.set(metricsB);
+
+    assertThat(metricsA.isValid(TimeMetrics.class)).isFalse();
+  }
+
+  @Test
+  public void testInconsistentSum() throws Exception {
+    CompositeMetrics sum = new CompositeMetrics().putMetric(CpuMetrics.class, new CpuMetrics());
+    CompositeMetrics metricsA =
+        new CompositeMetrics().putMetric(TimeMetrics.class, new TimeMetrics());
+    CompositeMetrics metricsB =
+        new CompositeMetrics().putMetric(CpuMetrics.class, new CpuMetrics());
+
+    metricsA.sum(metricsB, sum);
+
+    assertThat(sum.isValid(TimeMetrics.class)).isFalse();
+    assertThat(sum.isValid(CpuMetrics.class)).isFalse();
+  }
+
+  @Test
+  public void testInconsistentDiff() throws Exception {
+    CompositeMetrics diff = new CompositeMetrics().putMetric(CpuMetrics.class, new CpuMetrics());
+    CompositeMetrics metricsA =
+        new CompositeMetrics().putMetric(TimeMetrics.class, new TimeMetrics());
+    CompositeMetrics metricsB =
+        new CompositeMetrics().putMetric(CpuMetrics.class, new CpuMetrics());
+
+    metricsA.diff(metricsB, diff);
+
+    assertThat(diff.isValid(TimeMetrics.class)).isFalse();
+    assertThat(diff.isValid(CpuMetrics.class)).isFalse();
   }
 }
