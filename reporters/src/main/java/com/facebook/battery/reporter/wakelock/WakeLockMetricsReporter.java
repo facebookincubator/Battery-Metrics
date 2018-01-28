@@ -7,10 +7,8 @@
  */
 package com.facebook.battery.reporter.wakelock;
 
-import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.wakelock.WakeLockMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class WakeLockMetricsReporter implements SystemMetricsReporter<WakeLockMetrics> {
@@ -18,6 +16,8 @@ public class WakeLockMetricsReporter implements SystemMetricsReporter<WakeLockMe
   public static final String HELD_TIME_MS = "wakelock_held_time_ms";
   public static final String TAG_TIME_MS = "wakelock_tag_time_ms";
   public static final String ACQUIRED_COUNT = "wakelock_acquired_count";
+
+  private boolean mShouldReportAttribution = true;
 
   @Override
   public void reportTo(WakeLockMetrics metrics, SystemMetricsReporter.Event event) {
@@ -29,21 +29,17 @@ public class WakeLockMetricsReporter implements SystemMetricsReporter<WakeLockMe
       event.add(ACQUIRED_COUNT, metrics.acquiredCount);
     }
 
-    // Creates a JSON Blob as a string of nested values that we can then process on thes server.
-    if (metrics.isAttributionEnabled) {
-      try {
-        JSONObject attribution = new JSONObject();
-        for (int i = 0, size = metrics.tagTimeMs.size(); i < size; i++) {
-          long tagTimeMs = metrics.tagTimeMs.valueAt(i);
-          if (tagTimeMs > 0) {
-            attribution.put(metrics.tagTimeMs.keyAt(i), tagTimeMs);
-            event.add(TAG_TIME_MS, attribution.toString());
-          }
-        }
-      } catch (JSONException ex) {
-        SystemMetricsLogger.wtf(
-            "WakeLockMetricsReporter", "Failed to serialize attribution data", ex);
+    if (mShouldReportAttribution) {
+      JSONObject tagAttribution = metrics.attributionToJSONObject();
+      if (tagAttribution != null) {
+        event.add(TAG_TIME_MS, tagAttribution.toString());
       }
     }
+  }
+
+  /** Allows selecting if attribution should be included in the logged event. */
+  public WakeLockMetricsReporter setShouldReportAttribution(boolean enabled) {
+    mShouldReportAttribution = enabled;
+    return this;
   }
 }

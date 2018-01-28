@@ -10,7 +10,10 @@ package com.facebook.battery.metrics.wakelock;
 import android.support.annotation.Nullable;
 import android.support.v4.util.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.core.Utilities;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Maintains state about total active wakelocks and the current time available.
@@ -157,5 +160,27 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
         + ", acquiredCount="
         + acquiredCount
         + '}';
+  }
+
+  public @Nullable JSONObject attributionToJSONObject() {
+    // Creates a JSON Blob as a string of nested values that we can then process on the server.
+    if (!isAttributionEnabled) {
+      return null;
+    }
+
+    try {
+      JSONObject attribution = new JSONObject();
+      for (int i = 0, size = tagTimeMs.size(); i < size; i++) {
+        long currentTagTimeMs = tagTimeMs.valueAt(i);
+        if (currentTagTimeMs > 0) {
+          attribution.put(tagTimeMs.keyAt(i), currentTagTimeMs);
+        }
+      }
+      return attribution;
+    } catch (JSONException ex) {
+      SystemMetricsLogger.wtf("WakeLockMetrics", "Failed to serialize attribution data", ex);
+    }
+
+    return null;
   }
 }

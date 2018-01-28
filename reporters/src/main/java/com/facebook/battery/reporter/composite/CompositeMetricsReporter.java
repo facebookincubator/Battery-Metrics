@@ -7,6 +7,7 @@
  */
 package com.facebook.battery.reporter.composite;
 
+import android.support.annotation.Nullable;
 import android.support.v4.util.SimpleArrayMap;
 import com.facebook.battery.metrics.composite.CompositeMetrics;
 import com.facebook.battery.metrics.core.SystemMetrics;
@@ -39,5 +40,11 @@ public class CompositeMetricsReporter implements SystemMetricsReporter<Composite
       Class<T> metricsClass, SystemMetricsReporter<T> reporter) {
     mMetricsReporterMap.put(metricsClass, reporter);
     return this;
+  }
+
+  @Nullable
+  public <S extends SystemMetrics<S>, T extends SystemMetricsReporter<S>> T getReporter(
+      Class<S> metricsClass) {
+    return (T) mMetricsReporterMap.get(metricsClass);
   }
 }
