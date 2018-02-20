@@ -54,17 +54,15 @@ public class BatteryApplication extends Application
   private static final String LAST_SNAPSHOT = "lastsnapshot";
 
   private static volatile BatteryApplication sInstance;
-  private final CompositeMetricsCollector mMetricsCollector;
+  private CompositeMetricsCollector mMetricsCollector;
 
-  private final StatefulSystemMetricsCollector<CompositeMetrics, CompositeMetricsCollector>
+  private StatefulSystemMetricsCollector<CompositeMetrics, CompositeMetricsCollector>
       mStatefulCollector;
-  private final CompositeMetricsReporter mMetricsReporter;
-  private final CompositeMetricsSerializer mMetricsSerializer;
+  private CompositeMetricsReporter mMetricsReporter;
+  private CompositeMetricsSerializer mMetricsSerializer;
   private final SystemMetricsReporter.Event mEvent = new Event();
 
-  public BatteryApplication() {
-    super();
-
+  private void init() {
     // Note -- Creating a collector instance that's shared across the application can be fairly
     //         useful. You can set it up and hook up all the individual metrics collectors,
     //         tweaking them once.
@@ -98,12 +96,14 @@ public class BatteryApplication extends Application
     mStatefulCollector = new StatefulSystemMetricsCollector<>(mMetricsCollector);
   }
 
+
   @Override
   public void onCreate() {
     super.onCreate();
-    registerActivityLifecycleCallbacks(this);
-
     sInstance = this;
+    init();
+
+    registerActivityLifecycleCallbacks(this);
 
     try (DataInputStream input = new DataInputStream(new FileInputStream(openFile()))) {
       CompositeMetrics metrics = mMetricsCollector.createMetrics();

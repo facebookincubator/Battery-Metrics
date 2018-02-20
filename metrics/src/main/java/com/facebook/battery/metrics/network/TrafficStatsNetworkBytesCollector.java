@@ -57,7 +57,10 @@ class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
   };
 
   public TrafficStatsNetworkBytesCollector(Context context) {
-    context = context.getApplicationContext();
+    // This can happen if the context is passed in while creating the application itself
+    Context applicationContext = context.getApplicationContext();
+    context = applicationContext != null ? applicationContext : context;
+
     mConnectivityManager = (ConnectivityManager)
         context.getSystemService(Context.CONNECTIVITY_SERVICE);
     NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
