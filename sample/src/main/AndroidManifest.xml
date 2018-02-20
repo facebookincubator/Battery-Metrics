@@ -7,7 +7,6 @@
           android:name="com.facebook.battery.sample.BatteryApplication"
           android:allowBackup="false"
           android:icon="@mipmap/ic_launcher"
-      android:roundIcon="@mipmap/ic_launcher_round"
           android:label="Battery Metrics" tools:ignore="GoogleAppIndexingWarning">
     <activity
         android:name=".MainActivity"

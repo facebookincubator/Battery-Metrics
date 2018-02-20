@@ -34,6 +34,11 @@ public class Event implements SystemMetricsReporter.Event {
   }
 
   @Override
+  public void add(String key, long value) {
+    Log.i("BatteryApplication", key + ":" + value);
+  }
+
+  @Override
   public void add(String key, double value) {
     Log.i("BatteryApplication", key + ":" + value);
   }
