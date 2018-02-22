@@ -41,7 +41,8 @@ public final class SystemMetricsLogger {
     if (sDelegate != null) {
       sDelegate.wtf(tag, message, cause);
     } else {
-      Log.wtf(tag, message, cause);
+      // This is explicitly `Log.e` to avoid possibly crashing the app.
+      Log.e(tag, message, cause);
     }
   }
 }
