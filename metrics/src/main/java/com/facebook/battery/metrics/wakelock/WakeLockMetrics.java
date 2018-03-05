@@ -132,11 +132,7 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
       return false;
     }
 
-    if (!Utilities.simpleArrayMapEquals(tagTimeMs, that.tagTimeMs)) {
-      return false;
-    }
-
-    return true;
+    return Utilities.simpleArrayMapEquals(tagTimeMs, that.tagTimeMs);
   }
 
   @Override

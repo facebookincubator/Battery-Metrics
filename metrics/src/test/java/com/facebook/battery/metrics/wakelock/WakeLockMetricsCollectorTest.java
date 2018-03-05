@@ -153,6 +153,133 @@ public class WakeLockMetricsCollectorTest
     mCollector.acquire(wakeLockA, 100);
   }
 
+  /**
+   * Tests the lifetime of a wakelock that times out.
+   *
+   * <pre>
+   *   t = 000 001 051 101 151 201
+   *   A =       [.......]
+   * </pre>
+   */
+  @Test
+  public void testWakelockTimeouts() {
+    ShadowSystemClock.setUptimeMillis(1);
+
+    WakeLockMetrics metricsA = new WakeLockMetrics(true);
+
+    assertThat(mCollector.getSnapshot(metricsA)).isTrue();
+    assertThat(metricsA.acquiredCount).isEqualTo(0);
+    assertThat(metricsA.heldTimeMs).isEqualTo(0);
+    assertThat(metricsA.tagTimeMs.size()).isEqualTo(0);
+
+    PowerManager.WakeLock wakelock = mPowerManager.newWakeLock(0, "tag");
+    mCollector.newWakeLock(wakelock, 0, "tag");
+
+    wakelock.acquire(100);
+    mCollector.acquire(wakelock, 100);
+
+    ShadowSystemClock.setUptimeMillis(51);
+    assertThat(mCollector.getSnapshot(metricsA)).isTrue();
+    assertThat(metricsA.acquiredCount).isEqualTo(1);
+    assertThat(metricsA.heldTimeMs).isEqualTo(50);
+    assertThat(metricsA.tagTimeMs.size()).isEqualTo(1);
+    assertThat(metricsA.tagTimeMs.get("tag")).isEqualTo(50);
+
+    ShadowSystemClock.setUptimeMillis(151);
+    assertThat(mCollector.getSnapshot(metricsA)).isTrue();
+    assertThat(metricsA.acquiredCount).isEqualTo(1);
+    assertThat(metricsA.heldTimeMs).isEqualTo(100);
+    assertThat(metricsA.tagTimeMs.size()).isEqualTo(1);
+    assertThat(metricsA.tagTimeMs.get("tag")).isEqualTo(100);
+  }
+
+  /**
+   * Tests the lifetime of a wakelock that times out and is <i>then</i> released.
+   *
+   * <pre>
+   *   t = 000 001 051 101 151 201
+   *   A =       [.......]
+   * </pre>
+   */
+  @Test
+  public void testWakelockNonReferenceCountedTimeoutAndReleases() throws Exception {
+    ShadowSystemClock.setUptimeMillis(1);
+
+    WakeLockMetrics metricsA = new WakeLockMetrics(true);
+
+    PowerManager.WakeLock wakelock = mPowerManager.newWakeLock(0, "tag");
+    mCollector.newWakeLock(wakelock, 0, "tag");
+
+    wakelock.setReferenceCounted(false);
+    mCollector.setReferenceCounted(wakelock, false);
+
+    wakelock.acquire(100);
+    mCollector.acquire(wakelock, 100);
+
+    ShadowSystemClock.setUptimeMillis(51);
+    assertThat(mCollector.getSnapshot(metricsA)).isTrue();
+    assertThat(metricsA.acquiredCount).isEqualTo(1);
+    assertThat(metricsA.heldTimeMs).isEqualTo(50);
+    assertThat(metricsA.tagTimeMs.size()).isEqualTo(1);
+    assertThat(metricsA.tagTimeMs.get("tag")).isEqualTo(50);
+
+    ShadowSystemClock.setUptimeMillis(151);
+    assertThat(mCollector.getSnapshot(metricsA)).isTrue();
+    assertThat(metricsA.acquiredCount).isEqualTo(1);
+    assertThat(metricsA.heldTimeMs).isEqualTo(100);
+    assertThat(metricsA.tagTimeMs.size()).isEqualTo(1);
+    assertThat(metricsA.tagTimeMs.get("tag")).isEqualTo(100);
+
+    ShadowSystemClock.setUptimeMillis(201);
+    wakelock.release();
+    mCollector.release(wakelock, -1);
+    WakeLockMetrics metricsB = new WakeLockMetrics(true);
+    assertThat(mCollector.getSnapshot(metricsB)).isTrue();
+    assertThat(metricsB).isEqualTo(metricsA);
+  }
+
+  /** Check that non-reference counted wakelocks are handled correctly. wakelocks. */
+  @Test
+  public void testNotReferenceCountedWakeLock() {
+    ShadowSystemClock.setUptimeMillis(1);
+    WakeLockMetrics snapshot = new WakeLockMetrics();
+
+    PowerManager.WakeLock wakelock = mPowerManager.newWakeLock(0, "tag");
+    mCollector.newWakeLock(wakelock, 0, "tag");
+
+    wakelock.setReferenceCounted(false);
+    mCollector.setReferenceCounted(wakelock, false);
+
+    ShadowSystemClock.setUptimeMillis(51);
+    wakelock.acquire();
+    mCollector.acquire(wakelock, -1);
+
+    ShadowSystemClock.setUptimeMillis(101);
+    wakelock.acquire();
+    mCollector.acquire(wakelock, -1);
+
+    ShadowSystemClock.setUptimeMillis(151);
+    assertThat(mCollector.getSnapshot(snapshot)).isTrue();
+    assertThat(snapshot.acquiredCount).isEqualTo(1);
+    assertThat(snapshot.heldTimeMs).isEqualTo(100);
+
+    wakelock.release();
+    mCollector.release(wakelock, -1);
+
+    ShadowSystemClock.setUptimeMillis(201);
+    assertThat(mCollector.getSnapshot(snapshot)).isTrue();
+    assertThat(snapshot.acquiredCount).isEqualTo(1);
+    assertThat(snapshot.heldTimeMs).isEqualTo(100);
+
+    wakelock.release();
+    mCollector.release(wakelock, -1);
+
+    ShadowSystemClock.setUptimeMillis(251);
+    assertThat(mCollector.getSnapshot(snapshot)).isTrue();
+    assertThat(snapshot.acquiredCount).isEqualTo(1);
+    assertThat(snapshot.heldTimeMs).isEqualTo(100);
+  }
+
   @Override
   protected Class<WakeLockMetricsCollector> getClazz() {
     return WakeLockMetricsCollector.class;

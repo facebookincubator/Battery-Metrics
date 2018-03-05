@@ -17,6 +17,12 @@ import org.robolectric.RobolectricTestRunner;
 public class WakeLockMetricsTest {
 
   @Test
+  public void testEquals() {
+    assertThat(new WakeLockMetrics()).isEqualTo(new WakeLockMetrics());
+    assertThat(createInitializedMetrics()).isEqualTo(createInitializedMetrics());
+  }
+
+  @Test
   public void testDefaultValues() {
     WakeLockMetrics metrics = new WakeLockMetrics();
     assertThat(metrics.isAttributionEnabled).isFalse();
@@ -103,5 +109,14 @@ public class WakeLockMetricsTest {
     expectedOutput.tagTimeMs.put("TestWakeLock1", 5l);
 
     assertThat(output).isEqualTo(expectedOutput);
+  }
+
+  private WakeLockMetrics createInitializedMetrics() {
+    WakeLockMetrics metrics = new WakeLockMetrics();
+    metrics.acquiredCount = 100;
+    metrics.heldTimeMs = 1000;
+    metrics.tagTimeMs.put("TestA", 500L);
+    metrics.tagTimeMs.put("TestB", 750L);
+    return metrics;
   }
 }

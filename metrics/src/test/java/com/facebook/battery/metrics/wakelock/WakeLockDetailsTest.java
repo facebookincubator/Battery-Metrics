@@ -33,7 +33,7 @@ public class WakeLockDetailsTest {
   }
 
   @Test
-  public void testAcquireRelease() {
+  public void testAcquireReleaseReferenceCounted() {
     ShadowSystemClock.setUptimeMillis(1);
     WakeLockDetails details = new WakeLockDetails(mWakeLock, "test", 0);
 
@@ -42,13 +42,19 @@ public class WakeLockDetailsTest {
     assertThat(details.getHeldTimeMs()).isEqualTo(0);
 
     ShadowSystemClock.setUptimeMillis(10);
+    details.applyAutomaticReleases();
     details.release();
+    assertThat(details.isHeld()).isFalse();
+    assertThat(details.getHeldTimeMs()).isEqualTo(9);
+
+    ShadowSystemClock.setUptimeMillis(100);
+    details.applyAutomaticReleases();
     assertThat(details.isHeld()).isFalse();
     assertThat(details.getHeldTimeMs()).isEqualTo(9);
   }
 
   @Test
-  public void testAcquireTimeout() {
+  public void testAcquireTimeoutReferenceCounted() {
     ShadowSystemClock.setUptimeMillis(1);
     WakeLockDetails details = new WakeLockDetails(mWakeLock, "test", 0);
 
@@ -69,34 +75,79 @@ public class WakeLockDetailsTest {
   }
 
   @Test
-  public void testUnreferenceCounted() {
+  public void testAcquireFinalizeReferenceCounted() {
+    ShadowSystemClock.setUptimeMillis(1);
+    WakeLockDetails details = new WakeLockDetails(mWakeLock, "test", 0);
+
+    details.acquire(-1);
+    details.applyAutomaticReleases();
+    assertThat(details.isHeld()).isTrue();
+    assertThat(details.getHeldTimeMs()).isEqualTo(0);
+
+    ShadowSystemClock.setUptimeMillis(31);
+    details.applyAutomaticReleases();
+    assertThat(details.isHeld()).isTrue();
+    assertThat(details.getHeldTimeMs()).isEqualTo(30);
+
+    ShadowSystemClock.setUptimeMillis(61);
+    details.wakeLockReference.clear();
+    details.applyAutomaticReleases();
+
+    ShadowSystemClock.setUptimeMillis(90);
+    details.applyAutomaticReleases();
+    assertThat(details.isHeld()).isFalse();
+    assertThat(details.getHeldTimeMs()).isEqualTo(60);
+  }
+
+  @Test
+  public void testNotReferenceCounted() {
+    ShadowSystemClock.setUptimeMillis(1);
     WakeLockDetails details =
         new WakeLockDetails(mWakeLock, "test", 0).setIsReferenceCounted(false);
 
     details.acquire(-1);
     assertThat(details.isHeld()).isTrue();
 
+    ShadowSystemClock.setUptimeMillis(11);
     details.acquire(-1);
     assertThat(details.isHeld()).isTrue();
 
+    ShadowSystemClock.setUptimeMillis(21);
     details.release();
     assertThat(details.isHeld()).isFalse();
+    assertThat(details.getHeldTimeMs()).isEqualTo(20);
+    assertThat(details.getLastReleaseTimeMs()).isEqualTo(21);
+
+    ShadowSystemClock.setUptimeMillis(31);
+    details.release();
+    assertThat(details.isHeld()).isFalse();
+    assertThat(details.getHeldTimeMs()).isEqualTo(20);
+    assertThat(details.getLastReleaseTimeMs()).isEqualTo(21);
   }
 
   @Test
   public void testReferenceCounted() {
     WakeLockDetails details = new WakeLockDetails(mWakeLock, "test", 0);
 
+    ShadowSystemClock.setUptimeMillis(1);
     details.acquire(-1);
     assertThat(details.isHeld()).isTrue();
 
+    ShadowSystemClock.setUptimeMillis(21);
     details.acquire(-1);
     assertThat(details.isHeld()).isTrue();
 
+    ShadowSystemClock.setUptimeMillis(41);
     details.release();
     assertThat(details.isHeld()).isTrue();
 
+    ShadowSystemClock.setUptimeMillis(61);
     details.release();
     assertThat(details.isHeld()).isFalse();
+
+    ShadowSystemClock.setUptimeMillis(81);
+    assertThat(details.isHeld()).isFalse();
+    assertThat(details.getLastReleaseTimeMs()).isEqualTo(61);
+    assertThat(details.getHeldTimeMs()).isEqualTo(60);
   }
 }

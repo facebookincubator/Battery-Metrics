@@ -43,7 +43,7 @@ import java.lang.ref.WeakReference;
   }
 
   /**
-   * Returns false if the wakelock was already acquired, and true if this actually enabled the
+   * Returns false if the wakelock was already acquired, and true if this actually acquired the
    * wakelock.
    */
   public boolean acquire(long timeoutMs) {
@@ -55,13 +55,12 @@ import java.lang.ref.WeakReference;
     // Mimic {@link PowerManager$WakeLock.acquireLocked
     if (mIsReferenceCounted && mReferences++ != 0) {
       return false;
+    } else if (mIsHeld) {
+      return false;
     }
 
-    if (!mIsHeld) {
-      mAcquireTimeMs = currentTimeMs;
-      mIsHeld = true;
-    }
-
+    mAcquireTimeMs = currentTimeMs;
+    mIsHeld = true;
     return true;
   }
 
@@ -74,16 +73,19 @@ import java.lang.ref.WeakReference;
   }
 
   private boolean releaseAtTime(long releaseTimeMs) {
-    mLastReleasedMs = releaseTimeMs;
+    // Reference counted wakelocks will throw an exception in the PowerManager,
+    // non-reference counted wakelocks will just work without changes.
+    if (!mIsHeld) {
+      return false;
+    }
 
     // Mimic {@link PowerManager.WakeLock#release()}
     if (mIsReferenceCounted && --mReferences != 0) {
       return false;
     }
 
-    if (mIsHeld) {
-      mHeldTimeMs += releaseTimeMs - mAcquireTimeMs;
-    }
+    mLastReleasedMs = releaseTimeMs;
+    mHeldTimeMs += releaseTimeMs - mAcquireTimeMs;
     mTimeoutTimeMs = Long.MAX_VALUE;
     mIsHeld = false;
 

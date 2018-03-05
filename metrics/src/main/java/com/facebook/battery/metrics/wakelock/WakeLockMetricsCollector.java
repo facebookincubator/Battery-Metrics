@@ -78,7 +78,6 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
     }
 
     updateWakeLockCounts();
-    mTotalWakeLocksAcquired++;
 
     WakeLockDetails details = mWakeLocks.get(wakelock);
     if (details == null) {
@@ -91,6 +90,7 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
         mWakeLockAcquireTimeMs = SystemClock.uptimeMillis();
       }
 
+      mTotalWakeLocksAcquired++;
       mActiveWakeLocks++;
     }
   }
@@ -187,30 +187,27 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
     updateWakeLockCounts();
 
     snapshot.acquiredCount = mTotalWakeLocksAcquired;
-
     snapshot.heldTimeMs =
         mWakeLocksHeldTimeMs
             + (mActiveWakeLocks > 0 ? SystemClock.uptimeMillis() - mWakeLockAcquireTimeMs : 0);
+
     if (snapshot.isAttributionEnabled) {
       snapshot.tagTimeMs.clear();
-    }
+      for (int i = 0, size = mActiveWakeLockDetails.size(); i < size; i++) {
+        WakeLockDetails details = mActiveWakeLockDetails.get(i);
+        long heldTimeMs = details.getHeldTimeMs();
 
-    for (int i = 0, size = mActiveWakeLockDetails.size(); i < size; i++) {
-      WakeLockDetails details = mActiveWakeLockDetails.get(i);
-      long heldTimeMs = details.getHeldTimeMs();
-
-      if (snapshot.isAttributionEnabled) {
         String tag = details.tag;
         Long existingValue = snapshot.tagTimeMs.get(tag);
         snapshot.tagTimeMs.put(tag, (existingValue == null ? 0 : existingValue) + heldTimeMs);
       }
-    }
 
-    for (int i = 0, size = mPrevWakeLockMs.size(); i < size; i++) {
-      String tag = mPrevWakeLockMs.keyAt(i);
-      Long existingValue = snapshot.tagTimeMs.get(tag);
-      snapshot.tagTimeMs.put(
-          tag, (existingValue == null ? 0 : existingValue) + mPrevWakeLockMs.valueAt(i));
+      for (int i = 0, size = mPrevWakeLockMs.size(); i < size; i++) {
+        String tag = mPrevWakeLockMs.keyAt(i);
+        Long existingValue = snapshot.tagTimeMs.get(tag);
+        snapshot.tagTimeMs.put(
+            tag, (existingValue == null ? 0 : existingValue) + mPrevWakeLockMs.valueAt(i));
+      }
     }
 
     return true;
