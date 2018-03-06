@@ -78,7 +78,6 @@ public class AppWakeupMetricsCollector extends SystemMetricsCollector<AppWakeupM
    */
   public synchronized void recordWakeupEnd(String id) {
     if (!mRunningWakeups.appWakeups.containsKey(id)) {
-      SystemMetricsLogger.wtf(TAG, "Wakeup stopped before starting for " + id);
       return;
     }
     AppWakeupMetrics.WakeupDetails details = mRunningWakeups.appWakeups.get(id);
