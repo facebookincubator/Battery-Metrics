@@ -9,6 +9,7 @@ package com.facebook.battery.sample;
 
 import android.app.Activity;
 import android.app.Application;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import com.facebook.battery.metrics.composite.CompositeMetrics;
@@ -18,6 +19,8 @@ import com.facebook.battery.metrics.cpu.CpuFrequencyMetrics;
 import com.facebook.battery.metrics.cpu.CpuFrequencyMetricsCollector;
 import com.facebook.battery.metrics.cpu.CpuMetrics;
 import com.facebook.battery.metrics.cpu.CpuMetricsCollector;
+import com.facebook.battery.metrics.healthstats.HealthStatsMetrics;
+import com.facebook.battery.metrics.healthstats.HealthStatsMetricsCollector;
 import com.facebook.battery.metrics.network.NetworkMetrics;
 import com.facebook.battery.metrics.network.NetworkMetricsCollector;
 import com.facebook.battery.metrics.time.TimeMetrics;
@@ -53,7 +56,7 @@ public class BatteryApplication extends Application
     implements Application.ActivityLifecycleCallbacks {
   private static final String LAST_SNAPSHOT = "lastsnapshot";
 
-  private static volatile BatteryApplication sInstance;
+  public static volatile BatteryApplication INSTANCE;
   private CompositeMetricsCollector mMetricsCollector;
 
   private StatefulSystemMetricsCollector<CompositeMetrics, CompositeMetricsCollector>
@@ -66,13 +69,18 @@ public class BatteryApplication extends Application
     // Note -- Creating a collector instance that's shared across the application can be fairly
     //         useful. You can set it up and hook up all the individual metrics collectors,
     //         tweaking them once.
-    mMetricsCollector =
+    CompositeMetricsCollector.Builder collectorBuilder =
         new CompositeMetricsCollector.Builder()
             .addMetricsCollector(TimeMetrics.class, new TimeMetricsCollector())
             .addMetricsCollector(CpuFrequencyMetrics.class, new CpuFrequencyMetricsCollector())
             .addMetricsCollector(CpuMetrics.class, new CpuMetricsCollector())
-            .addMetricsCollector(NetworkMetrics.class, new NetworkMetricsCollector(this))
-            .build();
+            .addMetricsCollector(NetworkMetrics.class, new NetworkMetricsCollector(this));
+
+    if (Build.VERSION.SDK_INT >= 24) {
+      collectorBuilder.addMetricsCollector(
+          HealthStatsMetrics.class, new HealthStatsMetricsCollector(this));
+    }
+    mMetricsCollector = collectorBuilder.build();
 
     // Note -- The Reporter and Serializer mimic the collector; they were mainly split out into
     //         separate modules to keep it simple to include only what you really needed.
@@ -96,11 +104,14 @@ public class BatteryApplication extends Application
     mStatefulCollector = new StatefulSystemMetricsCollector<>(mMetricsCollector);
   }
 
+  public CompositeMetricsCollector getMetricsCollector() {
+    return mMetricsCollector;
+  }
 
   @Override
   public void onCreate() {
     super.onCreate();
-    sInstance = this;
+    INSTANCE = this;
     init();
 
     registerActivityLifecycleCallbacks(this);
