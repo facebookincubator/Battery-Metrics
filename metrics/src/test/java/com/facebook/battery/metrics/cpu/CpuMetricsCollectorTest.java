@@ -8,8 +8,15 @@
 package com.facebook.battery.metrics.cpu;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
+import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -38,6 +45,30 @@ public class CpuMetricsCollectorTest
 
     CpuMetrics snapshot = new CpuMetrics();
     assertThat(collector.getSnapshot(snapshot)).isFalse();
+  }
+
+  @Test
+  public void testErrorOnDecreasing() {
+    SystemMetricsLogger.Delegate logger = mock(SystemMetricsLogger.Delegate.class);
+    SystemMetricsLogger.setDelegate(logger);
+
+    StringBuilder initialEntry = new StringBuilder();
+    for (int i = 0; i < 20; i++) {
+      initialEntry.append(i * 2).append(' ');
+    }
+    TestableCpuMetricsCollector collector =
+        new TestableCpuMetricsCollector().setProcFileContents(initialEntry.toString());
+    CpuMetrics snapshot = new CpuMetrics();
+    assertThat(collector.getSnapshot(snapshot)).isTrue();
+    verify(logger, never()).wtf(anyString(), anyString(), any(Throwable.class));
+
+    StringBuilder secondEntry = new StringBuilder();
+    for (int i = 0; i < 20; i++) {
+      secondEntry.append(i).append(' ');
+    }
+    collector.setProcFileContents(secondEntry.toString());
+    assertThat(collector.getSnapshot(snapshot)).isFalse();
+    verify(logger, times(1)).wtf(anyString(), anyString(), any(Throwable.class));
   }
 
   @Test

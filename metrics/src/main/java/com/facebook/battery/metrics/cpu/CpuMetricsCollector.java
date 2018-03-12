@@ -36,6 +36,13 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
   private static final int PROC_CHILD_USER_TIME_FIELD = 15;
   private static final int PROC_CHILD_SYSTEM_TIME_FIELD = 16;
 
+  /**
+   * Ensure that the cpu metrics value is always increasing: in case the cpu time captured goes
+   * down, getSnapshot will return an error to prevent erroneous values. Having it be thread local
+   * sidesteps several possible synchronization issues.
+   */
+  private final ThreadLocal<CpuMetrics> mLastSnapshot = new ThreadLocal<>();
+
   @VisibleForTesting protected static final long DEFAULT_CLOCK_TICKS_PER_SECOND = 100;
 
   public CpuMetricsCollector() {}
@@ -64,14 +71,21 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
       return false;
     }
 
-    if (snapshot.userTimeS < 0
-        || snapshot.systemTimeS < 0
-        || snapshot.childUserTimeS < 0
-        || snapshot.childSystemTimeS < 0) {
-      SystemMetricsLogger.wtf(TAG, "Negative CPU time field");
+    if (mLastSnapshot.get() == null) {
+      mLastSnapshot.set(new CpuMetrics());
+    }
+
+    CpuMetrics lastSnapshot = mLastSnapshot.get();
+    if (snapshot.userTimeS < lastSnapshot.userTimeS
+        || snapshot.systemTimeS < lastSnapshot.systemTimeS
+        || snapshot.childUserTimeS < lastSnapshot.childUserTimeS
+        || snapshot.childSystemTimeS < lastSnapshot.childSystemTimeS) {
+      SystemMetricsLogger.wtf(
+          TAG, "Cpu Time Decreased from " + lastSnapshot.toString() + " to " + snapshot.toString());
       return false;
     }
 
+    lastSnapshot.set(snapshot);
     return true;
   }
 
