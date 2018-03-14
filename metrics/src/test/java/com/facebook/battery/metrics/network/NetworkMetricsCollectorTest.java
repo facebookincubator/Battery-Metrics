@@ -9,7 +9,13 @@ import static com.facebook.battery.metrics.network.NetworkBytesCollector.RX;
 import static com.facebook.battery.metrics.network.NetworkBytesCollector.TX;
 import static com.facebook.battery.metrics.network.NetworkBytesCollector.WIFI;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import java.util.ArrayDeque;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,6 +74,34 @@ public class NetworkMetricsCollectorTest {
     expected.mobileBytesTx = 31;
     expected.wifiBytesRx = 42;
     assertThat(metrics).isEqualTo(expected);
+  }
+
+  @Test
+  public void testDecreasingBytes() throws Exception {
+    SystemMetricsLogger.Delegate logger = mock(SystemMetricsLogger.Delegate.class);
+    SystemMetricsLogger.setDelegate(logger);
+
+    long[] bytes = new long[8];
+    bytes[MOBILE | TX | FG] = 100;
+    mBytesCollector.yieldTotalBytes(bytes);
+
+    NetworkMetrics metrics = mMetricsCollector.createMetrics();
+    assertThat(mMetricsCollector.getSnapshot(metrics)).isTrue();
+
+    bytes[MOBILE | TX | FG] = 90;
+    mBytesCollector.yieldTotalBytes(bytes);
+
+    assertThat(mMetricsCollector.getSnapshot(metrics)).isFalse();
+    verify(logger, times(1)).wtf(anyString(), anyString(), any(Throwable.class));
+    assertThat(mMetricsCollector.getSnapshot(metrics)).isFalse();
+
+    // Validate that any further snapshots, even if increasing, are disabled
+    bytes[MOBILE | TX | FG] = 1000;
+    mBytesCollector.yieldTotalBytes(bytes);
+    assertThat(mMetricsCollector.getSnapshot(metrics)).isFalse();
+
+    // No new error logged because we've given up on this user session
+    verify(logger, times(1)).wtf(anyString(), anyString(), any(Throwable.class));
   }
 
   private static class TestNetworkBytesCollector extends NetworkBytesCollector {

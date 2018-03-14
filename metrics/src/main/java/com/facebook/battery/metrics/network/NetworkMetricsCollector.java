@@ -16,7 +16,9 @@ import static com.facebook.battery.metrics.network.NetworkBytesCollector.WIFI;
 
 import android.content.Context;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
+import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.infer.annotation.ThreadSafe;
+import java.util.Arrays;
 
 /**
  * Records data transferred by the current application, broken down by type of network (radio vs
@@ -30,19 +32,30 @@ import com.facebook.infer.annotation.ThreadSafe;
  */
 @ThreadSafe
 public class NetworkMetricsCollector extends SystemMetricsCollector<NetworkMetrics> {
+  private static final String TAG = "NetworkMetricsCollector";
 
+  private boolean mIsValid = true;
   private final NetworkBytesCollector mCollector;
   private final long[] mBytes;
+  private final long[] mPrevBytes;
 
   public NetworkMetricsCollector(Context context) {
     mCollector = NetworkBytesCollector.create(context);
     mBytes = NetworkBytesCollector.createByteArray();
+    mPrevBytes = NetworkBytesCollector.createByteArray();
   }
 
   @Override
   @ThreadSafe(enableChecks = false)
   public synchronized boolean getSnapshot(NetworkMetrics snapshot) {
-    if (!mCollector.getTotalBytes(mBytes)) {
+    // Once the value has decreased, the underlying value has almost certainly reset and all current
+    // snapshots are invalidated. Disable this collector.
+    if (!mIsValid || !mCollector.getTotalBytes(mBytes)) {
+      return false;
+    }
+
+    mIsValid = ensureBytesIncreased(mBytes, mPrevBytes);
+    if (!mIsValid) {
       return false;
     }
 
@@ -52,6 +65,23 @@ public class NetworkMetricsCollector extends SystemMetricsCollector<NetworkMetri
     if (supportsBgDetection) {
       addMetricsFromBytes(snapshot, mBytes, BG);
     }
+
+    return true;
+  }
+
+  static boolean ensureBytesIncreased(long[] currentBytes, long[] previousBytes) {
+    for (int i = 0; i < currentBytes.length; i++) {
+      if (currentBytes[i] < previousBytes[i]) {
+        SystemMetricsLogger.wtf(
+            TAG,
+            "Network Bytes decreased from "
+                + Arrays.toString(previousBytes)
+                + " to "
+                + Arrays.toString(currentBytes));
+        return false;
+      }
+    }
+    System.arraycopy(currentBytes, 0, previousBytes, 0, currentBytes.length);
     return true;
   }
 
