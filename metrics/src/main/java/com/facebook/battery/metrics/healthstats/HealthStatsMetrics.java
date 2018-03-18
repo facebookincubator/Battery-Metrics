@@ -18,8 +18,8 @@ import android.util.Log;
 import android.util.SparseArray;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.battery.metrics.core.Utilities;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,15 +31,18 @@ import org.json.JSONObject;
  * conveniently.
  *
  * <p>To do this, it basically copies out all the fields provided in a HealthStats object because
- * those aren't particularly accessible; we do directly use {@link TimerStat} objects, we'll be
- * done; this also implies significant amount of boilerplate in this class.
+ * those aren't particularly accessible, including a custom wrapper around TimerStats because that
+ * class doesn't implement equals/hashcode.
  *
  * <p>This isn't particularly efficient, and shouldn't be used as frequently as the other metrics
  * collectors. For my own sanity I waste a lot of memory on snapshots to avoid bugs; this can be
- * optimized a lot by reusing objects for the internals.
+ * optimized a lot by reusing objects for the internals/using object pools as the need arises.
  */
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
+
+  @VisibleForTesting static final int OP_SUM = 1;
+  @VisibleForTesting static final int OP_DIFF = -1;
 
   /** An alternative to TimerStat that actually implements equals and hashcode correctly. */
   public static class TimerMetrics {
@@ -82,36 +85,26 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     }
   }
 
-  /** Prevents lots of null checks with default values */
-  private static final int[] EMPTY_INT_ARRAY = new int[0];
-
-  private static final long[] EMPTY_LONG_ARRAY = new long[0];
-  private static final TimerMetrics[] EMPTY_TIMER_ARRAY = new TimerMetrics[0];
-  private static final ArrayMap[] EMPTY_ARRAY_MAP = new ArrayMap[0];
-
   private static final String TAG = "HealthStatsMetrics";
   private static final SparseArray<String> sKeyNames = new SparseArray<>();
 
   public String dataType;
 
-  int[] timerKeys = EMPTY_INT_ARRAY;
-  TimerMetrics[] timerValues = EMPTY_TIMER_ARRAY;
+  final SparseArray<Long> measurement = new SparseArray<>();
+  final SparseArray<TimerMetrics> timer = new SparseArray<>();
+  final SparseArray<ArrayMap<String, Long>> measurements = new SparseArray<>();
+  final SparseArray<ArrayMap<String, TimerMetrics>> timers = new SparseArray<>();
+  final SparseArray<ArrayMap<String, HealthStatsMetrics>> stats = new SparseArray<>();
 
-  // Measurement fields
-  int[] measurementKeys = EMPTY_INT_ARRAY;
-  long[] measurementValues = EMPTY_LONG_ARRAY;
+  public HealthStatsMetrics() {}
 
-  // Stats fields
-  int[] statsKeys = EMPTY_INT_ARRAY;
-  ArrayMap<String, HealthStatsMetrics>[] statsValues = EMPTY_ARRAY_MAP;
+  public HealthStatsMetrics(HealthStats healthStats) {
+    set(healthStats);
+  }
 
-  // Timers fields
-  int[] timersKeys = EMPTY_INT_ARRAY;
-  ArrayMap<String, TimerMetrics>[] timersValues = EMPTY_ARRAY_MAP;
-
-  // Measurements fields
-  int[] measurementsKeys = EMPTY_INT_ARRAY;
-  ArrayMap<String, Long>[] measurementsValues = EMPTY_ARRAY_MAP;
+  public HealthStatsMetrics(HealthStatsMetrics metrics) {
+    set(metrics);
+  }
 
   @Override
   public HealthStatsMetrics sum(
@@ -119,6 +112,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     if (output == null) {
       output = new HealthStatsMetrics();
     }
+    output.dataType = dataType;
 
     if (b == null) {
       output.set(this);
@@ -129,91 +123,14 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
               + " and "
               + b.dataType);
     } else {
-      output.dataType = dataType;
-      ensureArrayLengths(output, this);
-
-      for (int i = 0; i < measurementKeys.length; i++) {
-        output.measurementKeys[i] = measurementKeys[i];
-        output.measurementValues[i] = measurementValues[i] + b.measurementValues[i];
-      }
-
-      for (int i = 0; i < measurementsKeys.length; i++) {
-        output.measurementsKeys[i] = measurementsKeys[i];
-        output.measurementsValues[i] =
-            sumArrayMaps(
-                measurementsValues[i], b.measurementsValues[i], output.measurementsValues[i]);
-      }
-
-      for (int i = 0; i < timerKeys.length; i++) {
-        output.timerKeys[i] = timerKeys[i];
-        output.timerValues[i] = (TimerMetrics) sumValues(timerValues[i], b.timerValues[i]);
-      }
-
-      for (int i = 0; i < timersKeys.length; i++) {
-        output.timersKeys[i] = timersKeys[i];
-        output.timersValues[i] =
-            sumArrayMaps(timersValues[i], b.timersValues[i], output.timersValues[i]);
-      }
-
-      for (int i = 0; i < statsKeys.length; i++) {
-        output.statsKeys[i] = statsKeys[i];
-        output.statsValues[i] =
-            sumArrayMaps(statsValues[i], b.statsValues[i], output.statsValues[i]);
-      }
+      op(OP_SUM, measurement, b.measurement, output.measurement);
+      op(OP_SUM, measurements, b.measurements, output.measurements);
+      op(OP_SUM, timer, b.timer, output.timer);
+      op(OP_SUM, timers, b.timers, output.timers);
+      op(OP_SUM, stats, b.stats, output.stats);
     }
 
     return output;
-  }
-
-  /** Acts as a union of the maps and sums values when they overlap. */
-  @VisibleForTesting
-  static <K, V> ArrayMap<K, V> sumArrayMaps(
-      ArrayMap<K, V> a, ArrayMap<K, V> b, ArrayMap<K, V> output) {
-    int aSize = a.size();
-    int bSize = b.size();
-
-    if (output == null) {
-      output = new ArrayMap<>();
-    } else {
-      output.clear();
-    }
-
-    for (int i = 0; i < aSize; i++) {
-      K key = a.keyAt(i);
-      V bValue = b.get(key);
-      output.put(key, bValue == null ? a.valueAt(i) : (V) sumValues(a.valueAt(i), bValue));
-    }
-
-    for (int i = 0; i < bSize; i++) {
-      K key = b.keyAt(i);
-      if (a.get(key) == null) {
-        output.put(key, b.valueAt(i));
-      }
-    }
-
-    return output;
-  }
-
-  /** Kind of a hack to avoid a lot of boilerplate; icky but it works */
-  private static <V> Object sumValues(V a, V b) {
-    if (a instanceof Long) {
-      return (Long) a + (Long) b;
-    } else if (a instanceof TimerMetrics) {
-      TimerMetrics timerMetrics = new TimerMetrics();
-      TimerMetrics timerMetricsA = (TimerMetrics) a;
-      TimerMetrics timerMetricsB = (TimerMetrics) b;
-      timerMetrics.count =
-          (timerMetricsA != null ? timerMetricsA.count : 0)
-              + (timerMetricsB != null ? timerMetricsB.count : 0);
-      timerMetrics.timeMs =
-          (timerMetricsA != null ? timerMetricsA.timeMs : 0)
-              + (timerMetricsB != null ? timerMetricsB.timeMs : 0);
-      return timerMetrics;
-    } else if (a instanceof HealthStatsMetrics) {
-      return ((HealthStatsMetrics) a).sum((HealthStatsMetrics) b, null);
-    }
-
-    throw new IllegalArgumentException("Adding unsupported values");
   }
 
   @Override
@@ -222,6 +139,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     if (output == null) {
       output = new HealthStatsMetrics();
     }
+    output.dataType = dataType;
 
     if (b == null) {
       output.set(this);
@@ -232,119 +150,136 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
               + " and "
               + b.dataType);
     } else {
-      output.dataType = dataType;
-      ensureArrayLengths(output, this);
+      op(OP_DIFF, measurement, b.measurement, output.measurement);
+      op(OP_DIFF, measurements, b.measurements, output.measurements);
+      op(OP_DIFF, timer, b.timer, output.timer);
+      op(OP_DIFF, timers, b.timers, output.timers);
+      op(OP_DIFF, stats, b.stats, output.stats);
+    }
 
-      for (int i = 0; i < measurementKeys.length; i++) {
-        output.measurementKeys[i] = measurementKeys[i];
-        output.measurementValues[i] = measurementValues[i] - b.measurementValues[i];
-      }
+    return output;
+  }
 
-      for (int i = 0; i < measurementsKeys.length; i++) {
-        output.measurementsKeys[i] = measurementsKeys[i];
-        output.measurementsValues[i] =
-            diffArrayMaps(
-                measurementsValues[i], b.measurementsValues[i], output.measurementsValues[i]);
-      }
+  @VisibleForTesting
+  static <K> SparseArray<K> op(int op, SparseArray<K> a, SparseArray<K> b, SparseArray<K> output) {
+    output.clear();
 
-      for (int i = 0; i < timerKeys.length; i++) {
-        output.timerKeys[i] = timerKeys[i];
-        output.timerValues[i] = (TimerMetrics) diffValues(timerValues[i], b.timerValues[i]);
-      }
+    for (int i = 0; i < a.size(); i++) {
+      int aKey = a.keyAt(i);
+      output.put(aKey, (K) opValues(op, a.valueAt(i), b.get(aKey)));
+    }
 
-      for (int i = 0; i < timersKeys.length; i++) {
-        output.timersKeys[i] = timersKeys[i];
-        output.timersValues[i] =
-            diffArrayMaps(timersValues[i], b.timersValues[i], output.timersValues[i]);
-      }
-
-      for (int i = 0; i < statsKeys.length; i++) {
-        output.statsKeys[i] = statsKeys[i];
-        output.statsValues[i] =
-            diffArrayMaps(statsValues[i], b.statsValues[i], output.statsValues[i]);
+    if (op == OP_SUM) {
+      for (int i = 0; i < b.size(); i++) {
+        int bKey = b.keyAt(i);
+        if (a.get(bKey) == null) {
+          output.put(bKey, b.valueAt(i));
+        }
       }
     }
 
     return output;
   }
 
-  /** Both acts like an intersection of array sets and subtracts values. */
+  /** Acts as a union of the maps and sums values when they overlap. */
   @VisibleForTesting
-  static <K, V> ArrayMap<K, V> diffArrayMaps(
-      ArrayMap<K, V> a, ArrayMap<K, V> b, ArrayMap<K, V> output) {
+  static <K, V> ArrayMap<K, V> opArrayMaps(int op, ArrayMap<K, V> a, @Nullable ArrayMap<K, V> b) {
     int aSize = a.size();
-    if (output == null) {
-      output = new ArrayMap<>();
-    } else {
-      output.clear();
-    }
 
+    ArrayMap<K, V> output = new ArrayMap<>();
     for (int i = 0; i < aSize; i++) {
       K key = a.keyAt(i);
-      V bValue = b.get(key);
-      output.put(key, bValue == null ? a.valueAt(i) : (V) diffValues(a.valueAt(i), bValue));
+      V bValue = b == null ? null : b.get(key);
+      output.put(key, bValue == null ? a.valueAt(i) : (V) opValues(op, a.valueAt(i), bValue));
+    }
+
+    if (op == OP_SUM) {
+      int bSize = b == null ? 0 : b.size();
+      for (int i = 0; i < bSize; i++) {
+        K key = b.keyAt(i);
+        if (a.get(key) == null) {
+          output.put(key, b.valueAt(i));
+        }
+      }
     }
 
     return output;
   }
 
   /** Kind of a hack to avoid a lot of boilerplate; icky but it works */
-  private static <V> Object diffValues(V a, V b) {
+  private static <V> Object opValues(int op, V a, @Nullable V b) {
     if (a instanceof Long) {
-      return (Long) a - (Long) b;
-    } else if (a instanceof TimerMetrics) {
-      TimerMetrics timerMetrics = new TimerMetrics();
-      TimerMetrics timerMetricsA = (TimerMetrics) a;
-      TimerMetrics timerMetricsB = (TimerMetrics) b;
-      timerMetrics.count =
-          (timerMetricsA != null ? timerMetricsA.count : 0)
-              - (timerMetricsB != null ? timerMetricsB.count : 0);
-      timerMetrics.timeMs =
-          (timerMetricsA != null ? timerMetricsA.timeMs : 0)
-              - (timerMetricsB != null ? timerMetricsB.timeMs : 0);
-      return timerMetrics;
-    } else if (a instanceof HealthStatsMetrics) {
-      return ((HealthStatsMetrics) a).diff((HealthStatsMetrics) b, null);
+      return (Long) a + (b == null ? 0 : (op * (Long) b));
     }
 
-    throw new IllegalArgumentException("Subtracting unsupported values");
+    if (a instanceof TimerMetrics) {
+      TimerMetrics timerMetricsA = (TimerMetrics) a;
+      TimerMetrics timerMetricsB = (TimerMetrics) b;
+
+      if (b == null) {
+        return new TimerMetrics(timerMetricsA);
+      }
+
+      TimerMetrics timerMetrics = new TimerMetrics();
+      timerMetrics.count = timerMetricsA.count + op * timerMetricsB.count;
+      timerMetrics.timeMs = timerMetricsA.timeMs + op * timerMetricsB.timeMs;
+      return timerMetrics;
+    }
+
+    if (a instanceof HealthStatsMetrics) {
+      if (op == OP_SUM) {
+        return ((HealthStatsMetrics) a).sum((HealthStatsMetrics) b, null);
+      } else {
+        return ((HealthStatsMetrics) a).diff((HealthStatsMetrics) b, null);
+      }
+    }
+
+    if (a instanceof ArrayMap) {
+      return opArrayMaps(op, (ArrayMap) a, (ArrayMap) b);
+    }
+
+    throw new IllegalArgumentException("Handling unsupported values");
   }
 
   @Override
   public HealthStatsMetrics set(HealthStatsMetrics b) {
     dataType = b.dataType;
-    ensureArrayLengths(this, b);
 
-    System.arraycopy(b.measurementKeys, 0, measurementKeys, 0, b.measurementKeys.length);
-    System.arraycopy(b.measurementValues, 0, measurementValues, 0, b.measurementValues.length);
-
-    System.arraycopy(b.measurementsKeys, 0, measurementsKeys, 0, b.measurementsKeys.length);
-    for (int i = 0, len = measurementsKeys.length; i < len; i++) {
-      measurementsValues[i] = new ArrayMap<>(b.measurementsValues[i]);
+    measurement.clear();
+    for (int i = 0; i < b.measurement.size(); i++) {
+      measurement.append(b.measurement.keyAt(i), b.measurement.valueAt(i));
     }
 
-    System.arraycopy(b.timerKeys, 0, timerKeys, 0, b.timerKeys.length);
-    for (int i = 0, len = timerKeys.length; i < len; i++) {
-      timerValues[i] = new TimerMetrics(b.timerValues[i]);
+    timer.clear();
+    for (int i = 0; i < b.timer.size(); i++) {
+      timer.append(b.timer.keyAt(i), new TimerMetrics(b.timer.valueAt(i)));
     }
 
-    System.arraycopy(b.timersKeys, 0, timersKeys, 0, b.timersKeys.length);
-    for (int i = 0, len = timersValues.length; i < len; i++) {
-      timersValues[i] = new ArrayMap<>(b.timersValues[i].size());
-      for (int j = 0; j < b.timersValues[i].size(); j++) {
-        TimerMetrics timerMetrics = new TimerMetrics(b.timersValues[i].valueAt(j));
-        timersValues[i].put(b.timersValues[i].keyAt(j), timerMetrics);
+    measurements.clear();
+    for (int i = 0; i < b.measurements.size(); i++) {
+      ArrayMap<String, Long> value = new ArrayMap<>();
+      value.putAll((Map<String, Long>) b.measurements.valueAt(i));
+      measurements.append(b.measurements.keyAt(i), value);
+    }
+
+    timers.clear();
+    for (int i = 0; i < b.timers.size(); i++) {
+      ArrayMap<String, TimerMetrics> bValue = b.timers.valueAt(i);
+      ArrayMap<String, TimerMetrics> value = new ArrayMap<>();
+      for (int j = 0; j < bValue.size(); j++) {
+        value.put(bValue.keyAt(j), new TimerMetrics(bValue.valueAt(j)));
       }
+      timers.append(b.timers.keyAt(i), value);
     }
 
-    System.arraycopy(b.statsKeys, 0, statsKeys, 0, b.statsKeys.length);
-    for (int i = 0, len = statsValues.length; i < len; i++) {
-      statsValues[i] = new ArrayMap<>(b.statsValues[i].size());
-      for (int j = 0; j < b.statsValues[i].size(); j++) {
-        HealthStatsMetrics metrics = new HealthStatsMetrics();
-        metrics.set(b.statsValues[i].valueAt(j));
-        statsValues[i].put(b.statsValues[i].keyAt(j), metrics);
+    stats.clear();
+    for (int i = 0; i < b.stats.size(); i++) {
+      ArrayMap<String, HealthStatsMetrics> bValue = b.stats.valueAt(i);
+      ArrayMap<String, HealthStatsMetrics> value = new ArrayMap<>();
+      for (int j = 0; j < bValue.size(); j++) {
+        value.put(bValue.keyAt(j), new HealthStatsMetrics(bValue.valueAt(j)));
       }
+      stats.append(b.stats.keyAt(i), value);
     }
 
     return this;
@@ -352,134 +287,52 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
 
   public HealthStatsMetrics set(HealthStats healthStats) {
     dataType = healthStats.getDataType();
-    int measurementCount = healthStats.getMeasurementKeyCount();
-    int measurementsCount = healthStats.getMeasurementsKeyCount();
-    int timerCount = healthStats.getTimerKeyCount();
-    int timersCount = healthStats.getTimersKeyCount();
-    int statsCount = healthStats.getStatsKeyCount();
-    ensureArrayLengths(
-        this, measurementCount, measurementsCount, timerCount, timersCount, statsCount);
 
-    for (int i = 0; i < measurementCount; i++) {
-      measurementKeys[i] = healthStats.getMeasurementKeyAt(i);
-      measurementValues[i] = healthStats.getMeasurement(measurementKeys[i]);
+    measurement.clear();
+    for (int i = 0; i < healthStats.getMeasurementKeyCount(); i++) {
+      int key = healthStats.getMeasurementKeyAt(i);
+      measurement.put(key, healthStats.getMeasurement(key));
     }
 
-    for (int i = 0; i < measurementsCount; i++) {
-      measurementsKeys[i] = healthStats.getMeasurementsKeyAt(i);
-
-      if (measurementsValues[i] == null) {
-        measurementsValues[i] = new ArrayMap<>();
-      } else {
-        measurementsValues[i].clear();
+    measurements.clear();
+    for (int i = 0; i < healthStats.getMeasurementsKeyCount(); i++) {
+      int key = healthStats.getMeasurementsKeyAt(i);
+      ArrayMap<String, Long> value = new ArrayMap<>();
+      for (Map.Entry<String, Long> entry : healthStats.getMeasurements(key).entrySet()) {
+        value.put(entry.getKey(), entry.getValue());
       }
-      measurementsValues[i].putAll(healthStats.getMeasurements(measurementsKeys[i]));
+      measurements.put(key, value);
     }
 
-    for (int i = 0; i < timerCount; i++) {
-      timerKeys[i] = healthStats.getTimerKeyAt(i);
-      timerValues[i] = new TimerMetrics();
-      timerValues[i].count = healthStats.getTimerCount(timerKeys[i]);
-      timerValues[i].timeMs = healthStats.getTimerTime(timerKeys[i]);
+    timer.clear();
+    for (int i = 0; i < healthStats.getTimerKeyCount(); i++) {
+      int key = healthStats.getTimerKeyAt(i);
+      TimerMetrics value =
+          new TimerMetrics(healthStats.getTimerCount(key), healthStats.getTimerTime(key));
+      timer.put(key, value);
     }
 
-    for (int i = 0; i < timersCount; i++) {
-      timersKeys[i] = healthStats.getTimersKeyAt(i);
-      if (timersValues[i] == null) {
-        timersValues[i] = new ArrayMap<>();
-      } else {
-        timersValues[i].clear();
+    timers.clear();
+    for (int i = 0; i < healthStats.getTimersKeyCount(); i++) {
+      int key = healthStats.getTimersKeyAt(i);
+      ArrayMap<String, TimerMetrics> value = new ArrayMap<>();
+      for (Map.Entry<String, TimerStat> entry : healthStats.getTimers(key).entrySet()) {
+        value.put(entry.getKey(), new TimerMetrics(entry.getValue()));
       }
-
-      Map<String, TimerStat> timers = healthStats.getTimers(timersKeys[i]);
-      for (Map.Entry<String, TimerStat> timer : timers.entrySet()) {
-        timersValues[i].put(timer.getKey(), new TimerMetrics(timer.getValue()));
-      }
+      timers.put(key, value);
     }
 
-    for (int i = 0; i < statsCount; i++) {
-      statsKeys[i] = healthStats.getStatsKeyAt(i);
-      Map<String, HealthStats> statsValue = healthStats.getStats(statsKeys[i]);
-      if (statsValues[i] == null) {
-        statsValues[i] = new ArrayMap<>();
-      } else {
-        statsValues[i].clear();
+    stats.clear();
+    for (int i = 0; i < healthStats.getStatsKeyCount(); i++) {
+      int key = healthStats.getStatsKeyAt(i);
+      ArrayMap<String, HealthStatsMetrics> value = new ArrayMap<>();
+      for (Map.Entry<String, HealthStats> entry : healthStats.getStats(key).entrySet()) {
+        value.put(entry.getKey(), new HealthStatsMetrics(entry.getValue()));
       }
-
-      for (Map.Entry<String, HealthStats> stats : statsValue.entrySet()) {
-        HealthStatsMetrics metrics = new HealthStatsMetrics();
-        metrics.set(stats.getValue());
-        statsValues[i].put(stats.getKey(), metrics);
-      }
+      stats.put(key, value);
     }
 
     return this;
-  }
-
-  private static void ensureArrayLengths(
-      HealthStatsMetrics metrics,
-      int measurementCount,
-      int measurementsCount,
-      int timerCount,
-      int timersCount,
-      int statsCount) {
-    metrics.measurementKeys = ensureArrayLength(metrics.measurementKeys, measurementCount);
-    metrics.measurementValues = ensureArrayLength(metrics.measurementValues, measurementCount);
-
-    metrics.measurementsKeys = ensureArrayLength(metrics.measurementsKeys, measurementsCount);
-    metrics.measurementsValues = ensureArrayLength(metrics.measurementsValues, measurementsCount);
-
-    metrics.timerKeys = ensureArrayLength(metrics.timerKeys, timerCount);
-    metrics.timerValues = ensureArrayLength(metrics.timerValues, timerCount);
-
-    metrics.timersKeys = ensureArrayLength(metrics.timersKeys, timersCount);
-    metrics.timersValues = ensureArrayLength(metrics.timersValues, timersCount);
-
-    metrics.statsKeys = ensureArrayLength(metrics.statsKeys, statsCount);
-    metrics.statsValues = ensureArrayLength(metrics.statsValues, statsCount);
-  }
-
-  private static void ensureArrayLengths(
-      HealthStatsMetrics metrics, HealthStatsMetrics sourceMetrics) {
-    ensureArrayLengths(
-        metrics,
-        sourceMetrics.measurementKeys.length,
-        sourceMetrics.measurementsKeys.length,
-        sourceMetrics.timerKeys.length,
-        sourceMetrics.timersKeys.length,
-        sourceMetrics.statsKeys.length);
-  }
-
-  private static int[] ensureArrayLength(int[] array, int size) {
-    if (size == 0) {
-      return EMPTY_INT_ARRAY;
-    }
-
-    return array != null && array.length == size ? array : new int[size];
-  }
-
-  private static long[] ensureArrayLength(long[] array, int size) {
-    if (size == 0) {
-      return EMPTY_LONG_ARRAY;
-    }
-
-    return array != null && array.length == size ? array : new long[size];
-  }
-
-  private static TimerMetrics[] ensureArrayLength(TimerMetrics[] array, int size) {
-    if (size == 0) {
-      return EMPTY_TIMER_ARRAY;
-    }
-
-    return array != null && array.length == size ? array : new TimerMetrics[size];
-  }
-
-  private static <K, V> ArrayMap<K, V>[] ensureArrayLength(ArrayMap<K, V>[] array, int size) {
-    if (size == 0) {
-      return EMPTY_ARRAY_MAP;
-    }
-
-    return array != null && array.length == size ? array : new ArrayMap[size];
   }
 
   @Override
@@ -535,118 +388,107 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     JSONObject output = new JSONObject();
     output.put("type", dataType);
 
-    int measurementCount = measurementKeys.length;
+    int measurementCount = measurement.size();
     if (measurementCount > 0) {
-      JSONObject measurement = new JSONObject();
+      JSONObject measurementObj = new JSONObject();
       for (int i = 0; i < measurementCount; i++) {
-        measurement.put(getKeyName(measurementKeys[i]), measurementValues[i]);
+        measurementObj.put(getKeyName(measurement.keyAt(i)), measurement.valueAt(i));
       }
-      output.put("measurement", measurement);
+      output.put("measurement", measurementObj);
     }
 
-    int timerCount = timerKeys.length;
+    int timerCount = timer.size();
     if (timerCount > 0) {
-      JSONObject timer = new JSONObject();
+      JSONObject timerObj = new JSONObject();
       for (int i = 0; i < timerCount; i++) {
-        timer.put(
-            getKeyName(timerKeys[i]),
+        timerObj.put(
+            getKeyName(timer.keyAt(i)),
             new JSONObject()
-                .put("count", timerValues[i].count)
-                .put("time_ms", timerValues[i].timeMs));
+                .put("count", timer.valueAt(i).count)
+                .put("time_ms", timer.valueAt(i).timeMs));
       }
-      output.put("timer", timer);
+      output.put("timer", timerObj);
     }
 
-    int measurementsCount = measurementsKeys.length;
+    int measurementsCount = measurements.size();
     if (measurementsCount > 0) {
-      JSONObject measurements = new JSONObject();
+      JSONObject measurementsObj = new JSONObject();
       for (int i = 0; i < measurementsCount; i++) {
-        measurements.put(getKeyName(measurementsKeys[i]), toJSONObject(measurementsValues[i]));
+        measurementsObj.put(
+            getKeyName(measurements.keyAt(i)), toJSONObject(measurements.valueAt(i)));
       }
-      output.put("measurements", measurements);
+      output.put("measurements", measurementsObj);
     }
 
-    int timersCount = timersKeys.length;
+    int timersCount = timers.size();
     if (timersCount > 0) {
-      JSONObject timers = new JSONObject();
+      JSONObject timersObj = new JSONObject();
       for (int i = 0; i < timersCount; i++) {
-        timers.put(getKeyName(timersKeys[i]), toJSONObject(timersValues[i]));
+        timersObj.put(getKeyName(timers.keyAt(i)), toJSONObject(timers.valueAt(i)));
       }
-      output.put("timers", timers);
+      output.put("timers", timersObj);
     }
 
-    int statsCount = statsKeys.length;
+    int statsCount = stats.size();
     if (statsCount > 0) {
-      JSONObject stats = new JSONObject();
+      JSONObject statsObj = new JSONObject();
       for (int i = 0; i < statsCount; i++) {
-        stats.put(getKeyName(statsKeys[i]), toJSONObject(statsValues[i]));
+        statsObj.put(getKeyName(stats.keyAt(i)), toJSONObject(stats.valueAt(i)));
       }
-      output.put("stats", stats);
+      output.put("stats", statsObj);
     }
 
     return output;
   }
 
-  private <V> JSONObject toJSONObject(@Nullable ArrayMap<String, V> arrayMap) throws JSONException {
-    JSONObject map = new JSONObject();
-    for (int i = 0, len = arrayMap == null ? 0 : arrayMap.size(); i < len; i++) {
-      V value = arrayMap.valueAt(i);
+  private static <V> JSONObject toJSONObject(@Nullable ArrayMap<String, V> map)
+      throws JSONException {
+    JSONObject mapObj = new JSONObject();
+    for (int i = 0, len = map == null ? 0 : map.size(); i < len; i++) {
+      V value = map.valueAt(i);
       if (value instanceof TimerMetrics) {
-        map.put(
-            arrayMap.keyAt(i),
+        mapObj.put(
+            map.keyAt(i),
             new JSONObject()
                 .put("count", ((TimerMetrics) value).count)
                 .put("time_ms", ((TimerMetrics) value).timeMs));
       } else if (value instanceof HealthStatsMetrics) {
-        map.put(arrayMap.keyAt(i), ((HealthStatsMetrics) value).toJSONObject());
+        mapObj.put(map.keyAt(i), ((HealthStatsMetrics) value).toJSONObject());
       } else {
-        map.put(arrayMap.keyAt(i), arrayMap.valueAt(i));
+        mapObj.put(map.keyAt(i), map.valueAt(i));
       }
     }
-    return map;
+    return mapObj;
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
     HealthStatsMetrics that = (HealthStatsMetrics) o;
-    return ((dataType == null && that.dataType == null) || dataType.equals(that.dataType))
-        && Arrays.equals(timerKeys, that.timerKeys)
-        && Arrays.equals(timerValues, that.timerValues)
-        && Arrays.equals(measurementKeys, that.measurementKeys)
-        && Arrays.equals(measurementValues, that.measurementValues)
-        && Arrays.equals(statsKeys, that.statsKeys)
-        && Arrays.equals(timersKeys, that.timersKeys)
-        && Arrays.equals(measurementsKeys, that.measurementsKeys)
-        && Arrays.equals(statsValues, that.statsValues)
-        && Arrays.equals(timersValues, that.timersValues)
-        && Arrays.equals(measurementsValues, that.measurementsValues);
+
+    if (dataType != null ? !dataType.equals(that.dataType) : that.dataType != null) return false;
+
+    return Utilities.sparseArrayEquals(measurement, that.measurement)
+        && Utilities.sparseArrayEquals(measurements, that.measurements)
+        && Utilities.sparseArrayEquals(timer, that.timer)
+        && Utilities.sparseArrayEquals(timers, that.timers)
+        && Utilities.sparseArrayEquals(stats, that.stats);
   }
 
   @Override
   public int hashCode() {
     int result = dataType != null ? dataType.hashCode() : 0;
-    result = 31 * result + Arrays.hashCode(timerKeys);
-    result = 31 * result + Arrays.hashCode(timerValues);
-    result = 31 * result + Arrays.hashCode(measurementKeys);
-    result = 31 * result + Arrays.hashCode(measurementValues);
-    result = 31 * result + Arrays.hashCode(statsKeys);
-    result = 31 * result + Arrays.hashCode(statsValues);
-    result = 31 * result + Arrays.hashCode(timersKeys);
-    result = 31 * result + Arrays.hashCode(timersValues);
-    result = 31 * result + Arrays.hashCode(measurementsKeys);
-    result = 31 * result + Arrays.hashCode(measurementsValues);
+    result = 31 * result + measurement.hashCode();
+    result = 31 * result + timer.hashCode();
+    result = 31 * result + measurements.hashCode();
+    result = 31 * result + timers.hashCode();
+    result = 31 * result + stats.hashCode();
     return result;
   }
 
-  private static boolean strEquals(String a, String b) {
+  private static boolean strEquals(@Nullable String a, @Nullable String b) {
     return a == null ? b == null : a.equals(b);
   }
+
 }

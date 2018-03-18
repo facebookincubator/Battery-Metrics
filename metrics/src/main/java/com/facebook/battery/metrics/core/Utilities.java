@@ -7,7 +7,9 @@
  */
 package com.facebook.battery.metrics.core;
 
+import android.support.annotation.Nullable;
 import android.support.v4.util.SimpleArrayMap;
+import android.util.SparseArray;
 
 /**
  * A static class with a collection of utilities that didn't quite fit anywhere else.
@@ -58,5 +60,29 @@ public abstract class Utilities {
     if (o == null) {
       throw new IllegalArgumentException(message);
     }
+  }
+
+  public static <V> boolean sparseArrayEquals(
+      @Nullable SparseArray<V> a, @Nullable SparseArray<V> b) {
+    if (a == b) {
+      return true;
+    }
+
+    if (a == null || b == null) {
+      return false;
+    }
+
+    if (a.size() != b.size()) {
+      return false;
+    }
+
+    for (int i = 0; i < a.size(); i++) {
+      int key = a.keyAt(i);
+      if (!a.get(key).equals(b.get(key))) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }
