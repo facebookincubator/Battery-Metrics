@@ -141,7 +141,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     }
     output.dataType = dataType;
 
-    if (b == null) {
+    if (b == null || compareSnapshotAge(this, b) < 0 /* short circuit if healthstats reset */) {
       output.set(this);
     } else if (!strEquals(b.dataType, dataType)) {
       throw new IllegalArgumentException(
@@ -158,6 +158,13 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     }
 
     return output;
+  }
+
+  /** Checks the age difference of snapshots, similar to String comparisons. */
+  private static long compareSnapshotAge(HealthStatsMetrics a, HealthStatsMetrics b) {
+    long aRealtimeBatteryMs = a.measurement.get(UidHealthStats.MEASUREMENT_REALTIME_BATTERY_MS, 0L);
+    long bRealtimeBatteryMs = b.measurement.get(UidHealthStats.MEASUREMENT_REALTIME_BATTERY_MS, 0L);
+    return aRealtimeBatteryMs - bRealtimeBatteryMs;
   }
 
   @VisibleForTesting

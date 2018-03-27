@@ -6,6 +6,7 @@ import static com.facebook.battery.metrics.healthstats.HealthStatsMetrics.OP_DIF
 import static com.facebook.battery.metrics.healthstats.HealthStatsMetrics.OP_SUM;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
+import android.os.health.UidHealthStats;
 import android.support.v4.util.ArrayMap;
 import android.util.SparseArray;
 import org.junit.Test;
@@ -166,6 +167,20 @@ public class HealthStatsMetricsTest {
     value.put("stats", new HealthStatsMetrics(expectedDiff));
     expectedDiff.stats.put(1234, value);
     assertThat(diff).isEqualTo(expectedDiff);
+  }
+
+  @Test
+  public void testDiffWithReset() {
+    HealthStatsMetrics a = createTestMetrics();
+    a.measurement.put(UidHealthStats.MEASUREMENT_REALTIME_BATTERY_MS, 100L);
+
+    HealthStatsMetrics b = createTestMetrics();
+    b.measurement.put(UidHealthStats.MEASUREMENT_REALTIME_BATTERY_MS, 200L);
+
+    HealthStatsMetrics output = a.diff(b, null);
+    HealthStatsMetrics expectedOutput = createTestMetrics();
+    expectedOutput.measurement.put(UidHealthStats.MEASUREMENT_REALTIME_BATTERY_MS, 100L);
+    assertThat(output).isEqualTo(expectedOutput);
   }
 
   private HealthStatsMetrics createTestMetrics() {
