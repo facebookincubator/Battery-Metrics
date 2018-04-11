@@ -76,10 +76,10 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
     }
 
     CpuMetrics lastSnapshot = mLastSnapshot.get();
-    if (snapshot.userTimeS < lastSnapshot.userTimeS
-        || snapshot.systemTimeS < lastSnapshot.systemTimeS
-        || snapshot.childUserTimeS < lastSnapshot.childUserTimeS
-        || snapshot.childSystemTimeS < lastSnapshot.childSystemTimeS) {
+    if (Double.compare(snapshot.userTimeS, lastSnapshot.userTimeS) < 0
+        || Double.compare(snapshot.systemTimeS, lastSnapshot.systemTimeS) < 0
+        || Double.compare(snapshot.childUserTimeS, lastSnapshot.childUserTimeS) < 0
+        || Double.compare(snapshot.childSystemTimeS, lastSnapshot.childSystemTimeS) < 0) {
       SystemMetricsLogger.wtf(
           TAG, "Cpu Time Decreased from " + lastSnapshot.toString() + " to " + snapshot.toString());
       return false;
