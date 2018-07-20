@@ -14,6 +14,8 @@ public class BluetoothMetrics extends SystemMetrics<BluetoothMetrics> {
 
   public int bleScanCount;
   public long bleScanDurationMs;
+  public int bleOpportunisticScanCount;
+  public long bleOpportunisticScanDurationMs;
 
   @Override
   public BluetoothMetrics sum(@Nullable BluetoothMetrics b, @Nullable BluetoothMetrics output) {
@@ -25,6 +27,9 @@ public class BluetoothMetrics extends SystemMetrics<BluetoothMetrics> {
     } else {
       output.bleScanCount = bleScanCount + b.bleScanCount;
       output.bleScanDurationMs = bleScanDurationMs + b.bleScanDurationMs;
+      output.bleOpportunisticScanCount = bleOpportunisticScanCount + b.bleOpportunisticScanCount;
+      output.bleOpportunisticScanDurationMs =
+          bleOpportunisticScanDurationMs + b.bleOpportunisticScanDurationMs;
     }
     return output;
   }
@@ -39,6 +44,9 @@ public class BluetoothMetrics extends SystemMetrics<BluetoothMetrics> {
     } else {
       output.bleScanCount = bleScanCount - b.bleScanCount;
       output.bleScanDurationMs = bleScanDurationMs - b.bleScanDurationMs;
+      output.bleOpportunisticScanCount = bleOpportunisticScanCount - b.bleOpportunisticScanCount;
+      output.bleOpportunisticScanDurationMs =
+          bleOpportunisticScanDurationMs - b.bleOpportunisticScanDurationMs;
     }
     return output;
   }
@@ -47,6 +55,8 @@ public class BluetoothMetrics extends SystemMetrics<BluetoothMetrics> {
   public BluetoothMetrics set(BluetoothMetrics b) {
     bleScanCount = b.bleScanCount;
     bleScanDurationMs = b.bleScanDurationMs;
+    bleOpportunisticScanCount = b.bleOpportunisticScanCount;
+    bleOpportunisticScanDurationMs = b.bleOpportunisticScanDurationMs;
     return this;
   }
 
@@ -59,16 +69,23 @@ public class BluetoothMetrics extends SystemMetrics<BluetoothMetrics> {
       return false;
     }
     BluetoothMetrics that = (BluetoothMetrics) o;
-    if (bleScanCount != that.bleScanCount) {
+    if (bleScanCount != that.bleScanCount
+        || bleScanDurationMs != that.bleScanDurationMs
+        || bleOpportunisticScanCount != that.bleOpportunisticScanCount
+        || bleOpportunisticScanDurationMs != that.bleOpportunisticScanDurationMs) {
       return false;
     }
-    return bleScanDurationMs == that.bleScanDurationMs;
+    return true;
   }
 
   @Override
   public int hashCode() {
     int result = bleScanCount;
     result = 31 * result + (int) (bleScanDurationMs ^ (bleScanDurationMs >>> 32));
+    result = 31 * result + bleOpportunisticScanCount;
+    result =
+        31 * result
+            + (int) (bleOpportunisticScanDurationMs ^ (bleOpportunisticScanDurationMs >>> 32));
     return result;
   }
 
@@ -79,6 +96,10 @@ public class BluetoothMetrics extends SystemMetrics<BluetoothMetrics> {
         + bleScanCount
         + ", bleScanDurationMs="
         + bleScanDurationMs
+        + ", bleOpportunisticScanCount="
+        + bleOpportunisticScanCount
+        + ", bleOpportunisticScanDurationMs="
+        + bleOpportunisticScanDurationMs
         + '}';
   }
 }

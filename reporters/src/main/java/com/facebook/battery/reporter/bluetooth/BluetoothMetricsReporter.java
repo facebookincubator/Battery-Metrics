@@ -14,6 +14,9 @@ public class BluetoothMetricsReporter implements SystemMetricsReporter<Bluetooth
 
   public static final String BLE_SCAN_COUNT = "ble_scan_count";
   public static final String BLE_SCAN_DURATION_MS = "ble_scan_duration_ms";
+  public static final String BLE_OPPORTUNISTIC_SCAN_COUNT = "ble_opportunistic_scan_count";
+  public static final String BLE_OPPORTUNISTIC_SCAN_DURATION_MS =
+      "ble_opportunistic_scan_duration_ms";
 
   @Override
   public void reportTo(BluetoothMetrics metrics, SystemMetricsReporter.Event event) {
@@ -23,6 +26,14 @@ public class BluetoothMetricsReporter implements SystemMetricsReporter<Bluetooth
 
     if (metrics.bleScanDurationMs != 0) {
       event.add(BLE_SCAN_DURATION_MS, metrics.bleScanDurationMs);
+    }
+
+    if (metrics.bleOpportunisticScanCount != 0) {
+      event.add(BLE_OPPORTUNISTIC_SCAN_COUNT, metrics.bleOpportunisticScanCount);
+    }
+
+    if (metrics.bleScanDurationMs != 0) {
+      event.add(BLE_OPPORTUNISTIC_SCAN_DURATION_MS, metrics.bleOpportunisticScanDurationMs);
     }
   }
 }

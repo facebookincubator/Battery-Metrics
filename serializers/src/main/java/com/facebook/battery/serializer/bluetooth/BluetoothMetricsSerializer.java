@@ -19,12 +19,16 @@ public class BluetoothMetricsSerializer extends SystemMetricsSerializer<Bluetoot
   public void serializeContents(BluetoothMetrics metrics, DataOutput output) throws IOException {
     output.writeInt(metrics.bleScanCount);
     output.writeLong(metrics.bleScanDurationMs);
+    output.writeInt(metrics.bleOpportunisticScanCount);
+    output.writeLong(metrics.bleOpportunisticScanDurationMs);
   }
 
   @Override
   public boolean deserializeContents(BluetoothMetrics metrics, DataInput input) throws IOException {
     metrics.bleScanCount = input.readInt();
     metrics.bleScanDurationMs = input.readLong();
+    metrics.bleOpportunisticScanCount = input.readInt();
+    metrics.bleOpportunisticScanDurationMs = input.readLong();
     return true;
   }
 }
