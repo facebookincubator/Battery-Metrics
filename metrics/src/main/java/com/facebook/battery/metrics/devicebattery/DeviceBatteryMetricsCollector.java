@@ -63,6 +63,7 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
     intentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
 
     // Register the receiver for power connected and disconnected
+    // This is not very accurate after targeting SDK 26
     context.registerReceiver(
         new BroadcastReceiver() {
           @Override
