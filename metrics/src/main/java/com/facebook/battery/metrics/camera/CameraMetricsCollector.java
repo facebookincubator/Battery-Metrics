@@ -16,6 +16,7 @@ import android.hardware.camera2.CaptureRequest;
 import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.annotation.GuardedBy;
 import android.util.SparseArray;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
@@ -45,17 +46,30 @@ import com.facebook.infer.annotation.ThreadSafe;
 public class CameraMetricsCollector extends SystemMetricsCollector<CameraMetrics> {
   private static final String TAG = "CameraMetricsCollector";
 
+  @GuardedBy("this")
   private final SparseArray<Long> mCameraOpenTimes = new SparseArray<>();
+
+  @GuardedBy("this")
   private final SparseArray<Long> mCameraPreviewTimes = new SparseArray<>();
 
+  @GuardedBy("this")
   private long mTotalCameraOpenTimeMs;
+
+  @GuardedBy("this")
   private long mTotalCameraPreviewTimeMs;
+
+  @GuardedBy("this")
+  private boolean mIsEnabled = true;
 
   public CameraMetricsCollector() {}
 
   @Override
   public synchronized boolean getSnapshot(CameraMetrics snapshot) {
     checkNotNull(snapshot, "Null value passed to getSnapshot!");
+    if (!mIsEnabled) {
+      return false;
+    }
+
     long timestampMs = SystemClock.uptimeMillis();
     snapshot.cameraOpenTimeMs =
         mTotalCameraOpenTimeMs + sumElapsedTime(timestampMs, mCameraOpenTimes);
@@ -69,28 +83,59 @@ public class CameraMetricsCollector extends SystemMetricsCollector<CameraMetrics
     return new CameraMetrics();
   }
 
+  /**
+   * Stop collecting any data and clear all saved information: note that this is only one way and
+   * metric collection can't be started again after starting the collector.
+   */
+  public synchronized void disable() {
+    mIsEnabled = false;
+
+    mCameraOpenTimes.clear();
+    mCameraPreviewTimes.clear();
+  }
+
   public synchronized void recordCameraOpen(Object camera) {
+    if (!mIsEnabled) {
+      return;
+    }
+
     validateArgument(camera);
     startRecord(System.identityHashCode(camera), mCameraOpenTimes);
   }
 
   public synchronized void recordCameraClose(Object camera) {
+    if (!mIsEnabled) {
+      return;
+    }
+
     validateArgument(camera);
     mTotalCameraOpenTimeMs += stopRecord(System.identityHashCode(camera), mCameraOpenTimes);
   }
 
   public synchronized void recordPreviewStart(Object camera) {
+    if (!mIsEnabled) {
+      return;
+    }
+
     validateArgument(camera);
     startRecord(System.identityHashCode(camera), mCameraPreviewTimes);
   }
 
   public synchronized void recordPreviewStop(Object camera) {
+    if (!mIsEnabled) {
+      return;
+    }
+
     validateArgument(camera);
     mTotalCameraPreviewTimeMs += stopRecord(System.identityHashCode(camera), mCameraPreviewTimes);
   }
 
   // On a camera error, stop logging for camera open and preview times
   public synchronized void recordCameraError(Object camera) {
+    if (!mIsEnabled) {
+      return;
+    }
+
     validateArgument(camera);
     int cameraHash = System.identityHashCode(camera);
     mCameraOpenTimes.delete(cameraHash);

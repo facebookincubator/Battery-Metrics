@@ -59,6 +59,8 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
 
   @GuardedBy("this")
   private int mActiveWakeLocks;
+
+  @GuardedBy("this")
   private boolean mIsEnabled = true;
 
   public synchronized void newWakeLock(

@@ -8,18 +8,43 @@
 package com.facebook.battery.metrics.camera;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 import android.hardware.Camera;
 import com.facebook.battery.metrics.core.ShadowSystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
+import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 @RunWith(RobolectricTestRunner.class)
-@org.robolectric.annotation.Config(shadows = {ShadowSystemClock.class})
+@Config(shadows = {ShadowSystemClock.class})
 public class CameraMetricsCollectorTest
     extends SystemMetricsCollectorTest<CameraMetrics, CameraMetricsCollector> {
+
+  @Test
+  public void testDisabling() {
+    SystemMetricsLogger.Delegate mockDelegate = mock(SystemMetricsLogger.Delegate.class);
+    SystemMetricsLogger.setDelegate(mockDelegate);
+
+    CameraMetrics metrics = new CameraMetrics();
+    Camera testCamera = Camera.open();
+    CameraMetricsCollector collector = new CameraMetricsCollector();
+
+    collector.recordCameraOpen(testCamera);
+    assertThat(collector.getSnapshot(metrics)).isTrue();
+
+    collector.disable();
+    assertThat(collector.getSnapshot(metrics)).isFalse();
+
+    // Sanity check no exceptions after disabling
+    collector.recordPreviewStop(testCamera);
+    collector.recordCameraClose(testCamera);
+    verifyZeroInteractions(mockDelegate);
+  }
 
   @Test
   public void testSimpleOpenSnapshot() {
