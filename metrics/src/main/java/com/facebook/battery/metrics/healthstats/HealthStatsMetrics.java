@@ -95,11 +95,11 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
 
   public String dataType;
 
-  final SparseArray<Long> measurement = new SparseArray<>();
-  final SparseArray<TimerMetrics> timer = new SparseArray<>();
-  final SparseArray<ArrayMap<String, Long>> measurements = new SparseArray<>();
-  final SparseArray<ArrayMap<String, TimerMetrics>> timers = new SparseArray<>();
-  final SparseArray<ArrayMap<String, HealthStatsMetrics>> stats = new SparseArray<>();
+  public final SparseArray<Long> measurement = new SparseArray<>();
+  public final SparseArray<TimerMetrics> timer = new SparseArray<>();
+  public final SparseArray<ArrayMap<String, Long>> measurements = new SparseArray<>();
+  public final SparseArray<ArrayMap<String, TimerMetrics>> timers = new SparseArray<>();
+  public final SparseArray<ArrayMap<String, HealthStatsMetrics>> stats = new SparseArray<>();
 
   public HealthStatsMetrics() {}
 
