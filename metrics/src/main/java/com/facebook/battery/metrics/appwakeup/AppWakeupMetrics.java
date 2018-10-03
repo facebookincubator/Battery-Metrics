@@ -11,6 +11,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.battery.metrics.core.Utilities;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * This class contains the metrics to measure the usage of different background scheduling
@@ -86,25 +90,7 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
 
     AppWakeupMetrics that = (AppWakeupMetrics) o;
 
-    // SimpleArrayMap has a broken equals implementation up till
-    // https://github.com/android/platform_frameworks_support/commit/5b6d31ca0497e11d9af12810fefbc81a88f75d22?diff=split
-    // Explicitly extracted the relevant comparison code accordingly.
-    if (this.appWakeups.size() != that.appWakeups.size()) {
-      return false;
-    }
-    for (int i = 0; i < appWakeups.size(); i++) {
-      String key = appWakeups.keyAt(i);
-      WakeupDetails mine = appWakeups.valueAt(i);
-      WakeupDetails theirs = that.appWakeups.get(key);
-      if (mine == null) {
-        if (theirs != null || !that.appWakeups.containsKey(key)) {
-          return false;
-        }
-      } else if (!mine.equals(theirs)) {
-        return false;
-      }
-    }
-    return true;
+    return Utilities.simpleArrayMapEquals(this.appWakeups, that.appWakeups);
   }
 
   @Override
@@ -119,6 +105,20 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
       sb.append(appWakeups.keyAt(i)).append(": ").append(appWakeups.valueAt(i)).append(", ");
     }
     return sb.toString();
+  }
+
+  public JSONArray toJSON() throws JSONException {
+    JSONArray jsonArray = new JSONArray();
+    for (int i = 0; i < appWakeups.size(); i++) {
+      JSONObject obj = new JSONObject();
+      AppWakeupMetrics.WakeupDetails details = appWakeups.valueAt(i);
+      obj.put("key", appWakeups.keyAt(i));
+      obj.put("type", details.reason.toString());
+      obj.put("count", details.count);
+      obj.put("time_ms", details.wakeupTimeMs);
+      jsonArray.put(obj);
+    }
+    return jsonArray;
   }
 
   /**
