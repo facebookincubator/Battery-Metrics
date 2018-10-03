@@ -8,7 +8,7 @@
 package com.facebook.battery.serializer.bluetooth;
 
 import com.facebook.battery.metrics.bluetooth.BluetoothMetrics;
-import com.facebook.battery.serializer.common.SystemMetricsSerializer;
+import com.facebook.battery.serializer.core.SystemMetricsSerializer;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;

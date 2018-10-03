@@ -9,8 +9,8 @@ package com.facebook.battery.serializer.healthstats;
 
 import android.support.v4.util.ArrayMap;
 import com.facebook.battery.metrics.healthstats.HealthStatsMetrics;
-import com.facebook.battery.serializer.common.SystemMetricsSerializer;
-import com.facebook.battery.serializer.common.SystemMetricsSerializerTest;
+import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.battery.serializer.core.SystemMetricsSerializerTest;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 

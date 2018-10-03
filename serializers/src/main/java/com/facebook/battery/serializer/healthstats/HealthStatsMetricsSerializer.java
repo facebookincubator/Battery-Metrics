@@ -13,7 +13,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.util.ArrayMap;
 import com.facebook.battery.metrics.healthstats.HealthStatsMetrics;
 import com.facebook.battery.metrics.healthstats.HealthStatsMetrics.TimerMetrics;
-import com.facebook.battery.serializer.common.SystemMetricsSerializer;
+import com.facebook.battery.serializer.core.SystemMetricsSerializer;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;

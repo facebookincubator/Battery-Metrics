@@ -11,8 +11,8 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import com.facebook.battery.metrics.composite.CompositeMetrics;
 import com.facebook.battery.metrics.time.TimeMetrics;
-import com.facebook.battery.serializer.common.SystemMetricsSerializer;
-import com.facebook.battery.serializer.common.SystemMetricsSerializerTest;
+import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.battery.serializer.core.SystemMetricsSerializerTest;
 import com.facebook.battery.serializer.time.TimeMetricsSerializer;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

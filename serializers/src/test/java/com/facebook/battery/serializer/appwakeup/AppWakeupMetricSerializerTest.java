@@ -11,8 +11,8 @@ import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupDeta
 import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupReason;
 
 import com.facebook.battery.metrics.appwakeup.AppWakeupMetrics;
-import com.facebook.battery.serializer.common.SystemMetricsSerializer;
-import com.facebook.battery.serializer.common.SystemMetricsSerializerTest;
+import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.battery.serializer.core.SystemMetricsSerializerTest;
 
 public class AppWakeupMetricSerializerTest extends SystemMetricsSerializerTest<AppWakeupMetrics> {
 
