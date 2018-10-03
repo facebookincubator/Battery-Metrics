@@ -29,11 +29,13 @@ import com.facebook.battery.reporter.composite.CompositeMetricsReporter;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
 import com.facebook.battery.reporter.cpu.CpuFrequencyMetricsReporter;
 import com.facebook.battery.reporter.cpu.CpuMetricsReporter;
+import com.facebook.battery.reporter.healthstats.HealthStatsMetricsReporter;
 import com.facebook.battery.reporter.network.NetworkMetricsReporter;
 import com.facebook.battery.reporter.time.TimeMetricsReporter;
 import com.facebook.battery.serializer.composite.CompositeMetricsSerializer;
 import com.facebook.battery.serializer.cpu.CpuFrequencyMetricsSerializer;
 import com.facebook.battery.serializer.cpu.CpuMetricsSerializer;
+import com.facebook.battery.serializer.healthstats.HealthStatsMetricsSerializer;
 import com.facebook.battery.serializer.network.NetworkMetricsSerializer;
 import com.facebook.battery.serializer.time.TimeMetricsSerializer;
 import java.io.*;
@@ -75,7 +77,6 @@ public class BatteryApplication extends Application
             .addMetricsCollector(CpuFrequencyMetrics.class, new CpuFrequencyMetricsCollector())
             .addMetricsCollector(CpuMetrics.class, new CpuMetricsCollector())
             .addMetricsCollector(NetworkMetrics.class, new NetworkMetricsCollector(this));
-
     if (Build.VERSION.SDK_INT >= 24) {
       collectorBuilder.addMetricsCollector(
           HealthStatsMetrics.class, new HealthStatsMetricsCollector(this));
@@ -90,12 +91,21 @@ public class BatteryApplication extends Application
             .addMetricsReporter(CpuMetrics.class, new CpuMetricsReporter())
             .addMetricsReporter(CpuFrequencyMetrics.class, new CpuFrequencyMetricsReporter())
             .addMetricsReporter(NetworkMetrics.class, new NetworkMetricsReporter());
+    if (Build.VERSION.SDK_INT >= 24) {
+      mMetricsReporter.addMetricsReporter(
+          HealthStatsMetrics.class, new HealthStatsMetricsReporter());
+    }
+
     mMetricsSerializer =
         new CompositeMetricsSerializer()
             .addMetricsSerializer(TimeMetrics.class, new TimeMetricsSerializer())
             .addMetricsSerializer(CpuMetrics.class, new CpuMetricsSerializer())
             .addMetricsSerializer(CpuFrequencyMetrics.class, new CpuFrequencyMetricsSerializer())
             .addMetricsSerializer(NetworkMetrics.class, new NetworkMetricsSerializer());
+    if (Build.VERSION.SDK_INT >= 24) {
+      mMetricsSerializer.addMetricsSerializer(
+          HealthStatsMetrics.class, new HealthStatsMetricsSerializer());
+    }
 
     // Note -- The stateful collector is a useful abstraction that maintains state about when it
     //         was last triggered, making it simple to observe changes since the last call.
