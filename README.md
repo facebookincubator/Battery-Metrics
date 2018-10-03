@@ -9,9 +9,6 @@ As a developer, it's surprisingly hard to understand how your application affect
 
 The library helps instrument hardware utilization to be able to understand how the application is behaving -- most of the underlying hardware metrics are either exposed by the OS, or not directly accessible -- which is where this library comes into play. We've written several metrics collectors that read from procfiles, or provide a consistent way to call into to instrument your application.
 
-## Alpha
-This is an initial release coinciding with our tech talk at Mobile@Scale Boston to get feedback, tweak the API and make the library more useful; we'll firm up the code and keep tweaking it till a full release of the library. Make sure to check out our [roadmap](https://github.com/facebookincubator/Battery-Metrics/blob/master/docs/roadmap.md) to help us prioritize!
-
 ## Adding BatteryMetrics
 
 Add `jcenter` to your repositories –
@@ -26,9 +23,9 @@ And add dependencies on the projects you'd like to use in `build.gradle` –
 
 ```groovy
 dependencies {
-    implementation 'com.facebook.battery:metrics:0.0.1'
-    implementation 'com.facebook.battery:reporters:0.0.1' // optional
-    implementation 'com.facebook.battery:serializers:0.0.1' // optional
+    implementation 'com.facebook.battery:metrics:1.0.0'
+    implementation 'com.facebook.battery:reporters:1.0.0'   // optional
+    implementation 'com.facebook.battery:serializers:1.0.0' // optional
 }
 ```
 
