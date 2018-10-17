@@ -116,4 +116,19 @@ public class CompositeMetricsTest extends SystemMetricsTest<CompositeMetrics> {
     assertThat(diff.isValid(TimeMetrics.class)).isFalse();
     assertThat(diff.isValid(CpuMetrics.class)).isFalse();
   }
+
+  @Test
+  public void testValidInvalidSum() throws Exception {
+    CompositeMetrics metricsA = createInitializedInstance();
+    CompositeMetrics metricsB = createInitializedInstance();
+    metricsA.setIsValid(TimeMetrics.class, false);
+
+    CompositeMetrics sum = createInstance();
+    metricsA.sum(metricsB, sum);
+
+    assertThat(sum.getMetrics().size()).isEqualTo(1);
+    assertThat(sum.getMetric(TimeMetrics.class).realtimeMs).isEqualTo(100);
+    assertThat(sum.getMetric(TimeMetrics.class).uptimeMs).isEqualTo(200);
+    assertThat(sum.isValid(TimeMetrics.class)).isTrue();
+  }
 }

@@ -48,6 +48,11 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
     return result;
   }
 
+  /**
+   * Add the metrics from the given input metric set and store the result in the output object.
+   * Invalid metrics are treated as zeros. The output metric will be invalid only if both input
+   * metrics are invalid.
+   */
   @Override
   public CompositeMetrics sum(@Nullable CompositeMetrics b, CompositeMetrics result) {
     if (result == null) {
@@ -59,13 +64,19 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
     } else {
       for (int i = 0, size = mMetricsMap.size(); i < size; i++) {
         Class c = mMetricsMap.keyAt(i);
-        boolean valid = isValid(c) && b.isValid(c);
+        boolean valid = true;
 
-        if (valid) {
+        if (isValid(c) && b.isValid(c)) {
           SystemMetrics resultMetric = result.getMetric(c);
           if (resultMetric != null) {
             getMetric(c).sum(b.getMetric(c), resultMetric);
           }
+        } else if (isValid(c)) {
+          result.getMetric(c).set(getMetric(c));
+        } else if (b.isValid(c)) {
+          result.getMetric(c).set(b.getMetric(c));
+        } else {
+          valid = false;
         }
         result.setIsValid(c, valid);
       }
@@ -98,6 +109,10 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
     return metricsClass.cast(mMetricsMap.get(metricsClass));
   }
 
+  /**
+   * Indicates whether metric collection for a specific metric succeeded. This allows metric
+   * collection and reporting to continue even if some of the metric collectors fail.
+   */
   public boolean isValid(Class c) {
     Boolean value = mMetricsValid.get(c);
     return value != null && value;
