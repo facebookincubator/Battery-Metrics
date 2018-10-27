@@ -7,7 +7,6 @@
  */
 package com.facebook.battery.metrics.network;
 
-import static com.facebook.battery.metrics.network.RadioStateCollector.RadioMonitor;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -17,13 +16,13 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
-public class RadioMonitorTest {
+public class MonotonicRadioMonitorTest {
 
   private static final int WAKEUP_INTERVAL_S = 10;
 
   @Test
   public void testRadioNeverActive() throws Exception {
-    RadioMonitor radioMonitor = new RadioMonitor(WAKEUP_INTERVAL_S);
+    MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
     final int radioActiveS = getRadioActiveS(radioMonitor);
     assertThat(radioActiveS, is(0));
@@ -32,7 +31,7 @@ public class RadioMonitorTest {
 
   @Test
   public void testSingleRadioActive() throws Exception {
-    RadioMonitor radioMonitor = new RadioMonitor(WAKEUP_INTERVAL_S);
+    MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
     int radioActiveS = radioMonitor.onRadioActivate(0L, 3000L);
 
@@ -43,7 +42,7 @@ public class RadioMonitorTest {
 
   @Test
   public void testMultipleSequentialRadioActive() throws Exception {
-    RadioMonitor radioMonitor = new RadioMonitor(WAKEUP_INTERVAL_S);
+    MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
     int firstRadioActiveS = radioMonitor.onRadioActivate(0L, 2000L);
     assertThat(firstRadioActiveS, is(0));
@@ -63,7 +62,7 @@ public class RadioMonitorTest {
 
   @Test
   public void testMultipleSequentialAfterTailRadioActive() throws Exception {
-    RadioMonitor radioMonitor = new RadioMonitor(WAKEUP_INTERVAL_S);
+    MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
     int firstRadioActiveS = radioMonitor.onRadioActivate(0L, 2000L);
     assertThat(firstRadioActiveS, is(0));
@@ -84,7 +83,7 @@ public class RadioMonitorTest {
 
   @Test
   public void testMultipleParallelRadioActiveFirstEndBeforeSecond() throws Exception {
-    RadioMonitor radioMonitor = new RadioMonitor(WAKEUP_INTERVAL_S);
+    MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
     int firstRadioActiveS = radioMonitor.onRadioActivate(1000L, 2000L);
     assertThat(firstRadioActiveS, is(0));
@@ -99,7 +98,7 @@ public class RadioMonitorTest {
 
   @Test
   public void testMultipleParallelRadioActiveFirstEndWithSecond() throws Exception {
-    RadioMonitor radioMonitor = new RadioMonitor(WAKEUP_INTERVAL_S);
+    MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
     int firstRadioActiveS = radioMonitor.onRadioActivate(1000L, 3000L);
     assertThat(firstRadioActiveS, is(0));
@@ -114,7 +113,7 @@ public class RadioMonitorTest {
 
   @Test
   public void testMultipleParallelRadioActiveFirstEndAfterSecond() throws Exception {
-    RadioMonitor radioMonitor = new RadioMonitor(WAKEUP_INTERVAL_S);
+    MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
     int firstRadioActiveS = radioMonitor.onRadioActivate(1000L, 4000L);
     assertThat(firstRadioActiveS, is(0));
@@ -129,7 +128,7 @@ public class RadioMonitorTest {
 
   @Test
   public void testMixedRadioActive() throws Exception {
-    RadioMonitor radioMonitor = new RadioMonitor(WAKEUP_INTERVAL_S);
+    MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
     radioMonitor.onRadioActivate(1000L, 4000L);
     radioMonitor.onRadioActivate(2000L, 3000L);
@@ -144,8 +143,8 @@ public class RadioMonitorTest {
     assertThat(radioMonitor.mWakeupCounter.get(), is(3));
   }
 
-  private static int getRadioActiveS(RadioMonitor radioMonitor) {
+  private static int getRadioActiveS(MonotonicRadioMonitor radioMonitor) {
     final long totals = radioMonitor.mNextIdleTimeActive.get();
-    return RadioMonitor.totalTxS(totals) + RadioMonitor.totalTailS(totals);
+    return MonotonicRadioMonitor.totalTxS(totals) + MonotonicRadioMonitor.totalTailS(totals);
   }
 }
