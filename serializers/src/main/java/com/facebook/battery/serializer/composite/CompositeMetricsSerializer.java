@@ -28,6 +28,18 @@ public class CompositeMetricsSerializer extends SystemMetricsSerializer<Composit
 
   public <T extends SystemMetrics<T>> CompositeMetricsSerializer addMetricsSerializer(
       Class<T> metricsClass, SystemMetricsSerializer<T> serializer) {
+    Class<? extends SystemMetrics<?>> existingClass = mDeserializerClasses.get(serializer.getTag());
+    if (existingClass != null && existingClass != metricsClass) {
+      throw new RuntimeException(
+          "Serializers "
+              + existingClass.getCanonicalName()
+              + " and "
+              + metricsClass.getCanonicalName()
+              + " have a conflicting tag: `"
+              + serializer.getTag()
+              + "`.");
+    }
+
     mSerializers.put(metricsClass, serializer);
     mDeserializers.put(serializer.getTag(), serializer);
     mDeserializerClasses.put(serializer.getTag(), metricsClass);

@@ -9,15 +9,20 @@ package com.facebook.battery.serializer.composite;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
+import android.support.annotation.Nullable;
 import com.facebook.battery.metrics.composite.CompositeMetrics;
+import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.time.TimeMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
 import com.facebook.battery.serializer.core.SystemMetricsSerializerTest;
 import com.facebook.battery.serializer.time.TimeMetricsSerializer;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
 import java.io.DataInputStream;
+import java.io.DataOutput;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -57,6 +62,13 @@ public class CompositeMetricsSerializerTest extends SystemMetricsSerializerTest<
     assertThat(metrics.isValid(TimeMetrics.class)).isFalse();
   }
 
+  @Test(expected = RuntimeException.class)
+  public void testMetricsWithTheSameTag() {
+    CompositeMetricsSerializer serializer = new CompositeMetricsSerializer();
+    serializer.addMetricsSerializer(A.class, new ASerializer());
+    serializer.addMetricsSerializer(B.class, new BSerializer());
+  }
+
   @Override
   protected Class<CompositeMetrics> getClazz() {
     return CompositeMetrics.class;
@@ -80,5 +92,73 @@ public class CompositeMetricsSerializerTest extends SystemMetricsSerializerTest<
   @Override
   protected CompositeMetrics createInstance() throws Exception {
     return new CompositeMetrics().putMetric(TimeMetrics.class, new TimeMetrics());
+  }
+}
+
+class A extends SystemMetrics<A> {
+
+  @Override
+  public A sum(@Nullable A b, @Nullable A output) {
+    return null;
+  }
+
+  @Override
+  public A diff(@Nullable A b, @Nullable A output) {
+    return null;
+  }
+
+  @Override
+  public A set(A b) {
+    return null;
+  }
+}
+
+class B extends SystemMetrics<B> {
+
+  @Override
+  public B sum(@Nullable B b, @Nullable B output) {
+    return null;
+  }
+
+  @Override
+  public B diff(@Nullable B b, @Nullable B output) {
+    return null;
+  }
+
+  @Override
+  public B set(B b) {
+    return null;
+  }
+}
+
+class ASerializer extends SystemMetricsSerializer<A> {
+
+  @Override
+  public long getTag() {
+    return 1337;
+  }
+
+  @Override
+  public void serializeContents(A metrics, DataOutput output) throws IOException {}
+
+  @Override
+  public boolean deserializeContents(A metrics, DataInput input) throws IOException {
+    return false;
+  }
+}
+
+class BSerializer extends SystemMetricsSerializer<B> {
+
+  @Override
+  public long getTag() {
+    return 1337;
+  }
+
+  @Override
+  public void serializeContents(B metrics, DataOutput output) throws IOException {}
+
+  @Override
+  public boolean deserializeContents(B metrics, DataInput input) throws IOException {
+    return false;
   }
 }
