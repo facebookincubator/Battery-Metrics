@@ -15,6 +15,13 @@ import java.io.IOException;
 
 public class WakeLockMetricsSerializer extends SystemMetricsSerializer<WakeLockMetrics> {
 
+  private static final long serialVersionUID = -153197510099727452L;
+
+  @Override
+  public long getTag() {
+    return serialVersionUID;
+  }
+
   @Override
   public void serializeContents(WakeLockMetrics metrics, DataOutput output) throws IOException {
     output.writeLong(metrics.heldTimeMs);

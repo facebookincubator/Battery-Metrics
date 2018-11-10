@@ -18,6 +18,13 @@ import java.io.IOException;
 
 public class AppWakeupMetricsSerializer extends SystemMetricsSerializer<AppWakeupMetrics> {
 
+  private static final long serialVersionUID = -3421285698064072703L;
+
+  @Override
+  public long getTag() {
+    return serialVersionUID;
+  }
+
   @Override
   public void serializeContents(AppWakeupMetrics metrics, DataOutput output) throws IOException {
     output.writeInt(metrics.appWakeups.size());

@@ -15,6 +15,13 @@ import java.io.IOException;
 
 public class CpuMetricsSerializer extends SystemMetricsSerializer<CpuMetrics> {
 
+  private static final long serialVersionUID = 2353414016265691865L;
+
+  @Override
+  public long getTag() {
+    return serialVersionUID;
+  }
+
   @Override
   public void serializeContents(CpuMetrics metrics, DataOutput output) throws IOException {
     output.writeDouble(metrics.userTimeS);

@@ -8,7 +8,6 @@
 package com.facebook.battery.serializer.composite;
 
 import android.support.v4.util.SimpleArrayMap;
-import android.util.SparseArray;
 import com.facebook.battery.metrics.composite.CompositeMetrics;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
@@ -18,12 +17,14 @@ import java.io.IOException;
 
 public class CompositeMetricsSerializer extends SystemMetricsSerializer<CompositeMetrics> {
 
+  private static final long serialVersionUID = -3137023965338009377L;
+
   private final SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetricsSerializer<?>>
       mSerializers = new SimpleArrayMap<>();
-  private final SparseArray<SystemMetricsSerializer<? extends SystemMetrics<?>>> mDeserializers =
-      new SparseArray<>();
-  private final SparseArray<Class<? extends SystemMetrics<?>>> mDeserializerClasses =
-      new SparseArray<>();
+  private final SimpleArrayMap<Long, SystemMetricsSerializer<? extends SystemMetrics<?>>>
+      mDeserializers = new SimpleArrayMap<>();
+  private final SimpleArrayMap<Long, Class<? extends SystemMetrics<?>>> mDeserializerClasses =
+      new SimpleArrayMap<>();
 
   public <T extends SystemMetrics<T>> CompositeMetricsSerializer addMetricsSerializer(
       Class<T> metricsClass, SystemMetricsSerializer<T> serializer) {
@@ -31,6 +32,11 @@ public class CompositeMetricsSerializer extends SystemMetricsSerializer<Composit
     mDeserializers.put(serializer.getTag(), serializer);
     mDeserializerClasses.put(serializer.getTag(), metricsClass);
     return this;
+  }
+
+  @Override
+  public long getTag() {
+    return serialVersionUID;
   }
 
   @Override
@@ -47,7 +53,7 @@ public class CompositeMetricsSerializer extends SystemMetricsSerializer<Composit
       Class metricsClass = mSerializers.keyAt(i);
       if (metrics.isValid(metricsClass)) {
         SystemMetricsSerializer serializer = mSerializers.valueAt(i);
-        output.writeInt(serializer.getTag());
+        output.writeLong(serializer.getTag());
         serializer.serializeContents(metrics.getMetric(metricsClass), output);
       }
     }
@@ -63,7 +69,7 @@ public class CompositeMetricsSerializer extends SystemMetricsSerializer<Composit
 
     int size = input.readInt();
     for (int i = 0; i < size; i++) {
-      int tag = input.readInt();
+      long tag = input.readLong();
       SystemMetricsSerializer deserializer = mDeserializers.get(tag);
       Class<? extends SystemMetrics> metricsClass = mDeserializerClasses.get(tag);
       if (deserializer == null || metricsClass == null) {

@@ -15,6 +15,13 @@ import java.io.IOException;
 
 public class CameraMetricsSerializer extends SystemMetricsSerializer<CameraMetrics> {
 
+  private static final long serialVersionUID = -5544646103548483595L;
+
+  @Override
+  public long getTag() {
+    return serialVersionUID;
+  }
+
   @Override
   public void serializeContents(CameraMetrics metrics, DataOutput output) throws IOException {
     output.writeLong(metrics.cameraOpenTimeMs);

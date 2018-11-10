@@ -15,6 +15,13 @@ import java.io.IOException;
 
 public class TimeMetricsSerializer extends SystemMetricsSerializer<TimeMetrics> {
 
+  private static final long serialVersionUID = 4345974300167284411L;
+
+  @Override
+  public long getTag() {
+    return serialVersionUID;
+  }
+
   @Override
   public void serializeContents(TimeMetrics metrics, DataOutput output) throws IOException {
     output.writeLong(metrics.realtimeMs);

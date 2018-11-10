@@ -15,6 +15,13 @@ import java.io.IOException;
 
 public class DeviceBatteryMetricsSerializer extends SystemMetricsSerializer<DeviceBatteryMetrics> {
 
+  private static final long serialVersionUID = -2269842438411178483L;
+
+  @Override
+  public long getTag() {
+    return serialVersionUID;
+  }
+
   @Override
   public void serializeContents(DeviceBatteryMetrics metrics, DataOutput output)
       throws IOException {

@@ -15,6 +15,13 @@ import java.io.IOException;
 
 public class NetworkMetricsSerializer extends SystemMetricsSerializer<NetworkMetrics> {
 
+  private static final long serialVersionUID = -2479634339626480691L;
+
+  @Override
+  public long getTag() {
+    return serialVersionUID;
+  }
+
   @Override
   public void serializeContents(NetworkMetrics metrics, DataOutput output) throws IOException {
     output.writeLong(metrics.mobileBytesRx);

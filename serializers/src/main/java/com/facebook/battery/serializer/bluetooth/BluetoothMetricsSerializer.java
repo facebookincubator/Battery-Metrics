@@ -15,6 +15,13 @@ import java.io.IOException;
 
 public class BluetoothMetricsSerializer extends SystemMetricsSerializer<BluetoothMetrics> {
 
+  private static final long serialVersionUID = -4085774432413599882L;
+
+  @Override
+  public long getTag() {
+    return serialVersionUID;
+  }
+
   @Override
   public void serializeContents(BluetoothMetrics metrics, DataOutput output) throws IOException {
     output.writeInt(metrics.bleScanCount);

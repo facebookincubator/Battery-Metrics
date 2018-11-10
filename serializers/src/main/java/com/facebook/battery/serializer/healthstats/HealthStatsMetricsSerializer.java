@@ -21,6 +21,13 @@ import java.io.IOException;
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class HealthStatsMetricsSerializer extends SystemMetricsSerializer<HealthStatsMetrics> {
 
+  private static final long serialVersionUID = -874523681867511420L;
+
+  @Override
+  public long getTag() {
+    return serialVersionUID;
+  }
+
   @Override
   public void serializeContents(HealthStatsMetrics metrics, DataOutput output) throws IOException {
     writeString(metrics.dataType, output);

@@ -16,6 +16,13 @@ import java.io.IOException;
 
 public class CpuFrequencyMetricsSerializer extends SystemMetricsSerializer<CpuFrequencyMetrics> {
 
+  private static final long serialVersionUID = -1864103899603750951L;
+
+  @Override
+  public long getTag() {
+    return serialVersionUID;
+  }
+
   @Override
   public void serializeContents(CpuFrequencyMetrics metrics, DataOutput output) throws IOException {
     int cores = metrics.timeInStateS.length;

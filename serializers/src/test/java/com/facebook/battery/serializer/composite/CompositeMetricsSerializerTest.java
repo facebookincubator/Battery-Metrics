@@ -32,7 +32,7 @@ public class CompositeMetricsSerializerTest extends SystemMetricsSerializerTest<
     getSerializer().serialize(instance, new DataOutputStream(baos));
 
     byte[] byteArray = baos.toByteArray();
-    byteArray[13] = (byte) (byteArray[13] + 1); // break the tag for TimeMetrics
+    byteArray[21] = (byte) (byteArray[13] + 1); // break the tag for TimeMetrics
 
     CompositeMetrics metrics = createInstance();
     assertThat(getSerializer()
