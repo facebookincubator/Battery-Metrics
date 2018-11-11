@@ -152,6 +152,10 @@ class ProcFileReader {
       isFirstRun = false;
     }
 
+    if (isFirstRun) {
+      throw new ParseException("Couldn't read number because the file ended!");
+    }
+
     return result;
   }
 

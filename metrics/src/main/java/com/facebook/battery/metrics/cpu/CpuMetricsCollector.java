@@ -60,8 +60,8 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
       }
 
       int index = 0;
-      while (reader.hasNext() && index < PROC_USER_TIME_FIELD) {
-        readField(reader);
+      while (index < PROC_USER_TIME_FIELD) {
+        reader.skipSpaces();
         index++;
       }
 
@@ -101,8 +101,8 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
     return Initializer.CLOCK_TICKS_PER_SECOND;
   }
 
-  private static long readField(ProcFileReader reader) {
-    long cpuTimeMs = reader.readNumber() / Initializer.CLOCK_TICKS_PER_SECOND;
+  private static double readField(ProcFileReader reader) {
+    double cpuTimeMs = reader.readNumber() * 1.0 / Initializer.CLOCK_TICKS_PER_SECOND;
     reader.skipSpaces();
     return cpuTimeMs;
   }
