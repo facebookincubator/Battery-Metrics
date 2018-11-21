@@ -105,6 +105,13 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
     return this;
   }
 
+  public <T extends SystemMetrics<T>> CompositeMetrics putValidMetric(
+      Class<T> metricsClass, T metric) {
+    mMetricsMap.put(metricsClass, metric);
+    mMetricsValid.put(metricsClass, Boolean.TRUE);
+    return this;
+  }
+
   public <T extends SystemMetrics<T>> T getMetric(Class<T> metricsClass) {
     return metricsClass.cast(mMetricsMap.get(metricsClass));
   }
