@@ -11,6 +11,7 @@ import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
 
 import android.support.annotation.VisibleForTesting;
 import android.util.SparseIntArray;
+import com.facebook.battery.metrics.core.ProcFileReader;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
 import com.facebook.infer.annotation.ThreadSafe;

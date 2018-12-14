@@ -5,7 +5,7 @@
  * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
  * file in the same directory.
  */
-package com.facebook.battery.metrics.cpu;
+package com.facebook.battery.metrics.core;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
  *
  * <p>This file is not threadsafe: access to it must be synchronized.
  */
-class ProcFileReader {
+public class ProcFileReader {
 
   private final String mPath;
   private final byte[] mBuffer;
