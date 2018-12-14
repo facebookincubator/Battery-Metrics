@@ -9,6 +9,7 @@ package com.facebook.battery.metrics.core;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.CharBuffer;
 import java.util.NoSuchElementException;
 import javax.annotation.Nullable;
 
@@ -134,6 +135,45 @@ public class ProcFileReader {
     mRewound = true;
   }
 
+  /**
+   * Fills buffer with the next word (up to a space), and the rest with zeros.
+   *
+   * <p>Will allocate and return a new buffer in case the string is too big to fit.
+   */
+  public CharBuffer readWord(CharBuffer buffer) {
+    buffer.clear();
+
+    boolean isFirstRun = true;
+
+    while (hasNext()) {
+      next();
+      if (!Character.isWhitespace(mChar)) {
+        if (!buffer.hasRemaining()) {
+          CharBuffer newBuffer = CharBuffer.allocate(buffer.capacity() * 2);
+          buffer.flip();
+          newBuffer.put(buffer);
+          buffer = newBuffer;
+        }
+
+        buffer.put(mChar);
+      } else if (isFirstRun) {
+        throw new ParseException("Couldn't read string!");
+      } else {
+        rewind();
+        break;
+      }
+
+      isFirstRun = false;
+    }
+
+    if (isFirstRun) {
+      throw new ParseException("Couldn't read string because file ended!");
+    }
+
+    buffer.flip();
+    return buffer;
+  }
+
   public long readNumber() {
     long result = 0;
     boolean isFirstRun = true;
@@ -191,6 +231,11 @@ public class ProcFileReader {
         mFile = null;
       }
     }
+  }
+
+  @Override
+  protected void finalize() throws Throwable {
+    close();
   }
 
   public static class ParseException extends RuntimeException {

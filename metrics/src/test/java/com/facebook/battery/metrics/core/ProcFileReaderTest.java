@@ -12,6 +12,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.CharBuffer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -26,6 +27,98 @@ public class ProcFileReaderTest {
   @Before
   public void setUp() throws Exception {
     mFolder.create();
+  }
+
+  @Test
+  public void testWord() throws Exception {
+    String contents = "some";
+    String testPath = createFile(contents);
+
+    ProcFileReader reader = new ProcFileReader(testPath).start();
+
+    CharBuffer buffer = CharBuffer.allocate(20);
+    assertThat(reader.readWord(buffer).toString()).isEqualTo("some");
+    assertThat(reader.hasReachedEOF()).isTrue();
+  }
+
+  @Test
+  public void testMultipleWords() throws Exception {
+    String contents = "many many words";
+    String testPath = createFile(contents);
+
+    ProcFileReader reader = new ProcFileReader(testPath).start();
+
+    assertThat(reader.readWord(CharBuffer.allocate(20)).toString()).isEqualTo("many");
+
+    reader.skipSpaces();
+
+    assertThat(reader.readWord(CharBuffer.allocate(20)).toString()).isEqualTo("many");
+
+    reader.skipSpaces();
+
+    assertThat(reader.readWord(CharBuffer.allocate(20)).toString()).isEqualTo("words");
+    assertThat(reader.hasReachedEOF()).isTrue();
+  }
+
+  @Test(expected = ProcFileReader.ParseException.class)
+  public void testEmptyNumber() throws Exception {
+    String contents = "";
+    ProcFileReader reader = new ProcFileReader(createFile(contents)).start();
+    reader.readNumber();
+  }
+
+  @Test(expected = ProcFileReader.ParseException.class)
+  public void testEmptyString() throws Exception {
+    ProcFileReader reader = new ProcFileReader(createFile("")).start();
+    reader.readWord(CharBuffer.allocate(100));
+  }
+
+  @Test
+  public void testSkipWord() throws Exception {
+    String contents = "skippable word";
+    String testPath = createFile(contents);
+
+    ProcFileReader reader = new ProcFileReader(testPath).start();
+
+    reader.skipSpaces();
+    assertThat(reader.readWord(CharBuffer.allocate(20)).toString()).isEqualTo("word");
+    assertThat(reader.hasReachedEOF()).isTrue();
+  }
+
+  @Test(expected = ProcFileReader.ParseException.class)
+  public void testInvalidNumber() throws Exception {
+    String contents = "notanumber";
+    String testPath = createFile(contents);
+
+    ProcFileReader reader = new ProcFileReader(testPath).start();
+    reader.readNumber();
+  }
+
+  @Test
+  public void testReset() throws Exception {
+    String contents = "notanumber";
+    String testPath = createFile(contents);
+
+    ProcFileReader reader = new ProcFileReader(testPath).start();
+
+    assertThat(reader.readWord(CharBuffer.allocate(20)).toString()).isEqualTo(contents);
+    assertThat(reader.hasReachedEOF()).isTrue();
+
+    reader.reset();
+
+    assertThat(reader.readWord(CharBuffer.allocate(20)).toString()).isEqualTo(contents);
+    assertThat(reader.hasReachedEOF()).isTrue();
+  }
+
+  @Test
+  public void testSmallBuffer() throws Exception {
+    String contents = "some";
+    String testPath = createFile(contents);
+
+    ProcFileReader reader = new ProcFileReader(testPath).start();
+
+    assertThat(reader.readWord(CharBuffer.allocate(1)).toString()).isEqualTo(contents);
+    assertThat(reader.hasReachedEOF()).isTrue();
   }
 
   @Test
