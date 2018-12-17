@@ -7,21 +7,6 @@
  */
 package com.facebook.battery.metrics.network;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-
 import static com.facebook.battery.metrics.network.NetworkBytesCollector.BG;
 import static com.facebook.battery.metrics.network.NetworkBytesCollector.FG;
 import static com.facebook.battery.metrics.network.NetworkBytesCollector.MOBILE;
@@ -29,6 +14,18 @@ import static com.facebook.battery.metrics.network.NetworkBytesCollector.RX;
 import static com.facebook.battery.metrics.network.NetworkBytesCollector.TX;
 import static com.facebook.battery.metrics.network.NetworkBytesCollector.WIFI;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
 public class QTagUidNetworkBytesCollectorTest {
@@ -177,11 +174,11 @@ public class QTagUidNetworkBytesCollectorTest {
     assertThat(mBytes).isEqualTo(expected);
   }
 
-  private RandomAccessFile createFile(String contents) throws IOException {
+  private File createFile(String contents) throws IOException {
     File file = mFolder.newFile();
     FileOutputStream os = new FileOutputStream(file, false);
     os.write(contents.getBytes());
-    return new RandomAccessFile(file, "r");
+    return file;
   }
 
   private static String createEntry(Map<String, String> map) {
@@ -196,15 +193,15 @@ public class QTagUidNetworkBytesCollectorTest {
 
 class TestableCollector extends QTagUidNetworkBytesCollector {
 
-  private RandomAccessFile mFile;
+  private File mFile;
 
-  public TestableCollector setQTagUidStatsFile(RandomAccessFile file) {
+  public TestableCollector setQTagUidStatsFile(File file) {
     mFile = file;
     return this;
   }
 
   @Override
-  protected RandomAccessFile openFile() throws FileNotFoundException {
-    return mFile;
+  protected String getPath() {
+    return mFile.getPath();
   }
 }

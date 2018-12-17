@@ -86,7 +86,7 @@ public class CpuFrequencyMetricsCollector extends SystemMetricsCollector<CpuFreq
         long frequency = reader.readNumber();
         reader.skipSpaces();
         long timeInState = reader.readNumber() / CpuMetricsCollector.getClockTicksPerSecond();
-        reader.skipLines();
+        reader.skipLine();
 
         array.put((int) frequency, (int) timeInState);
       }

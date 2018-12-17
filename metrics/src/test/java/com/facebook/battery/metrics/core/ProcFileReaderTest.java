@@ -156,7 +156,7 @@ public class ProcFileReaderTest {
       numbers[position++] = reader.readNumber();
       reader.skipSpaces();
       numbers[position++] = reader.readNumber();
-      reader.skipLines();
+      reader.skipLine();
     }
 
     assertThat(numbers).isEqualTo(new long[] {123, 456, 789, 1000});

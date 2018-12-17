@@ -9,10 +9,9 @@ package com.facebook.battery.metrics.network;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.VisibleForTesting;
+import com.facebook.battery.metrics.core.ProcFileReader;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.nio.CharBuffer;
 import java.util.Arrays;
 
 /**
@@ -40,23 +39,12 @@ class QTagUidNetworkBytesCollector extends NetworkBytesCollector {
   private static final String TAG = "QTagUidNetworkBytesCollector";
   private static final String STATS_PATH = "/proc/net/xt_qtaguid/stats";
   private static final long UID = android.os.Process.myUid();
+  private static final CharBuffer WIFI_IFACE = CharBuffer.wrap("wlan0");
+  private static final CharBuffer DUMMY_IFACE = CharBuffer.wrap("dummy0");
+  private static final CharBuffer LOOPBACK_IFACE = CharBuffer.wrap("lo");
 
-  private static final long WLAN0_HASH = "wlan0".hashCode();
-  private static final long[] LOCAL_IFACE_HASHES =
-      new long[] {
-        "dummy0".hashCode(), "lo".hashCode(),
-      };
-
-  private RandomAccessFile mQTagUidStatsFile;
-  private boolean mIsValid = true;
-  private boolean mReachedEof = false;
-  private boolean mHasPeeked = false;
-  private int mChar;
-
-  @Override
-  protected void finalize() throws Throwable {
-    closeFile();
-  }
+  private final CharBuffer mBuffer = CharBuffer.allocate(128);
+  private ProcFileReader mProcFileReader;
 
   @Override
   public boolean supportsBgDistinction() {
@@ -65,147 +53,70 @@ class QTagUidNetworkBytesCollector extends NetworkBytesCollector {
 
   @Override
   public boolean getTotalBytes(long[] bytes) {
-    if (!mIsValid) {
-      return false;
-    }
-
-    Arrays.fill(bytes, 0);
-
     try {
-      if (mQTagUidStatsFile == null) {
-        mQTagUidStatsFile = openFile();
+      if (mProcFileReader == null) {
+        mProcFileReader = new ProcFileReader(getPath());
       }
 
-      mReachedEof = false;
-      mQTagUidStatsFile.seek(0);
+      mProcFileReader.reset();
+
+      if (!mProcFileReader.isValid() || !mProcFileReader.hasNext()) {
+        return false;
+      }
+
+      Arrays.fill(bytes, 0);
 
       // Skip headers.
-      skipPast('\n');
+      mProcFileReader.skipLine();
 
-      while (!mReachedEof && mIsValid && peek()) {
-        skipPast(' '); // idx
-        int ifaceHash = readHash(); // interface
-        skipPast(' '); // tag
-        long uid = readNumber(); // uid
+      while (mProcFileReader.hasNext()) {
+        mProcFileReader.skipSpaces(); // Skip over idx
 
-        boolean isWifi = ifaceHash == WLAN0_HASH;
-        boolean isMobile = !isWifi && !isLocalInterface(ifaceHash);
+        mProcFileReader.readWord(mBuffer); // iface
+
+        mProcFileReader.skipSpaces(); // Skip over acct_tag_hex
+        mProcFileReader.skipSpaces();
+
+        long uid = mProcFileReader.readNumber(); // uid_tag_int
+        mProcFileReader.skipSpaces();
+
+        boolean isWifi = WIFI_IFACE.compareTo(mBuffer) == 0;
+        boolean isMobile =
+            !isWifi
+                && DUMMY_IFACE.compareTo(mBuffer) != 0
+                && LOOPBACK_IFACE.compareTo(mBuffer) != 0;
 
         if (uid != UID || !(isWifi || isMobile)) { // can read other uids for old android versions
-          skipPast('\n');
+          mProcFileReader.skipLine();
           continue;
         }
 
-        long cntSet = readNumber();
+        long cntSet = mProcFileReader.readNumber();
+        mProcFileReader.skipSpaces();
 
         int field = 0;
         field |= (isWifi ? WIFI : MOBILE);
         field |= (cntSet == 0 ? BG : FG);
-        bytes[field | RX] += readNumber();
-        skipPast(' '); // rx_packets
-        bytes[field | TX] += readNumber();
-        skipPast('\n');
+
+        bytes[field | RX] += mProcFileReader.readNumber(); // rx_bytes
+        mProcFileReader.skipSpaces();
+
+        mProcFileReader.skipSpaces(); // Skip over rx_packets
+
+        bytes[field | TX] += mProcFileReader.readNumber(); // tx_bytes
+        mProcFileReader.skipLine();
       }
-    } catch (IOException ioe) {
-      SystemMetricsLogger.wtf(TAG, "Unable to parse file", ioe);
-      closeFile();
+    } catch (ProcFileReader.ParseException pe) {
+      SystemMetricsLogger.wtf(TAG, "Unable to parse file", pe);
+      return false;
     }
 
-    return mIsValid;
+    return true;
   }
 
   @VisibleForTesting
   @SuppressLint("InstanceMethodCanBeStatic")
-  protected RandomAccessFile openFile() throws FileNotFoundException {
-    return new RandomAccessFile(STATS_PATH, "r");
-  }
-
-  private long readNumber() throws IOException {
-    boolean complete = false;
-    boolean triggered = false;
-
-    long result = 0;
-    while (!complete && read()) {
-      if (Character.isDigit(mChar)) {
-        result = result * 10 + (mChar - '0');
-        triggered = true;
-      } else {
-        complete = true;
-      }
-    }
-
-    softAssert(triggered);
-    return result;
-  }
-
-  private int readHash() throws IOException {
-    boolean complete = false;
-    boolean triggered = false;
-
-    int hash = 0;
-    while (!complete && read()) {
-      if (mChar != ' ') {
-        hash = 31 * hash + mChar; // Based off string
-        triggered = true;
-      } else {
-        complete = true;
-      }
-    }
-
-    softAssert(triggered);
-    return hash;
-  }
-
-  private void skipPast(char ch) throws IOException {
-    boolean complete = false;
-    while (!complete && read()) {
-      if (mChar == ch) {
-        complete = true;
-      }
-    }
-
-    softAssert(complete);
-  }
-
-  private void closeFile() {
-    mIsValid = false;
-    if (mQTagUidStatsFile != null) {
-      try {
-        mQTagUidStatsFile.close();
-      } catch (IOException ignored) {
-        // Ignore
-      }
-    }
-  }
-
-  private boolean peek() throws IOException {
-    read();
-    mHasPeeked = true;
-    return !mReachedEof;
-  }
-
-  private boolean read() throws IOException {
-    if (mHasPeeked) {
-      mHasPeeked = false;
-      return !mReachedEof;
-    }
-
-    mChar = mQTagUidStatsFile.read();
-    mReachedEof = mChar == -1;
-    return !mReachedEof;
-  }
-
-  private boolean softAssert(boolean test) {
-    mIsValid &= test;
-    return mIsValid;
-  }
-
-  private static boolean isLocalInterface(int ifaceHash) {
-    for (int i = 0; i < LOCAL_IFACE_HASHES.length; i++) {
-      if (ifaceHash == LOCAL_IFACE_HASHES[i]) {
-        return true;
-      }
-    }
-    return false;
+  protected String getPath() {
+    return STATS_PATH;
   }
 }

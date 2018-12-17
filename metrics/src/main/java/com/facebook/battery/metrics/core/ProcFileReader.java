@@ -203,7 +203,7 @@ public class ProcFileReader {
     skipPast(' ');
   }
 
-  public void skipLines() {
+  public void skipLine() {
     skipPast('\n');
   }
 
