@@ -7,7 +7,7 @@
  */
 package com.facebook.battery.reporter.core;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
 
 /**

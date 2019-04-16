@@ -11,7 +11,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import android.content.Context;
 import android.os.PowerManager;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.ShadowSystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;

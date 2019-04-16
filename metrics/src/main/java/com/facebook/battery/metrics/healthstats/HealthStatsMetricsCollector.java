@@ -10,7 +10,7 @@ package com.facebook.battery.metrics.healthstats;
 import android.content.Context;
 import android.os.Build;
 import android.os.health.SystemHealthManager;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.infer.annotation.ThreadSafe;

@@ -7,8 +7,8 @@
  */
 package com.facebook.battery.sample;
 
-import android.support.annotation.Nullable;
 import android.util.Log;
+import androidx.annotation.Nullable;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
 
 /** Poor man's analytics: also known as Logcat. */

@@ -12,8 +12,8 @@ import static com.facebook.battery.metrics.healthstats.HealthStatsMetrics.OP_SUM
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import android.os.health.UidHealthStats;
-import android.support.v4.util.ArrayMap;
 import android.util.SparseArray;
+import androidx.collection.ArrayMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;

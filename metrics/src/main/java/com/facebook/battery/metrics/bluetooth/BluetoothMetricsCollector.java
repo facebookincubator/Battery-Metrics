@@ -13,8 +13,8 @@ import android.app.PendingIntent;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.os.SystemClock;
-import android.support.annotation.GuardedBy;
 import android.util.SparseArray;
+import androidx.annotation.GuardedBy;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.infer.annotation.ThreadSafe;
 

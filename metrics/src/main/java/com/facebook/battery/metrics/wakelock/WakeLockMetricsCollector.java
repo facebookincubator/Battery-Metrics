@@ -11,8 +11,8 @@ import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
 
 import android.os.PowerManager;
 import android.os.SystemClock;
-import android.support.annotation.GuardedBy;
-import android.support.v4.util.SimpleArrayMap;
+import androidx.annotation.GuardedBy;
+import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import java.util.ArrayList;

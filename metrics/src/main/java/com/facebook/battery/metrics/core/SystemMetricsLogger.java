@@ -7,8 +7,8 @@
  */
 package com.facebook.battery.metrics.core;
 
-import android.support.annotation.Nullable;
 import android.util.Log;
+import androidx.annotation.Nullable;
 import com.facebook.infer.annotation.ThreadSafe;
 import java.util.concurrent.atomic.AtomicReference;
 

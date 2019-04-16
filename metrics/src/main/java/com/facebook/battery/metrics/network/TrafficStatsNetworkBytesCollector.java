@@ -16,7 +16,7 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.TrafficStats;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
 import javax.annotation.concurrent.NotThreadSafe;
 

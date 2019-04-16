@@ -7,9 +7,9 @@
  */
 package com.facebook.battery.metrics.core;
 
-import android.support.annotation.Nullable;
-import android.support.v4.util.SimpleArrayMap;
 import android.util.SparseArray;
+import androidx.annotation.Nullable;
+import androidx.collection.SimpleArrayMap;
 
 /**
  * A static class with a collection of utilities that didn't quite fit anywhere else.

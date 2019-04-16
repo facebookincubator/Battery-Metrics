@@ -7,7 +7,7 @@
  */
 package com.facebook.battery.serializer.composite;
 
-import android.support.v4.util.SimpleArrayMap;
+import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.composite.CompositeMetrics;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;

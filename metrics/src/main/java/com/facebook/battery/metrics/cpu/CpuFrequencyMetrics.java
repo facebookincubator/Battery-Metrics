@@ -7,8 +7,8 @@
  */
 package com.facebook.battery.metrics.cpu;
 
-import android.support.annotation.Nullable;
 import android.util.SparseIntArray;
+import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import java.util.AbstractMap;

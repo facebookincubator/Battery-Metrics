@@ -8,9 +8,9 @@
 package com.facebook.battery.serializer.healthstats;
 
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.util.ArrayMap;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.collection.ArrayMap;
 import com.facebook.battery.metrics.healthstats.HealthStatsMetrics;
 import com.facebook.battery.metrics.healthstats.HealthStatsMetrics.TimerMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;

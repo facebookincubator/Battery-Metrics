@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -24,6 +23,7 @@ android {
 repositories {
     // Use 'jcenter' for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
+    google()
     jcenter()
 }
 
@@ -31,7 +31,7 @@ repositories {
 dependencies {
     implementation project(':metrics')
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.0'
-    implementation 'com.android.support:support-core-utils:26.1.0'
+    implementation 'androidx.legacy:legacy-support-core-utils:1.0.0'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.assertj:assertj-core:2.8.0'

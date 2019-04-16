@@ -7,7 +7,7 @@
  */
 package com.facebook.battery.metrics.bluetooth;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
 
 public class BluetoothMetrics extends SystemMetrics<BluetoothMetrics> {

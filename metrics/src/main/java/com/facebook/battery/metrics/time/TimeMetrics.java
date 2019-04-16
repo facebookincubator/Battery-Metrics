@@ -7,7 +7,7 @@
  */
 package com.facebook.battery.metrics.time;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
 
 /**

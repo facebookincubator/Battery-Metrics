@@ -9,7 +9,7 @@ package com.facebook.battery.serializer.composite;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.composite.CompositeMetrics;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.time.TimeMetrics;

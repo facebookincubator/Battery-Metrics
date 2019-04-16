@@ -7,7 +7,7 @@
  */
 package com.facebook.battery.metrics.cpu;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
 
 /** Information about system and user cpu metrics: maintains a double per type of CPU time. */

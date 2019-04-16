@@ -8,7 +8,7 @@
 package com.facebook.battery.reporter.healthstats;
 
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.healthstats.HealthStatsMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;

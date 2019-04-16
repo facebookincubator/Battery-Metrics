@@ -10,7 +10,7 @@ package com.facebook.battery.metrics.network;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.Size;
+import androidx.annotation.Size;
 
 abstract class NetworkBytesCollector {
 

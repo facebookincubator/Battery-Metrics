@@ -11,7 +11,7 @@ import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupDeta
 import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupReason;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import android.support.v4.util.SimpleArrayMap;
+import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetricsTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -7,7 +7,7 @@
  */
 package com.facebook.battery.metrics.core;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * A utility class that composes collectors to reduce boilerplate for collectors that are used to

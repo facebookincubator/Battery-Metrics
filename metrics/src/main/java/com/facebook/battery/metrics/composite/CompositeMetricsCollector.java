@@ -9,7 +9,7 @@ package com.facebook.battery.metrics.composite;
 
 import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
 
-import android.support.v4.util.SimpleArrayMap;
+import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;

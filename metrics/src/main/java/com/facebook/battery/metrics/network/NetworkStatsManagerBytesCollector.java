@@ -7,7 +7,7 @@ import android.app.usage.NetworkStatsManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.RemoteException;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import java.util.Arrays;
 

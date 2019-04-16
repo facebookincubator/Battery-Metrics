@@ -7,7 +7,7 @@
  */
 package com.facebook.battery.serializer.healthstats;
 
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 import com.facebook.battery.metrics.healthstats.HealthStatsMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
 import com.facebook.battery.serializer.core.SystemMetricsSerializerTest;

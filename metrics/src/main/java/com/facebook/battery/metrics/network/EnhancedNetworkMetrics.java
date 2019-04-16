@@ -7,7 +7,7 @@
  */
 package com.facebook.battery.metrics.network;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
 
 /** Alternative to {@link NetworkMetrics} which offers fg/bg app state distinction. */

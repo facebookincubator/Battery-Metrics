@@ -9,7 +9,7 @@ package com.facebook.battery.metrics.cpu;
 
 import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 import com.facebook.battery.metrics.core.ProcFileReader;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;

@@ -8,7 +8,7 @@
 package com.facebook.battery.metrics.network;
 
 import android.annotation.SuppressLint;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 import com.facebook.battery.metrics.core.ProcFileReader;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import java.nio.CharBuffer;
