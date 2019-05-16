@@ -86,4 +86,4 @@ You can quickly install and run the app --
 - And [Slack](https://batterymetrics.slack.com/) -- and the [invite](https://goo.gl/Rb3kty).
 
 ## License
-BatteryMetrics is BSD-licensed. We also provide an additional patent grant.
+BatteryMetrics is MIT-licensed.

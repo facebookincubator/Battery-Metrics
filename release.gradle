@@ -36,7 +36,7 @@ def configureBatteryMetricsPom(def pom) {
 
         licenses {
             license {
-                name 'BSD License'
+                name 'MIT License'
                 url 'https://github.com/facebookincubator/Battery-Metrics/blob/master/LICENSE'
                 distribution 'repo'
             }

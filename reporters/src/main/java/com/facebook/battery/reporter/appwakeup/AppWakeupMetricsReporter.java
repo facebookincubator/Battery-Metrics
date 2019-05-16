@@ -1,16 +1,14 @@
 /**
- * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * <p>This source code is licensed under the BSD-style license found in the LICENSE file in the root
- * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
- * file in the same directory.
+ * <p>This source code is licensed under the MIT license found in the LICENSE file in the root
+ * directory of this source tree.
  */
 package com.facebook.battery.reporter.appwakeup;
 
 import com.facebook.battery.metrics.appwakeup.AppWakeupMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 
