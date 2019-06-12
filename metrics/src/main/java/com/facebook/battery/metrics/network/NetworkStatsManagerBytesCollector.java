@@ -42,8 +42,10 @@ public class NetworkStatsManagerBytesCollector extends NetworkBytesCollector {
       getBytesForType(bytes, ConnectivityManager.TYPE_MOBILE, MOBILE, mStartTime, endTimeMs);
       getBytesForType(bytes, ConnectivityManager.TYPE_WIFI, WIFI, mStartTime, endTimeMs);
       return true;
-    } catch (RemoteException re) {
-      SystemMetricsLogger.wtf(TAG, "Unable to get bytes transferred", re);
+    } catch (NullPointerException | RemoteException ex) {
+      // Simply catching and failing silently, just like Android does.
+      // http://androidxref.com/9.0.0_r3/xref/frameworks/base/services/core/java/com/android/server/net/NetworkStatsService.java#627
+      SystemMetricsLogger.wtf(TAG, "Unable to get bytes transferred", ex);
       return false;
     }
   }
