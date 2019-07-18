@@ -87,6 +87,13 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
       result = 31 * result + (int) (timeMs ^ (timeMs >>> 32));
       return result;
     }
+
+    public JSONObject toJSONObject() throws JSONException {
+      JSONObject output = new JSONObject();
+      output.put("count", count);
+      output.put("time_ms", timeMs);
+      return output;
+    }
   }
 
   private static final String TAG = "HealthStatsMetrics";
@@ -363,7 +370,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     if (sKeyNames.size() == 0) {
       readKeyNames();
     }
-    return sKeyNames.get(key, "Unknown");
+    return sKeyNames.get(key, String.valueOf(key));
   }
 
   private static void readKeyNames() {
@@ -395,81 +402,105 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     sKeyNames.put(-1, "Unable to read");
   }
 
+  /** Converts to a JSON representation, stripping empty values */
   public JSONObject toJSONObject() throws JSONException {
     JSONObject output = new JSONObject();
     output.put("type", dataType);
-
-    int measurementCount = measurement.size();
-    if (measurementCount > 0) {
-      JSONObject measurementObj = new JSONObject();
-      for (int i = 0; i < measurementCount; i++) {
-        measurementObj.put(getKeyName(measurement.keyAt(i)), measurement.valueAt(i));
-      }
-      output.put("measurement", measurementObj);
-    }
-
-    int timerCount = timer.size();
-    if (timerCount > 0) {
-      JSONObject timerObj = new JSONObject();
-      for (int i = 0; i < timerCount; i++) {
-        timerObj.put(
-            getKeyName(timer.keyAt(i)),
-            new JSONObject()
-                .put("count", timer.valueAt(i).count)
-                .put("time_ms", timer.valueAt(i).timeMs));
-      }
-      output.put("timer", timerObj);
-    }
-
-    int measurementsCount = measurements.size();
-    if (measurementsCount > 0) {
-      JSONObject measurementsObj = new JSONObject();
-      for (int i = 0; i < measurementsCount; i++) {
-        measurementsObj.put(
-            getKeyName(measurements.keyAt(i)), toJSONObject(measurements.valueAt(i)));
-      }
-      output.put("measurements", measurementsObj);
-    }
-
-    int timersCount = timers.size();
-    if (timersCount > 0) {
-      JSONObject timersObj = new JSONObject();
-      for (int i = 0; i < timersCount; i++) {
-        timersObj.put(getKeyName(timers.keyAt(i)), toJSONObject(timers.valueAt(i)));
-      }
-      output.put("timers", timersObj);
-    }
-
-    int statsCount = stats.size();
-    if (statsCount > 0) {
-      JSONObject statsObj = new JSONObject();
-      for (int i = 0; i < statsCount; i++) {
-        statsObj.put(getKeyName(stats.keyAt(i)), toJSONObject(stats.valueAt(i)));
-      }
-      output.put("stats", statsObj);
-    }
-
+    addMeasurement(output);
+    addTimer(output);
+    addMeasurements(output);
+    addTimers(output);
+    addStats(output);
     return output;
   }
 
-  private static <V> JSONObject toJSONObject(@Nullable ArrayMap<String, V> map)
-      throws JSONException {
-    JSONObject mapObj = new JSONObject();
-    for (int i = 0, len = map == null ? 0 : map.size(); i < len; i++) {
-      V value = map.valueAt(i);
-      if (value instanceof TimerMetrics) {
-        mapObj.put(
-            map.keyAt(i),
-            new JSONObject()
-                .put("count", ((TimerMetrics) value).count)
-                .put("time_ms", ((TimerMetrics) value).timeMs));
-      } else if (value instanceof HealthStatsMetrics) {
-        mapObj.put(map.keyAt(i), ((HealthStatsMetrics) value).toJSONObject());
-      } else {
-        mapObj.put(map.keyAt(i), map.valueAt(i));
+  private void addMeasurement(JSONObject output) throws JSONException {
+    JSONObject measurementObj = new JSONObject();
+    for (int i = 0, count = measurement.size(); i < count; i++) {
+      long value = measurement.valueAt(i);
+      if (value != 0) {
+        measurementObj.put(getKeyName(measurement.keyAt(i)), value);
       }
     }
-    return mapObj;
+
+    if (measurementObj.length() > 0) {
+      output.put("measurement", measurementObj);
+    }
+  }
+
+  private void addTimer(JSONObject output) throws JSONException {
+    JSONObject timerObj = new JSONObject();
+    for (int i = 0, count = timer.size(); i < count; i++) {
+      TimerMetrics value = timer.valueAt(i);
+      if (value.count != 0 || value.timeMs != 0) {
+        timerObj.put(getKeyName(timer.keyAt(i)), value.toJSONObject());
+      }
+    }
+    if (timerObj.length() > 0) {
+      output.put("timer", timerObj);
+    }
+  }
+
+  private void addMeasurements(JSONObject output) throws JSONException {
+    JSONObject measurementsObj = new JSONObject();
+    for (int i = 0, count = measurements.size(); i < count; i++) {
+      ArrayMap<String, Long> value = measurements.valueAt(i);
+      JSONObject valueOutput = new JSONObject();
+      for (int j = 0, valueSize = value.size(); j < valueSize; j++) {
+        long v = value.valueAt(j);
+        if (v != 0) {
+          valueOutput.put(value.keyAt(j), v);
+        }
+      }
+
+      if (valueOutput.length() > 0) {
+        measurementsObj.put(getKeyName(measurements.keyAt(i)), valueOutput);
+      }
+    }
+    if (measurementsObj.length() > 0) {
+      output.put("measurements", measurementsObj);
+    }
+  }
+
+  private void addTimers(JSONObject output) throws JSONException {
+    JSONObject timersObj = new JSONObject();
+    for (int i = 0, count = timers.size(); i < count; i++) {
+      JSONObject valueOutput = new JSONObject();
+      ArrayMap<String, TimerMetrics> value = timers.valueAt(i);
+      for (int j = 0, valueCount = value.size(); j < valueCount; j++) {
+        TimerMetrics v = value.valueAt(j);
+        if (v.count != 0 || v.timeMs != 0) {
+          valueOutput.put(value.keyAt(j), v.toJSONObject());
+        }
+      }
+      if (valueOutput.length() > 0) {
+        timersObj.put(getKeyName(timers.keyAt(i)), valueOutput);
+      }
+    }
+    if (timersObj.length() > 0) {
+      output.put("timers", timersObj);
+    }
+  }
+
+  private void addStats(JSONObject output) throws JSONException {
+    JSONObject statsObj = new JSONObject();
+    for (int i = 0, count = stats.size(); i < count; i++) {
+      JSONObject valueOutput = new JSONObject();
+      ArrayMap<String, HealthStatsMetrics> value = stats.valueAt(i);
+      for (int j = 0, valueCount = value.size(); j < valueCount; j++) {
+        JSONObject v = value.valueAt(j).toJSONObject();
+        if (v.length() > 0) {
+          valueOutput.put(value.keyAt(j), v);
+        }
+      }
+      if (valueOutput.length() > 0) {
+        statsObj.put(getKeyName(stats.keyAt(i)), valueOutput);
+      }
+    }
+
+    if (statsObj.length() > 0) {
+      output.put("stats", statsObj);
+    }
   }
 
   @Override

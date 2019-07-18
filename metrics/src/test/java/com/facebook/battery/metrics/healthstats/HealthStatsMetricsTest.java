@@ -13,6 +13,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import android.os.health.UidHealthStats;
 import android.util.SparseArray;
 import androidx.collection.ArrayMap;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -206,5 +207,134 @@ public class HealthStatsMetricsTest {
     timersValues.put("timers", new HealthStatsMetrics.TimerMetrics(6, 3000));
     metrics.timers.put(456, timersValues);
     return metrics;
+  }
+
+  @Test
+  public void datatypeToJSON() throws Exception {
+    HealthStatsMetrics metrics = new HealthStatsMetrics();
+    metrics.dataType = TEST_DATATYPE;
+
+    JSONObject json = metrics.toJSONObject();
+    assertThat(json.getString("type")).isEqualTo(TEST_DATATYPE);
+  }
+
+  @Test
+  public void measurementToJSON() throws Exception {
+    HealthStatsMetrics metrics = new HealthStatsMetrics();
+    metrics.measurement.put(234, 345L);
+    JSONObject json = metrics.toJSONObject();
+    assertThat(json.getJSONObject("measurement").getLong("234")).isEqualTo(345L);
+  }
+
+  @Test
+  public void timerToJSON() throws Exception {
+    HealthStatsMetrics metrics = new HealthStatsMetrics();
+    metrics.timer.put(123, new HealthStatsMetrics.TimerMetrics(1, 11));
+    JSONObject json = metrics.toJSONObject();
+    assertThat(json.getJSONObject("timer")).isNotNull();
+    assertThat(json.getJSONObject("timer").getJSONObject("123").getInt("count")).isEqualTo(1);
+    assertThat(json.getJSONObject("timer").getJSONObject("123").getLong("time_ms")).isEqualTo(11L);
+  }
+
+  @Test
+  public void measurementsToJSON() throws Exception {
+    HealthStatsMetrics metrics = new HealthStatsMetrics();
+    metrics.measurements.put(234, new ArrayMap<String, Long>());
+    metrics.measurements.get(234).put("abcd", 2000L);
+    JSONObject json = metrics.toJSONObject();
+    assertThat(json.getJSONObject("measurements").getJSONObject("234").getLong("abcd"))
+        .isEqualTo(2000L);
+  }
+
+  @Test
+  public void timersToJSON() throws Exception {
+    HealthStatsMetrics metrics = new HealthStatsMetrics();
+    metrics.timers.put(345, new ArrayMap<String, HealthStatsMetrics.TimerMetrics>());
+    metrics.timers.get(345).put("val", new HealthStatsMetrics.TimerMetrics(23, 24));
+    JSONObject json = metrics.toJSONObject();
+    assertThat(
+            json.getJSONObject("timers").getJSONObject("345").getJSONObject("val").getInt("count"))
+        .isEqualTo(23);
+    assertThat(
+            json.getJSONObject("timers")
+                .getJSONObject("345")
+                .getJSONObject("val")
+                .getInt("time_ms"))
+        .isEqualTo(24);
+  }
+
+  @Test
+  public void statsToJSON() throws Exception {
+    HealthStatsMetrics metrics = new HealthStatsMetrics();
+    metrics.stats.put(123, new ArrayMap<String, HealthStatsMetrics>());
+    HealthStatsMetrics inner = new HealthStatsMetrics();
+    inner.dataType = TEST_DATATYPE;
+    metrics.stats.get(123).put("abc", inner);
+    JSONObject json = metrics.toJSONObject();
+    assertThat(json.getJSONObject("stats").getJSONObject("123").getJSONObject("abc").toString())
+        .isEqualTo(inner.toJSONObject().toString());
+  }
+
+  @Test
+  public void jsonConversionSkipsEmptyContainers() throws Exception {
+    HealthStatsMetrics metrics = new HealthStatsMetrics();
+    assertThat(metrics.toJSONObject().length()).isEqualTo(0);
+  }
+
+  @Test
+  public void jsonConversionSkipsZeroMeasurement() throws Exception {
+    HealthStatsMetrics metrics = new HealthStatsMetrics();
+    metrics.measurement.put(123, 0L);
+    assertThat(metrics.toJSONObject().length()).isEqualTo(0);
+  }
+
+  @Test
+  public void jsonConversionSkipsZeroTimer() throws Exception {
+    HealthStatsMetrics metrics = new HealthStatsMetrics();
+    metrics.timer.put(123, new HealthStatsMetrics.TimerMetrics(0, 0));
+    assertThat(metrics.toJSONObject().length()).isEqualTo(0);
+  }
+
+  @Test
+  public void jsonConversionDoesNotSkipPartialZeroTimer() throws Exception {
+    HealthStatsMetrics metrics = new HealthStatsMetrics();
+    metrics.timer.put(123, new HealthStatsMetrics.TimerMetrics(0, 2));
+    metrics.timer.put(234, new HealthStatsMetrics.TimerMetrics(2, 0));
+    assertThat(metrics.toJSONObject().getJSONObject("timer").length()).isEqualTo(2);
+  }
+
+  @Test
+  public void jsonConversionSkipsZeroMeasurements() throws Exception {
+    HealthStatsMetrics metrics = new HealthStatsMetrics();
+    metrics.measurements.put(234, new ArrayMap<String, Long>());
+    metrics.measurements.get(234).put("abcd", 0L);
+    assertThat(metrics.toJSONObject().length()).isEqualTo(0);
+  }
+
+  @Test
+  public void jsonConversionSkipsZeroTimers() throws Exception {
+    HealthStatsMetrics metrics = new HealthStatsMetrics();
+    metrics.timers.put(345, new ArrayMap<String, HealthStatsMetrics.TimerMetrics>());
+    metrics.timers.get(345).put("val", new HealthStatsMetrics.TimerMetrics(0, 0));
+    assertThat(metrics.toJSONObject().length()).isEqualTo(0);
+  }
+
+  @Test
+  public void jsonConversionDoesNotSkipPartialZeroTimers() throws Exception {
+    HealthStatsMetrics metrics = new HealthStatsMetrics();
+    metrics.timers.put(345, new ArrayMap<String, HealthStatsMetrics.TimerMetrics>());
+    metrics.timers.get(345).put("val", new HealthStatsMetrics.TimerMetrics(0, 10));
+    metrics.timers.get(345).put("val2", new HealthStatsMetrics.TimerMetrics(20, 0));
+    assertThat(metrics.toJSONObject().getJSONObject("timers").getJSONObject("345").length())
+        .isEqualTo(2);
+  }
+
+  @Test
+  public void jsonConversionSkipsEmptyHealthStats() throws Exception {
+    HealthStatsMetrics metrics = new HealthStatsMetrics();
+    metrics.stats.put(123, new ArrayMap<String, HealthStatsMetrics>());
+    HealthStatsMetrics inner = new HealthStatsMetrics();
+    metrics.stats.get(123).put("abc", inner);
+    assertThat(metrics.toJSONObject().length()).isEqualTo(0);
   }
 }
