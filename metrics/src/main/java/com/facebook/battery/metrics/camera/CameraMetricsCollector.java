@@ -108,7 +108,9 @@ public class CameraMetricsCollector extends SystemMetricsCollector<CameraMetrics
     }
 
     validateArgument(camera);
-    mTotalCameraOpenTimeMs += stopRecord(System.identityHashCode(camera), mCameraOpenTimes);
+    if (isCameraRecording(System.identityHashCode(camera), mCameraOpenTimes)) {
+      mTotalCameraOpenTimeMs += stopRecord(System.identityHashCode(camera), mCameraOpenTimes);
+    }
   }
 
   public synchronized void recordPreviewStart(Object camera) {
@@ -139,6 +141,11 @@ public class CameraMetricsCollector extends SystemMetricsCollector<CameraMetrics
     int cameraHash = System.identityHashCode(camera);
     mCameraOpenTimes.delete(cameraHash);
     mCameraPreviewTimes.delete(cameraHash);
+  }
+
+  private static synchronized boolean isCameraRecording(int hash, SparseArray<Long> container) {
+    Long startTimeMs = container.get(hash);
+    return startTimeMs != null;
   }
 
   private static synchronized void startRecord(int hash, SparseArray<Long> container) {

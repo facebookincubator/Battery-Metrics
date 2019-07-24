@@ -7,10 +7,12 @@
 package com.facebook.battery.metrics.camera;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 import android.hardware.Camera;
+import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.ShadowSystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
@@ -158,6 +160,32 @@ public class CameraMetricsCollectorTest
     assertThat(collector.getSnapshot(snapshot)).isTrue();
     assertThat(snapshot.cameraOpenTimeMs).isEqualTo(800);
     assertThat(snapshot.cameraPreviewTimeMs).isEqualTo(300);
+  }
+
+  /**
+   * Check when a camera exception happens and no camera release is called, we also don't record any
+   * camera open time.
+   */
+  @Test
+  public void cameraCloseWithoutOpen() {
+
+    SystemMetricsLogger.setDelegate(
+        new SystemMetricsLogger.Delegate() {
+          @Override
+          public void wtf(String Tag, String message, @Nullable Throwable cause) {
+            fail(message);
+          }
+        });
+
+    ShadowSystemClock.setUptimeMillis(200);
+    CameraMetricsCollector collector = new CameraMetricsCollector();
+    Camera testCamera = Camera.open();
+    collector.recordCameraClose(testCamera);
+
+    CameraMetrics snapshot = new CameraMetrics();
+    assertThat(collector.getSnapshot(snapshot)).isTrue();
+    assertThat(snapshot.cameraOpenTimeMs).isEqualTo(0);
+    assertThat(snapshot.cameraPreviewTimeMs).isEqualTo(0);
   }
 
   @Override
