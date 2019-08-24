@@ -20,14 +20,14 @@ import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
- * TrafficStats doesn't allow distinguishing bytes by network type in old versions of Android:
- * here we rely on attributing bytes transferred to the currently active network
+ * TrafficStats doesn't allow distinguishing bytes by network type in old versions of Android: here
+ * we rely on attributing bytes transferred to the currently active network
  *
- * The initial bytes are arbitrarily mapped to mobile initially, because they'll get replaced
+ * <p>The initial bytes are arbitrarily mapped to mobile initially, because they'll get replaced
  * anyways. For Types of network that aren't understood (they vary across android versions, etc.)
  * explicitly default to Mobile similar to the approach in {@code QTagUidBytesCollector}.
  *
- * TODO(#16381416): Accept a background handler for broadcasts
+ * <p>TODO(#16381416): Accept a background handler for broadcasts
  */
 @NotThreadSafe
 class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
@@ -41,32 +41,31 @@ class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
   private boolean mIsValid = true;
 
   @VisibleForTesting
-  BroadcastReceiver mReceiver = new BroadcastReceiver() {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
-      int type;
-      if (info == null || (type = info.getType()) == mCurrentNetworkType) {
-        return;
-      }
+  BroadcastReceiver mReceiver =
+      new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+          NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
+          int type;
+          if (info == null || (type = info.getType()) == mCurrentNetworkType) {
+            return;
+          }
 
-      updateTotalBytes();
-      mCurrentNetworkType = type;
-    }
-  };
+          updateTotalBytes();
+          mCurrentNetworkType = type;
+        }
+      };
 
   public TrafficStatsNetworkBytesCollector(Context context) {
     // This can happen if the context is passed in while creating the application itself
     Context applicationContext = context.getApplicationContext();
     context = applicationContext != null ? applicationContext : context;
 
-    mConnectivityManager = (ConnectivityManager)
-        context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    mConnectivityManager =
+        (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
     mCurrentNetworkType = activeNetwork == null ? TYPE_NONE : activeNetwork.getType();
-    context.registerReceiver(
-        mReceiver,
-        new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    context.registerReceiver(mReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
     updateTotalBytes();
   }
@@ -92,8 +91,8 @@ class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
     long currentTotalTxBytes = TrafficStats.getUidTxBytes(UID);
     long currentTotalRxBytes = TrafficStats.getUidRxBytes(UID);
 
-    if (currentTotalRxBytes == TrafficStats.UNSUPPORTED ||
-        currentTotalTxBytes == TrafficStats.UNSUPPORTED) {
+    if (currentTotalRxBytes == TrafficStats.UNSUPPORTED
+        || currentTotalTxBytes == TrafficStats.UNSUPPORTED) {
       mIsValid = false;
       return;
     }

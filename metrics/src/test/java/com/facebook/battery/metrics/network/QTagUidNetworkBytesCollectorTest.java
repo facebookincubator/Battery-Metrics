@@ -29,7 +29,8 @@ import org.robolectric.RobolectricTestRunner;
 @RunWith(RobolectricTestRunner.class)
 public class QTagUidNetworkBytesCollectorTest {
 
-  private static final String HEADERS = "idx iface acct_tag_hex uid_tag_int cnt_set rx_bytes rx_packets tx_bytes tx_packets rx_tcp_bytes rx_tcp_packets rx_udp_bytes rx_udp_packets rx_other_bytes rx_other_packets tx_tcp_bytes tx_tcp_packets tx_udp_bytes tx_udp_packets tx_other_bytes tx_other_packets";
+  private static final String HEADERS =
+      "idx iface acct_tag_hex uid_tag_int cnt_set rx_bytes rx_packets tx_bytes tx_packets rx_tcp_bytes rx_tcp_packets rx_udp_bytes rx_udp_packets rx_other_bytes rx_other_packets tx_tcp_bytes tx_tcp_packets tx_udp_bytes tx_udp_packets tx_other_bytes tx_other_packets";
   private static final String[] INDEXES = HEADERS.split(" ");
 
   TemporaryFolder mFolder = new TemporaryFolder();
@@ -42,8 +43,8 @@ public class QTagUidNetworkBytesCollectorTest {
 
   @Test
   public void testEmpty() throws Exception {
-    QTagUidNetworkBytesCollector collector = new TestableCollector()
-        .setQTagUidStatsFile(createFile(""));
+    QTagUidNetworkBytesCollector collector =
+        new TestableCollector().setQTagUidStatsFile(createFile(""));
     boolean result = collector.getTotalBytes(mBytes);
 
     assertThat(result).isFalse();
@@ -51,8 +52,8 @@ public class QTagUidNetworkBytesCollectorTest {
 
   @Test
   public void testBlank() throws Exception {
-    QTagUidNetworkBytesCollector collector = new TestableCollector()
-        .setQTagUidStatsFile(createFile(HEADERS + "\n"));
+    QTagUidNetworkBytesCollector collector =
+        new TestableCollector().setQTagUidStatsFile(createFile(HEADERS + "\n"));
     boolean result = collector.getTotalBytes(mBytes);
 
     assertThat(result).isTrue();
@@ -63,16 +64,20 @@ public class QTagUidNetworkBytesCollectorTest {
   public void testWifi() throws Exception {
     StringBuilder contents = new StringBuilder();
     contents.append(HEADERS).append("\n");
-    contents.append(createEntry(new HashMap<String, String>() { {
-      put("iface", "wlan0");
-      put("cnt_set", "1");
-      put("rx_bytes", "100");
-      put("tx_bytes", "200");
-    }}));
+    contents.append(
+        createEntry(
+            new HashMap<String, String>() {
+              {
+                put("iface", "wlan0");
+                put("cnt_set", "1");
+                put("rx_bytes", "100");
+                put("tx_bytes", "200");
+              }
+            }));
     contents.append("\n");
 
-    QTagUidNetworkBytesCollector collector = new TestableCollector()
-        .setQTagUidStatsFile(createFile(contents.toString()));
+    QTagUidNetworkBytesCollector collector =
+        new TestableCollector().setQTagUidStatsFile(createFile(contents.toString()));
 
     assertThat(collector.getTotalBytes(mBytes)).isTrue();
     assertThat(mBytes[WIFI | TX | FG]).isEqualTo(200);
@@ -85,16 +90,20 @@ public class QTagUidNetworkBytesCollectorTest {
   public void testMobile() throws Exception {
     StringBuilder contents = new StringBuilder();
     contents.append(HEADERS).append("\n");
-    contents.append(createEntry(new HashMap<String, String>() { {
-      put("iface", "rmnet0");
-      put("cnt_set", "1");
-      put("rx_bytes", "100");
-      put("tx_bytes", "200");
-    }}));
+    contents.append(
+        createEntry(
+            new HashMap<String, String>() {
+              {
+                put("iface", "rmnet0");
+                put("cnt_set", "1");
+                put("rx_bytes", "100");
+                put("tx_bytes", "200");
+              }
+            }));
     contents.append("\n");
 
-    QTagUidNetworkBytesCollector collector = new TestableCollector()
-        .setQTagUidStatsFile(createFile(contents.toString()));
+    QTagUidNetworkBytesCollector collector =
+        new TestableCollector().setQTagUidStatsFile(createFile(contents.toString()));
 
     assertThat(collector.getTotalBytes(mBytes)).isTrue();
     assertThat(mBytes[WIFI | TX | FG]).isEqualTo(0);
@@ -107,16 +116,20 @@ public class QTagUidNetworkBytesCollectorTest {
   public void testUidChecks() throws Exception {
     StringBuilder contents = new StringBuilder();
     contents.append(HEADERS).append("\n");
-    contents.append(createEntry(new HashMap<String, String>() { {
-      put("uid_tag_int", "1");
-      put("iface", "rmnet0");
-      put("rx_bytes", "100");
-      put("tx_bytes", "200");
-    }}));
+    contents.append(
+        createEntry(
+            new HashMap<String, String>() {
+              {
+                put("uid_tag_int", "1");
+                put("iface", "rmnet0");
+                put("rx_bytes", "100");
+                put("tx_bytes", "200");
+              }
+            }));
     contents.append("\n");
 
-    QTagUidNetworkBytesCollector collector = new TestableCollector()
-        .setQTagUidStatsFile(createFile(contents.toString()));
+    QTagUidNetworkBytesCollector collector =
+        new TestableCollector().setQTagUidStatsFile(createFile(contents.toString()));
 
     assertThat(collector.getTotalBytes(mBytes)).isTrue();
     assertThat(mBytes).isEqualTo(new long[8]);
@@ -126,15 +139,19 @@ public class QTagUidNetworkBytesCollectorTest {
   public void testWhitelistedInterfaces() throws Exception {
     StringBuilder contents = new StringBuilder();
     contents.append(HEADERS).append("\n");
-    contents.append(createEntry(new HashMap<String, String>() { {
-      put("iface", "dummy0");
-      put("rx_bytes", "100");
-      put("tx_bytes", "200");
-    }}));
+    contents.append(
+        createEntry(
+            new HashMap<String, String>() {
+              {
+                put("iface", "dummy0");
+                put("rx_bytes", "100");
+                put("tx_bytes", "200");
+              }
+            }));
     contents.append("\n");
 
-    QTagUidNetworkBytesCollector collector = new TestableCollector()
-        .setQTagUidStatsFile(createFile(contents.toString()));
+    QTagUidNetworkBytesCollector collector =
+        new TestableCollector().setQTagUidStatsFile(createFile(contents.toString()));
 
     assertThat(collector.getTotalBytes(mBytes)).isTrue();
     assertThat(mBytes).isEqualTo(new long[8]);
@@ -144,19 +161,27 @@ public class QTagUidNetworkBytesCollectorTest {
   public void testCntSet() throws Exception {
     StringBuilder contents = new StringBuilder();
     contents.append(HEADERS).append("\n");
-    contents.append(createEntry(new HashMap<String, String>() { {
-      put("iface", "rmnet0");
-      put("cnt_set", "1");
-      put("rx_bytes", "100");
-      put("tx_bytes", "200");
-    }}));
+    contents.append(
+        createEntry(
+            new HashMap<String, String>() {
+              {
+                put("iface", "rmnet0");
+                put("cnt_set", "1");
+                put("rx_bytes", "100");
+                put("tx_bytes", "200");
+              }
+            }));
     contents.append("\n");
-    contents.append(createEntry(new HashMap<String, String>() { {
-      put("iface", "rmnet0");
-      put("cnt_set", "0");
-      put("rx_bytes", "1");
-      put("tx_bytes", "2");
-    }}));
+    contents.append(
+        createEntry(
+            new HashMap<String, String>() {
+              {
+                put("iface", "rmnet0");
+                put("cnt_set", "0");
+                put("rx_bytes", "1");
+                put("tx_bytes", "2");
+              }
+            }));
     contents.append("\n");
 
     QTagUidNetworkBytesCollector collector =

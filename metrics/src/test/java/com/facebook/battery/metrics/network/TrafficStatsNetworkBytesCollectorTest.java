@@ -71,8 +71,9 @@ public class TrafficStatsNetworkBytesCollectorTest {
     ShadowTrafficStats.setUidRxBytes(11000);
     ShadowTrafficStats.setUidTxBytes(22000);
 
-    ConnectivityManager connectivityManager = (ConnectivityManager)
-        RuntimeEnvironment.application.getSystemService(Context.CONNECTIVITY_SERVICE);
+    ConnectivityManager connectivityManager =
+        (ConnectivityManager)
+            RuntimeEnvironment.application.getSystemService(Context.CONNECTIVITY_SERVICE);
     ShadowConnectivityManager shadowConnectivityManager = Shadows.shadowOf(connectivityManager);
     NetworkInfo networkInfo =
         ShadowNetworkInfo.newInstance(null, ConnectivityManager.TYPE_WIFI, 0, true, true);

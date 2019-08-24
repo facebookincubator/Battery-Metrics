@@ -532,5 +532,4 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
   private static boolean strEquals(@Nullable String a, @Nullable String b) {
     return a == null ? b == null : a.equals(b);
   }
-
 }

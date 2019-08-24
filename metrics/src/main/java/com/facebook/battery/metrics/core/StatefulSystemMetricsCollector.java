@@ -15,11 +15,12 @@ import androidx.annotation.Nullable;
  * <p>Using this class makes it simple to share a single underlying collector instance, and manage
  * state externally.
  *
- * <p>{@code SystemMetricsCollector collector = ...; StatefulSystemMetricsCollector collector = new
+ * <pre>
+ * {@code SystemMetricsCollector collector = ...; StatefulSystemMetricsCollector collector = new
  * StatefulSystemMetricsCollector(collector);
  *
- * <p><p><p>// Every call gets the difference from the last call SystemMetrics metrics =
- * collector.getLatestDiffAndReset(); }
+ * // Every call gets the difference from the last call SystemMetrics metrics =
+ * collector.getLatestDiffAndReset(); }</pre>
  *
  * <p>Note - creating a Stateful collector immediately takes an initial snapshot. - this class is
  * _not_ thread safe.

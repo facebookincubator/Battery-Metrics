@@ -39,8 +39,10 @@ public class CompositeMetricsSerializerTest extends SystemMetricsSerializerTest<
     byteArray[21] = (byte) (byteArray[13] + 1); // break the tag for TimeMetrics
 
     CompositeMetrics metrics = createInstance();
-    assertThat(getSerializer()
-        .deserialize(metrics, new DataInputStream(new ByteArrayInputStream(byteArray)))).isFalse();
+    assertThat(
+            getSerializer()
+                .deserialize(metrics, new DataInputStream(new ByteArrayInputStream(byteArray))))
+        .isFalse();
   }
 
   @Test
