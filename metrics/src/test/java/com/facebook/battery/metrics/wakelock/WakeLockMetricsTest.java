@@ -111,7 +111,7 @@ public class WakeLockMetricsTest {
   }
 
   private WakeLockMetrics createInitializedMetrics() {
-    WakeLockMetrics metrics = new WakeLockMetrics();
+    WakeLockMetrics metrics = new WakeLockMetrics(true);
     metrics.acquiredCount = 100;
     metrics.heldTimeMs = 1000;
     metrics.tagTimeMs.put("TestA", 500L);

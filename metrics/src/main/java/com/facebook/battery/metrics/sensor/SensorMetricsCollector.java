@@ -10,7 +10,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.os.Build;
 import android.os.SystemClock;
-import android.util.SparseArray;
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
 import androidx.collection.SimpleArrayMap;
@@ -59,22 +58,7 @@ public class SensorMetricsCollector extends SystemMetricsCollector<SensorMetrics
   private final SimpleArrayMap<Sensor, SensorData> mActiveSensors = new SimpleArrayMap<>();
 
   @GuardedBy("this")
-  private final SparseArray<Double> mSensorPowerMah = new SparseArray<>();
-
-  @GuardedBy("this")
-  private final SparseArray<Long> mSensorActiveTimeMs = new SparseArray<>();
-
-  @GuardedBy("this")
-  private final SparseArray<Long> mSensorWakeupTimeMs = new SparseArray<>();
-
-  @GuardedBy("this")
-  private double mTotalPowerMah = 0;
-
-  @GuardedBy("this")
-  private long mTotalWakeupTimeMs = 0;
-
-  @GuardedBy("this")
-  private long mTotalActiveTimeMs = 0;
+  private final SensorMetrics mCumulativeMetrics = new SensorMetrics(true);
 
   public synchronized void disable() {
     mEnabled = false;
@@ -125,22 +109,26 @@ public class SensorMetricsCollector extends SystemMetricsCollector<SensorMetrics
 
       // Adjust for sensor's consumption
       mActiveSensors.remove(data.sensor);
-      int type = data.sensor.getType();
-      long currentActiveTimeMs = currentTimeMs - currentSensor.startTimeMs;
 
-      long sensorActiveTimeMs = mSensorActiveTimeMs.get(type, 0L);
-      mSensorActiveTimeMs.put(type, sensorActiveTimeMs + currentActiveTimeMs);
-      mTotalActiveTimeMs += currentActiveTimeMs;
+      int type = data.sensor.getType();
+
+      SensorMetrics.Consumption consumption = mCumulativeMetrics.sensorConsumption.get(type, null);
+      if (consumption == null) {
+        consumption = new SensorMetrics.Consumption();
+        mCumulativeMetrics.sensorConsumption.put(type, consumption);
+      }
+
+      long currentActiveTimeMs = currentTimeMs - currentSensor.startTimeMs;
+      consumption.activeTimeMs += currentActiveTimeMs;
+      mCumulativeMetrics.total.activeTimeMs += currentActiveTimeMs;
 
       double currentPowerMah = energyConsumedMah(data.sensor, currentActiveTimeMs);
-      double powerMah = mSensorPowerMah.get(type, 0.0);
-      mSensorPowerMah.put(type, powerMah + currentPowerMah);
-      mTotalPowerMah += currentPowerMah;
+      consumption.powerMah += currentPowerMah;
+      mCumulativeMetrics.total.powerMah += currentPowerMah;
 
       if (Util.isWakeupSensor(data.sensor)) {
-        long sensorWakeupTimeMs = mSensorWakeupTimeMs.get(type, 0L);
-        mSensorWakeupTimeMs.put(type, sensorWakeupTimeMs + currentActiveTimeMs);
-        mTotalWakeupTimeMs += currentActiveTimeMs;
+        consumption.wakeUpTimeMs += currentActiveTimeMs;
+        mCumulativeMetrics.total.wakeUpTimeMs += currentActiveTimeMs;
       }
     }
   }
@@ -154,9 +142,7 @@ public class SensorMetricsCollector extends SystemMetricsCollector<SensorMetrics
     }
 
     long currentTimeMs = SystemClock.elapsedRealtime();
-    snapshot.totalPowerMah = mTotalPowerMah;
-    snapshot.totalActiveTimeMs = mTotalActiveTimeMs;
-    snapshot.totalWakeUpTimeMs = mTotalWakeupTimeMs;
+    snapshot.set(mCumulativeMetrics);
 
     for (int i = 0, l = mActiveSensors.size(); i < l; i++) {
       Sensor sensor = mActiveSensors.keyAt(i);
@@ -167,11 +153,29 @@ public class SensorMetricsCollector extends SystemMetricsCollector<SensorMetrics
       }
 
       long sensorActiveTimeMs = currentTimeMs - data.startTimeMs;
-      snapshot.totalActiveTimeMs += sensorActiveTimeMs;
-      snapshot.totalPowerMah += energyConsumedMah(sensor, sensorActiveTimeMs);
+      double sensorPowerMah = energyConsumedMah(sensor, sensorActiveTimeMs);
+      snapshot.total.activeTimeMs += sensorActiveTimeMs;
+      snapshot.total.powerMah += sensorPowerMah;
 
-      if (Util.isWakeupSensor(sensor)) {
-        snapshot.totalWakeUpTimeMs += sensorActiveTimeMs;
+      boolean isWakeupSensor = Util.isWakeupSensor(sensor);
+      if (isWakeupSensor) {
+        snapshot.total.wakeUpTimeMs += sensorActiveTimeMs;
+      }
+
+      if (snapshot.isAttributionEnabled) {
+        int type = sensor.getType();
+        SensorMetrics.Consumption consumption = snapshot.sensorConsumption.get(type);
+        if (consumption == null) {
+          consumption = new SensorMetrics.Consumption();
+          snapshot.sensorConsumption.put(type, consumption);
+        }
+
+        consumption.activeTimeMs += sensorActiveTimeMs;
+        consumption.powerMah += sensorPowerMah;
+
+        if (isWakeupSensor) {
+          consumption.wakeUpTimeMs += sensorActiveTimeMs;
+        }
       }
     }
 

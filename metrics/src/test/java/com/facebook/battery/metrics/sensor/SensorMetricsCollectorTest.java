@@ -42,9 +42,9 @@ public class SensorMetricsCollectorTest
   @Test
   public void test_blank() {
     collector.getSnapshot(metrics);
-    assertThat(metrics.totalActiveTimeMs).isEqualTo(0);
-    assertThat(metrics.totalPowerMah).isEqualTo(0);
-    assertThat(metrics.totalWakeUpTimeMs).isEqualTo(0);
+    assertThat(metrics.total.activeTimeMs).isEqualTo(0);
+    assertThat(metrics.total.powerMah).isEqualTo(0);
+    assertThat(metrics.total.wakeUpTimeMs).isEqualTo(0);
   }
 
   @Test
@@ -70,22 +70,22 @@ public class SensorMetricsCollectorTest
     ShadowSystemClock.setElapsedRealtime(10);
     assertThat(collector.getSnapshot(metrics)).isTrue();
 
-    assertThat(metrics.totalPowerMah).isEqualTo((sensor.getPower() * 9.0) / 3600 / 1000);
-    assertThat(metrics.totalWakeUpTimeMs).isEqualTo(0);
-    assertThat(metrics.totalActiveTimeMs).isEqualTo(9);
+    assertThat(metrics.total.powerMah).isEqualTo((((double) sensor.getPower()) * 9) / 3600 / 1000);
+    assertThat(metrics.total.wakeUpTimeMs).isEqualTo(0);
+    assertThat(metrics.total.activeTimeMs).isEqualTo(9);
 
     ShadowSystemClock.setElapsedRealtime(20);
     assertThat(collector.getSnapshot(metrics)).isTrue();
 
-    assertThat(metrics.totalPowerMah).isEqualTo((sensor.getPower() * 19.0) / 3600 / 1000);
-    assertThat(metrics.totalWakeUpTimeMs).isEqualTo(0);
-    assertThat(metrics.totalActiveTimeMs).isEqualTo(19);
+    assertThat(metrics.total.powerMah).isEqualTo((((double) sensor.getPower()) * 19) / 3600 / 1000);
+    assertThat(metrics.total.wakeUpTimeMs).isEqualTo(0);
+    assertThat(metrics.total.activeTimeMs).isEqualTo(19);
 
     collector.unregister(listener, null);
 
     ShadowSystemClock.setElapsedRealtime(50);
     assertThat(collector.getSnapshot(metrics)).isTrue();
-    assertThat(metrics.totalActiveTimeMs).isEqualTo(19);
+    assertThat(metrics.total.activeTimeMs).isEqualTo(19);
   }
 
   /**
@@ -106,27 +106,27 @@ public class SensorMetricsCollectorTest
 
     ShadowSystemClock.setElapsedRealtime(5);
     assertThat(collector.getSnapshot(metrics)).isTrue();
-    assertThat(metrics.totalActiveTimeMs).isEqualTo(4);
+    assertThat(metrics.total.activeTimeMs).isEqualTo(4);
 
     ShadowSystemClock.setElapsedRealtime(10);
     collector.register(listenerB, sensor);
 
     ShadowSystemClock.setElapsedRealtime(11);
     assertThat(collector.getSnapshot(metrics)).isTrue();
-    assertThat(metrics.totalActiveTimeMs).isEqualTo(10);
+    assertThat(metrics.total.activeTimeMs).isEqualTo(10);
 
     ShadowSystemClock.setElapsedRealtime(15);
     collector.unregister(listenerB, null);
 
     ShadowSystemClock.setElapsedRealtime(20);
     assertThat(collector.getSnapshot(metrics)).isTrue();
-    assertThat(metrics.totalActiveTimeMs).isEqualTo(19);
+    assertThat(metrics.total.activeTimeMs).isEqualTo(19);
 
     collector.unregister(listener, null);
 
     ShadowSystemClock.setElapsedRealtime(25);
     assertThat(collector.getSnapshot(metrics)).isTrue();
-    assertThat(metrics.totalActiveTimeMs).isEqualTo(19);
+    assertThat(metrics.total.activeTimeMs).isEqualTo(19);
   }
 
   /**
@@ -153,8 +153,8 @@ public class SensorMetricsCollectorTest
     ShadowSystemClock.setElapsedRealtime(15);
     collector.unregister(listener, null);
     assertThat(collector.getSnapshot(metrics)).isTrue();
-    assertThat(metrics.totalActiveTimeMs).isEqualTo(5 + 14);
-    assertThat(metrics.totalPowerMah)
+    assertThat(metrics.total.activeTimeMs).isEqualTo(5 + 14);
+    assertThat(metrics.total.powerMah)
         .isEqualTo((5 * 20.0) / 3600 / 1000 + (14 * 10.0) / 3600 / 1000);
   }
 
@@ -177,28 +177,71 @@ public class SensorMetricsCollectorTest
 
     ShadowSystemClock.setElapsedRealtime(5);
     assertThat(collector.getSnapshot(metrics)).isTrue();
-    assertThat(metrics.totalActiveTimeMs).isEqualTo(4);
+    assertThat(metrics.total.activeTimeMs).isEqualTo(4);
 
     ShadowSystemClock.setElapsedRealtime(10);
     collector.register(listenerB, sensorB);
 
     ShadowSystemClock.setElapsedRealtime(13);
     assertThat(collector.getSnapshot(metrics)).isTrue();
-    assertThat(metrics.totalActiveTimeMs).isEqualTo(12 + 3);
+    assertThat(metrics.total.activeTimeMs).isEqualTo(12 + 3);
 
     ShadowSystemClock.setElapsedRealtime(15);
     collector.unregister(listener, null);
 
     ShadowSystemClock.setElapsedRealtime(18);
     assertThat(collector.getSnapshot(metrics)).isTrue();
-    assertThat(metrics.totalActiveTimeMs).isEqualTo(14 + 8);
+    assertThat(metrics.total.activeTimeMs).isEqualTo(14 + 8);
 
     ShadowSystemClock.setElapsedRealtime(20);
     collector.unregister(listenerB, null);
 
     ShadowSystemClock.setElapsedRealtime(50);
     assertThat(collector.getSnapshot(metrics)).isTrue();
-    assertThat(metrics.totalActiveTimeMs).isEqualTo(14 + 10);
+    assertThat(metrics.total.activeTimeMs).isEqualTo(14 + 10);
+  }
+
+  /**
+   *
+   *
+   * <pre>
+   * Time                = 01 .. 10 .. 15 .. 20 .. 50
+   * Sensor A/Listener A = [............]
+   * Sensor B/Listener B =       [............]
+   * </pre>
+   */
+  @Test
+  public void test_attribution_snapshot() {
+    Sensor sensorB = mock(Sensor.class);
+    SensorEventListener listenerB = mock(SensorEventListener.class);
+
+    when(sensorB.getType()).thenReturn(2);
+    when(sensorB.getPower()).thenReturn(100.0f);
+
+    ShadowSystemClock.setElapsedRealtime(1);
+    collector.register(listener, sensor);
+
+    ShadowSystemClock.setElapsedRealtime(10);
+    collector.register(listenerB, sensorB);
+
+    ShadowSystemClock.setElapsedRealtime(15);
+    collector.unregister(listener, null);
+
+    ShadowSystemClock.setElapsedRealtime(20);
+    collector.unregister(listenerB, null);
+
+    ShadowSystemClock.setElapsedRealtime(50);
+
+    metrics.isAttributionEnabled = true;
+    assertThat(collector.getSnapshot(metrics)).isTrue();
+    assertThat(metrics.total.activeTimeMs).isEqualTo(14 + 10);
+    assertThat(metrics.sensorConsumption.size()).isEqualTo(2);
+    assertThat(metrics.sensorConsumption.get(1337).activeTimeMs).isEqualTo(14);
+    assertThat(metrics.sensorConsumption.get(1337).powerMah)
+        .isEqualTo((14.0 * (double) sensor.getPower()) / 3600 / 1000);
+    assertThat(metrics.sensorConsumption.get(2).activeTimeMs).isEqualTo(10);
+    assertThat(metrics.sensorConsumption.get(2).powerMah)
+        .isEqualTo((10.0 * (double) sensorB.getPower()) / 3600 / 1000);
   }
 
   @Override

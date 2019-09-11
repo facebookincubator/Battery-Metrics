@@ -23,16 +23,16 @@ public class SensorMetricsSerializer extends SystemMetricsSerializer<SensorMetri
 
   @Override
   public void serializeContents(SensorMetrics metrics, DataOutput output) throws IOException {
-    output.writeDouble(metrics.totalPowerMah);
-    output.writeLong(metrics.totalActiveTimeMs);
-    output.writeLong(metrics.totalWakeUpTimeMs);
+    output.writeDouble(metrics.total.powerMah);
+    output.writeLong(metrics.total.activeTimeMs);
+    output.writeLong(metrics.total.wakeUpTimeMs);
   }
 
   @Override
   public boolean deserializeContents(SensorMetrics metrics, DataInput input) throws IOException {
-    metrics.totalPowerMah = input.readDouble();
-    metrics.totalActiveTimeMs = input.readLong();
-    metrics.totalWakeUpTimeMs = input.readLong();
+    metrics.total.powerMah = input.readDouble();
+    metrics.total.activeTimeMs = input.readLong();
+    metrics.total.wakeUpTimeMs = input.readLong();
     return true;
   }
 }
