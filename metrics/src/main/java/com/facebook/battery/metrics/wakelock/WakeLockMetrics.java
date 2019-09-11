@@ -9,7 +9,6 @@ package com.facebook.battery.metrics.wakelock;
 import androidx.annotation.Nullable;
 import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetrics;
-import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.core.Utilities;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -157,25 +156,19 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
         + '}';
   }
 
-  public @Nullable JSONObject attributionToJSONObject() {
+  public @Nullable JSONObject attributionToJSONObject() throws JSONException {
     // Creates a JSON Blob as a string of nested values that we can then process on the server.
     if (!isAttributionEnabled) {
       return null;
     }
 
-    try {
-      JSONObject attribution = new JSONObject();
-      for (int i = 0, size = tagTimeMs.size(); i < size; i++) {
-        long currentTagTimeMs = tagTimeMs.valueAt(i);
-        if (currentTagTimeMs > 0) {
-          attribution.put(tagTimeMs.keyAt(i), currentTagTimeMs);
-        }
+    JSONObject attribution = new JSONObject();
+    for (int i = 0, size = tagTimeMs.size(); i < size; i++) {
+      long currentTagTimeMs = tagTimeMs.valueAt(i);
+      if (currentTagTimeMs > 0) {
+        attribution.put(tagTimeMs.keyAt(i), currentTagTimeMs);
       }
-      return attribution;
-    } catch (JSONException ex) {
-      SystemMetricsLogger.wtf("WakeLockMetrics", "Failed to serialize attribution data", ex);
     }
-
-    return null;
+    return attribution;
   }
 }

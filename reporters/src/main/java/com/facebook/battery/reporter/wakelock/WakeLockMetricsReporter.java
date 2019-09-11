@@ -6,11 +6,15 @@
  */
 package com.facebook.battery.reporter.wakelock;
 
+import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.wakelock.WakeLockMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class WakeLockMetricsReporter implements SystemMetricsReporter<WakeLockMetrics> {
+
+  public static final String TAG = WakeLockMetricsReporter.class.getSimpleName();
 
   public static final String HELD_TIME_MS = "wakelock_held_time_ms";
   public static final String TAG_TIME_MS = "wakelock_tag_time_ms";
@@ -29,9 +33,13 @@ public class WakeLockMetricsReporter implements SystemMetricsReporter<WakeLockMe
     }
 
     if (mShouldReportAttribution) {
-      JSONObject tagAttribution = metrics.attributionToJSONObject();
-      if (tagAttribution != null) {
-        event.add(TAG_TIME_MS, tagAttribution.toString());
+      try {
+        JSONObject tagAttribution = metrics.attributionToJSONObject();
+        if (tagAttribution != null) {
+          event.add(TAG_TIME_MS, tagAttribution.toString());
+        }
+      } catch (JSONException ex) {
+        SystemMetricsLogger.wtf(TAG, "Failed to serialize wakelock attribution data", ex);
       }
     }
   }

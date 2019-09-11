@@ -8,6 +8,8 @@ package com.facebook.battery.metrics.wakelock;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -108,6 +110,20 @@ public class WakeLockMetricsTest {
     expectedOutput.tagTimeMs.put("TestWakeLock1", 5l);
 
     assertThat(output).isEqualTo(expectedOutput);
+  }
+
+  @Test
+  public void testAttributionToJSONObject() throws JSONException {
+    WakeLockMetrics metrics = new WakeLockMetrics();
+    metrics.isAttributionEnabled = true;
+    metrics.acquiredCount = 2;
+    metrics.heldTimeMs = 400;
+    metrics.tagTimeMs.put("Test", 100l);
+
+    JSONObject attribution = metrics.attributionToJSONObject();
+    assertThat(attribution.length()).isEqualTo(1);
+    assertThat(attribution.has("Test")).isTrue();
+    assertThat(attribution.getLong("Test")).isEqualTo(100);
   }
 
   private WakeLockMetrics createInitializedMetrics() {

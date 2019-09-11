@@ -12,6 +12,9 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetricsTest;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -56,6 +59,22 @@ public class AppWakeupMetricsTest extends SystemMetricsTest<AppWakeupMetrics> {
     verifyWakeupDetails(output.appWakeups.valueAt(1), 5, 5);
     verifyWakeupDetails(output.appWakeups.valueAt(2), 5, 5);
     verifyWakeupDetails(output.appWakeups.valueAt(3), 5, 5);
+  }
+
+  @Test
+  public void testWakeupAttribution() throws JSONException {
+    AppWakeupMetrics metrics = new AppWakeupMetrics();
+    metrics.appWakeups.put(
+        "wakeup",
+        new AppWakeupMetrics.WakeupDetails(AppWakeupMetrics.WakeupReason.ALARM, 1L, 100L));
+
+    JSONArray json = metrics.toJSON();
+    assertThat(json.length()).isEqualTo(1);
+    JSONObject wakeup = json.getJSONObject(0);
+    assertThat(wakeup.getInt("time_ms")).isEqualTo(100);
+    assertThat(wakeup.getInt("count")).isEqualTo(1);
+    assertThat(wakeup.getString("type")).isEqualTo("ALARM");
+    assertThat(wakeup.getString("key")).isEqualTo("wakeup");
   }
 
   // Create a AppWakeupMetrics with size = numWakeups, with odd numbered wakeups as JS and
