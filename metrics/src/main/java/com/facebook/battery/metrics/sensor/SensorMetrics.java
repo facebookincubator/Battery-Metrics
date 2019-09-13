@@ -10,6 +10,8 @@ import android.util.SparseArray;
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.Utilities;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class SensorMetrics extends SystemMetrics<SensorMetrics> {
 
@@ -151,6 +153,23 @@ public class SensorMetrics extends SystemMetrics<SensorMetrics> {
         + ", sensorConsumption="
         + sensorConsumption
         + '}';
+  }
+
+  public @Nullable JSONObject attributionToJSONObject() throws JSONException {
+    if (!isAttributionEnabled) {
+      return null;
+    }
+
+    JSONObject attribution = new JSONObject();
+    for (int i = 0, l = sensorConsumption.size(); i < l; i++) {
+      Consumption value = sensorConsumption.valueAt(i);
+      JSONObject details = new JSONObject();
+      details.put("activeTimeMs", value.activeTimeMs);
+      details.put("wakeUpTimeMs", value.wakeUpTimeMs);
+      details.put("powerMah", value.powerMah);
+      attribution.put(Integer.toString(sensorConsumption.keyAt(i)), details);
+    }
+    return attribution;
   }
 
   public static class Consumption extends SystemMetrics<Consumption> {
