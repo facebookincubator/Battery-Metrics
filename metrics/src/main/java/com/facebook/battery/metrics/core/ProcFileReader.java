@@ -174,6 +174,7 @@ public class ProcFileReader {
   }
 
   public long readNumber() {
+    long sign = 1;
     long result = 0;
     boolean isFirstRun = true;
 
@@ -182,7 +183,11 @@ public class ProcFileReader {
       if (Character.isDigit(mChar)) {
         result = result * 10 + (mChar - '0');
       } else if (isFirstRun) {
-        throw new ParseException("Couldn't read number!");
+        if (mChar == '-') {
+          sign = -1;
+        } else {
+          throw new ParseException("Couldn't read number!");
+        }
       } else {
         rewind();
         break;
@@ -195,7 +200,7 @@ public class ProcFileReader {
       throw new ParseException("Couldn't read number because the file ended!");
     }
 
-    return result;
+    return sign * result;
   }
 
   public void skipSpaces() {

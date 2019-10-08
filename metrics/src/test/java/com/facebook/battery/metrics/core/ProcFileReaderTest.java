@@ -134,6 +134,30 @@ public class ProcFileReaderTest {
   }
 
   @Test
+  public void testNegativeNumber() throws Exception {
+    String contents = "-979200";
+    String testPath = createFile(contents);
+    ProcFileReader reader = new ProcFileReader(testPath).start();
+
+    assertThat(reader.readNumber()).isEqualTo(-979200);
+    assertThat(reader.hasReachedEOF()).isTrue();
+
+    assertThat(reader.reset().readNumber()).isEqualTo(-979200);
+    assertThat(reader.hasReachedEOF()).isTrue();
+  }
+
+  @Test
+  public void testDoubleNumbersMixed() throws Exception {
+    String testPath = createFile("-123 456");
+    ProcFileReader reader = new ProcFileReader(testPath).start();
+
+    assertThat(reader.readNumber()).isEqualTo(-123);
+    reader.skipSpaces();
+    assertThat(reader.readNumber()).isEqualTo(456);
+    assertThat(reader.hasReachedEOF()).isTrue();
+  }
+
+  @Test
   public void testDoubleNumbers() throws Exception {
     String testPath = createFile("123 456");
     ProcFileReader reader = new ProcFileReader(testPath).start();
@@ -159,6 +183,23 @@ public class ProcFileReaderTest {
     }
 
     assertThat(numbers).isEqualTo(new long[] {123, 456, 789, 1000});
+  }
+
+  @Test
+  public void testMultipleLinesWithNegativeNumbers() throws Exception {
+    String testPath = createFile("123 -456\n-789 1000");
+    ProcFileReader reader = new ProcFileReader(testPath).start();
+
+    long numbers[] = new long[4];
+    int position = 0;
+    while (reader.hasNext()) {
+      numbers[position++] = reader.readNumber();
+      reader.skipSpaces();
+      numbers[position++] = reader.readNumber();
+      reader.skipLine();
+    }
+
+    assertThat(numbers).isEqualTo(new long[] {123, -456, -789, 1000});
   }
 
   private String createFile(String contents) throws IOException {
