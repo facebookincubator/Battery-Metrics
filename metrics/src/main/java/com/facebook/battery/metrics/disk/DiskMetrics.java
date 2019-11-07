@@ -18,6 +18,8 @@ public class DiskMetrics extends SystemMetrics<DiskMetrics> {
   public long readBytes;
   public long writeBytes;
   public long cancelledWriteBytes;
+  public long majorFaults;
+  public long blkIoTicks;
 
   public DiskMetrics() {}
 
@@ -30,6 +32,8 @@ public class DiskMetrics extends SystemMetrics<DiskMetrics> {
     readBytes = metrics.readBytes;
     writeBytes = metrics.writeBytes;
     cancelledWriteBytes = metrics.cancelledWriteBytes;
+    majorFaults = metrics.majorFaults;
+    blkIoTicks = metrics.blkIoTicks;
     return this;
   }
 
@@ -49,6 +53,8 @@ public class DiskMetrics extends SystemMetrics<DiskMetrics> {
       output.readBytes = readBytes + b.readBytes;
       output.writeBytes = writeBytes + b.writeBytes;
       output.cancelledWriteBytes = cancelledWriteBytes + b.cancelledWriteBytes;
+      output.majorFaults = majorFaults + b.majorFaults;
+      output.blkIoTicks = blkIoTicks + b.blkIoTicks;
     }
 
     return output;
@@ -71,6 +77,8 @@ public class DiskMetrics extends SystemMetrics<DiskMetrics> {
       output.writeBytes = writeBytes - b.writeBytes;
       /* cancelledWriteBytes can be -ve if the file deleted before flushed from file cache */
       output.cancelledWriteBytes = cancelledWriteBytes - b.cancelledWriteBytes;
+      output.majorFaults = majorFaults - b.majorFaults;
+      output.blkIoTicks = blkIoTicks - b.blkIoTicks;
     }
 
     return output;
@@ -93,7 +101,9 @@ public class DiskMetrics extends SystemMetrics<DiskMetrics> {
         && that.syscwCount == syscwCount
         && that.readBytes == readBytes
         && that.writeBytes == writeBytes
-        && that.cancelledWriteBytes == cancelledWriteBytes;
+        && that.cancelledWriteBytes == cancelledWriteBytes
+        && that.majorFaults == majorFaults
+        && that.blkIoTicks == blkIoTicks;
   }
 
   @Override
@@ -105,6 +115,8 @@ public class DiskMetrics extends SystemMetrics<DiskMetrics> {
     result = 31 * result + (int) (readBytes ^ (readBytes >>> 32));
     result = 31 * result + (int) (writeBytes ^ (writeBytes >>> 32));
     result = 31 * result + (int) (cancelledWriteBytes ^ (cancelledWriteBytes >>> 32));
+    result = 31 * result + (int) (majorFaults ^ (majorFaults >>> 32));
+    result = 31 * result + (int) (blkIoTicks ^ (blkIoTicks >>> 32));
 
     return result;
   }
@@ -126,6 +138,10 @@ public class DiskMetrics extends SystemMetrics<DiskMetrics> {
         + writeBytes
         + ", cancelledWriteBytes="
         + cancelledWriteBytes
+        + ", majorFaults="
+        + majorFaults
+        + ", blkIoTicks="
+        + blkIoTicks
         + "}";
   }
 }

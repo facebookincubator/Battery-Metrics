@@ -19,6 +19,8 @@ public class DiskMetricsReporter implements SystemMetricsReporter<DiskMetrics> {
   public static final String READ_BYTES = "read_bytes";
   public static final String WRITE_BYTES = "write_bytes";
   public static final String CANCELLED_WRITE_BYTES = "cancelled_write_bytes";
+  public static final String MAJOR_FAULTS_COUNT = "major_faults_count";
+  public static final String BLK_IO_TICKS = "blk_io_ticks";
 
   @Override
   public void reportTo(DiskMetrics metrics, SystemMetricsReporter.Event event) {
@@ -48,6 +50,14 @@ public class DiskMetricsReporter implements SystemMetricsReporter<DiskMetrics> {
 
     if (metrics.cancelledWriteBytes != 0) {
       event.add(CANCELLED_WRITE_BYTES, metrics.cancelledWriteBytes);
+    }
+
+    if (metrics.majorFaults != 0) {
+      event.add(MAJOR_FAULTS_COUNT, metrics.majorFaults);
+    }
+
+    if (metrics.blkIoTicks != 0) {
+      event.add(BLK_IO_TICKS, metrics.blkIoTicks);
     }
   }
 }

@@ -20,8 +20,14 @@ public class DiskMetricsCollector extends SystemMetricsCollector<DiskMetrics> {
   private static final String TAG = "DiskMetricsCollector";
 
   private static final int CHAR_BUFF_SIZE = 32;
-  private static final String PROC_STAT_FILE_PATH = "/proc/self/io";
-  private final ThreadLocal<ProcFileReader> mProcFileReader = new ThreadLocal<>();
+  private static final String PROC_IO_FILE_PATH = "/proc/self/io";
+  private final ThreadLocal<ProcFileReader> mProcIoFileReader = new ThreadLocal<>();
+
+  private static final int PROC_STAT_MAJOR_FAULTS_FIELD = 11;
+  private static final int PROC_STAT_BLKIO_TICKS_FIELD = 41;
+
+  private static final String PROC_STAT_FILE_PATH = "/proc/self/stat";
+  private final ThreadLocal<ProcFileReader> mProcStatFileReader = new ThreadLocal<>();
 
   @Override
   @ThreadSafe(enableChecks = false)
@@ -29,26 +35,52 @@ public class DiskMetricsCollector extends SystemMetricsCollector<DiskMetrics> {
     checkNotNull(snapshot, "Null value passed to getSnapshot!");
 
     try {
-      ProcFileReader reader = mProcFileReader.get();
-      if (reader == null) {
-        reader = new ProcFileReader(getPath());
-        mProcFileReader.set(reader);
+      ProcFileReader ioReader = mProcIoFileReader.get();
+      if (ioReader == null) {
+        ioReader = new ProcFileReader(getIoFilePath());
+        mProcIoFileReader.set(ioReader);
       }
 
-      reader.reset();
+      ioReader.reset();
 
-      if (!reader.isValid()) {
+      if (!ioReader.isValid()) {
         return false;
       }
 
-      snapshot.rcharBytes = readField(reader);
-      snapshot.wcharBytes = readField(reader);
-      snapshot.syscrCount = readField(reader);
-      snapshot.syscwCount = readField(reader);
-      snapshot.readBytes = readField(reader);
-      snapshot.writeBytes = readField(reader);
-      snapshot.cancelledWriteBytes = readField(reader);
+      snapshot.rcharBytes = readField(ioReader);
+      snapshot.wcharBytes = readField(ioReader);
+      snapshot.syscrCount = readField(ioReader);
+      snapshot.syscwCount = readField(ioReader);
+      snapshot.readBytes = readField(ioReader);
+      snapshot.writeBytes = readField(ioReader);
+      snapshot.cancelledWriteBytes = readField(ioReader);
 
+      ProcFileReader statReader = mProcStatFileReader.get();
+      if (statReader == null) {
+        statReader = new ProcFileReader(getStatFilePath());
+        mProcStatFileReader.set(statReader);
+      }
+
+      statReader.reset();
+
+      if (!statReader.isValid()) {
+        return false;
+      }
+
+      int index = 0;
+      while (index < PROC_STAT_MAJOR_FAULTS_FIELD) {
+        statReader.skipSpaces();
+        index++;
+      }
+
+      snapshot.majorFaults = statReader.readNumber();
+
+      while (index < PROC_STAT_BLKIO_TICKS_FIELD) {
+        statReader.skipSpaces();
+        index++;
+      }
+
+      snapshot.blkIoTicks = statReader.readNumber();
     } catch (ProcFileReader.ParseException pe) {
       SystemMetricsLogger.wtf(TAG, "Unable to parse disk field", pe);
       return false;
@@ -70,13 +102,17 @@ public class DiskMetricsCollector extends SystemMetricsCollector<DiskMetrics> {
     return count;
   }
 
-  protected String getPath() {
+  protected String getIoFilePath() {
+    return PROC_IO_FILE_PATH;
+  }
+
+  protected String getStatFilePath() {
     return PROC_STAT_FILE_PATH;
   }
 
   public static boolean isSupported() {
     try {
-      ProcFileReader reader = new ProcFileReader(PROC_STAT_FILE_PATH);
+      ProcFileReader reader = new ProcFileReader(PROC_IO_FILE_PATH);
       reader.reset();
       boolean supported = reader.isValid();
       reader.close();

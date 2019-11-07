@@ -31,6 +31,8 @@ public class DiskMetricsSerializer extends SystemMetricsSerializer<DiskMetrics> 
     output.writeLong(metrics.readBytes);
     output.writeLong(metrics.writeBytes);
     output.writeLong(metrics.cancelledWriteBytes);
+    output.writeLong(metrics.majorFaults);
+    output.writeLong(metrics.blkIoTicks);
   }
 
   @Override
@@ -42,6 +44,8 @@ public class DiskMetricsSerializer extends SystemMetricsSerializer<DiskMetrics> 
     metrics.readBytes = input.readLong();
     metrics.writeBytes = input.readLong();
     metrics.cancelledWriteBytes = input.readLong();
+    metrics.majorFaults = input.readLong();
+    metrics.blkIoTicks = input.readLong();
     return true;
   }
 }

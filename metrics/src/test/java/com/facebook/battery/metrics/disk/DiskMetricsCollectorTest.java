@@ -35,7 +35,7 @@ public class DiskMetricsCollectorTest
   public void testBrokenFile() throws Exception {
     DiskMetricsCollectorWithProcFile collector =
         new DiskMetricsCollectorWithProcFile()
-            .setPath(createFile("I am a weird android manufacturer"));
+            .setPath(createFile("I am a weird android"), createFile("manufacturer"));
 
     DiskMetrics snapshot = new DiskMetrics();
     assertThat(collector.getSnapshot(snapshot)).isFalse();
@@ -43,7 +43,7 @@ public class DiskMetricsCollectorTest
 
   @Test
   public void testRealProcfile() throws Exception {
-    String stat =
+    String io =
         "rchar: 100\n"
             + "wchar: 101\n"
             + "syscr: 1000\n"
@@ -52,8 +52,11 @@ public class DiskMetricsCollectorTest
             + "write_bytes: 501\n"
             + "cancelled_write_bytes: 10\n";
 
+    String stat =
+        "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46";
+
     DiskMetricsCollectorWithProcFile collector =
-        new DiskMetricsCollectorWithProcFile().setPath(createFile(stat));
+        new DiskMetricsCollectorWithProcFile().setPath(createFile(io), createFile(stat));
 
     DiskMetrics snapshot = new DiskMetrics();
     assertThat(collector.getSnapshot(snapshot)).isTrue();
@@ -65,11 +68,46 @@ public class DiskMetricsCollectorTest
     assertThat(snapshot.readBytes).isEqualTo(500);
     assertThat(snapshot.writeBytes).isEqualTo(501);
     assertThat(snapshot.cancelledWriteBytes).isEqualTo(10);
+    assertThat(snapshot.majorFaults).isEqualTo(12);
+    assertThat(snapshot.blkIoTicks).isEqualTo(42);
+  }
+
+  @Test
+  public void testRealProcfileRepeat() throws Exception {
+    String io =
+        "rchar: 100\n"
+            + "wchar: 101\n"
+            + "syscr: 1000\n"
+            + "syscw: 1001\n"
+            + "read_bytes: 500\n"
+            + "write_bytes: 501\n"
+            + "cancelled_write_bytes: 10\n";
+
+    String stat =
+        "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46";
+
+    DiskMetricsCollectorWithProcFile collector =
+        new DiskMetricsCollectorWithProcFile().setPath(createFile(io), createFile(stat));
+
+    DiskMetrics snapshot = new DiskMetrics();
+    assertThat(collector.getSnapshot(snapshot)).isTrue();
+    assertThat(collector.getSnapshot(snapshot)).isTrue();
+    assertThat(collector.getSnapshot(snapshot)).isTrue();
+
+    assertThat(snapshot.rcharBytes).isEqualTo(100);
+    assertThat(snapshot.wcharBytes).isEqualTo(101);
+    assertThat(snapshot.syscrCount).isEqualTo(1000);
+    assertThat(snapshot.syscwCount).isEqualTo(1001);
+    assertThat(snapshot.readBytes).isEqualTo(500);
+    assertThat(snapshot.writeBytes).isEqualTo(501);
+    assertThat(snapshot.cancelledWriteBytes).isEqualTo(10);
+    assertThat(snapshot.majorFaults).isEqualTo(12);
+    assertThat(snapshot.blkIoTicks).isEqualTo(42);
   }
 
   @Test
   public void testRealProcfileWithNegative() throws Exception {
-    String stat =
+    String io =
         "rchar: 100\n"
             + "wchar: 101\n"
             + "syscr: 1000\n"
@@ -78,8 +116,11 @@ public class DiskMetricsCollectorTest
             + "write_bytes: 501\n"
             + "cancelled_write_bytes: -1\n";
 
+    String stat =
+        "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46";
+
     DiskMetricsCollectorWithProcFile collector =
-        new DiskMetricsCollectorWithProcFile().setPath(createFile(stat));
+        new DiskMetricsCollectorWithProcFile().setPath(createFile(io), createFile(stat));
 
     DiskMetrics snapshot = new DiskMetrics();
     assertThat(collector.getSnapshot(snapshot)).isTrue();
@@ -91,6 +132,8 @@ public class DiskMetricsCollectorTest
     assertThat(snapshot.readBytes).isEqualTo(500);
     assertThat(snapshot.writeBytes).isEqualTo(501);
     assertThat(snapshot.cancelledWriteBytes).isEqualTo(-1);
+    assertThat(snapshot.majorFaults).isEqualTo(12);
+    assertThat(snapshot.blkIoTicks).isEqualTo(42);
   }
 
   private String createFile(String contents) throws IOException {
@@ -113,15 +156,22 @@ public class DiskMetricsCollectorTest
 
 @OkToExtend
 class DiskMetricsCollectorWithProcFile extends DiskMetricsCollector {
-  private String mPath;
+  private String mIo;
+  private String mStat;
 
-  public synchronized DiskMetricsCollectorWithProcFile setPath(String path) {
-    mPath = path;
+  public synchronized DiskMetricsCollectorWithProcFile setPath(String io, String stat) {
+    mIo = io;
+    mStat = stat;
     return this;
   }
 
   @Override
-  protected synchronized String getPath() {
-    return mPath;
+  protected synchronized String getIoFilePath() {
+    return mIo;
+  }
+
+  @Override
+  protected synchronized String getStatFilePath() {
+    return mStat;
   }
 }
