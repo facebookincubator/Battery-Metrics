@@ -62,12 +62,27 @@ public class MemoryMetricsCollectorTest
   }
 
   @Test
+  public void testDefaultDisabled() {
+    ShadowDebug.setNativeHeapSize(4 * 1024);
+    ShadowDebug.setNativeHeapAllocatedSize(3 * 1024);
+
+    MemoryMetrics snapshot = new MemoryMetrics();
+    MemoryMetricsCollector collector = new MemoryMetricsCollector();
+    collector.getSnapshot(snapshot);
+
+    assertThat(collector.getSnapshot(snapshot)).isFalse();
+    assertThat(snapshot.nativeHeapSizeKb).isEqualTo(0);
+    assertThat(snapshot.nativeHeapAllocatedKb).isEqualTo(0);
+  }
+
+  @Test
   public void testNativeHeap() {
     ShadowDebug.setNativeHeapSize(4 * 1024);
     ShadowDebug.setNativeHeapAllocatedSize(3 * 1024);
 
     MemoryMetrics snapshot = new MemoryMetrics();
     MemoryMetricsCollector collector = new MemoryMetricsCollector();
+    collector.enable();
     collector.getSnapshot(snapshot);
 
     assertThat(snapshot.nativeHeapSizeKb).isEqualTo(4);
@@ -77,6 +92,7 @@ public class MemoryMetricsCollectorTest
   @Test
   public void testSnapshotSequenceNumber() {
     MemoryMetricsCollector collector = new MemoryMetricsCollector();
+    collector.enable();
 
     MemoryMetrics first = new MemoryMetrics();
     MemoryMetrics second = new MemoryMetrics();
@@ -95,6 +111,7 @@ public class MemoryMetricsCollectorTest
     MemoryMetrics output = new MemoryMetrics();
 
     MemoryMetricsCollector collector = new MemoryMetricsCollector();
+    collector.enable();
 
     ShadowDebug.setNativeHeapSize(4 * 1024);
     ShadowDebug.setNativeHeapAllocatedSize(3 * 1024);
@@ -116,6 +133,7 @@ public class MemoryMetricsCollectorTest
     MemoryMetrics output = new MemoryMetrics();
 
     MemoryMetricsCollector collector = new MemoryMetricsCollector();
+    collector.enable();
 
     ShadowDebug.setNativeHeapSize(4 * 1024);
     ShadowDebug.setNativeHeapAllocatedSize(3 * 1024);
@@ -169,6 +187,7 @@ class MemoryMetricsCollectorWithProcFile extends MemoryMetricsCollector {
 
   public synchronized MemoryMetricsCollectorWithProcFile setPath(String path) {
     mPath = path;
+    enable();
     return this;
   }
 
@@ -184,6 +203,7 @@ class MemoryMetricsCollectorWithRuntime extends MemoryMetricsCollector {
 
   public synchronized MemoryMetricsCollectorWithRuntime setRuntime(Runtime runtime) {
     mRuntime = runtime;
+    enable();
     return this;
   }
 

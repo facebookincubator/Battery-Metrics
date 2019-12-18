@@ -37,6 +37,7 @@ public class MemoryMetricsTest extends SystemMetricsTest<MemoryMetrics> {
     MemoryMetrics sum = new MemoryMetrics();
 
     MemoryMetricsCollector collector = new MemoryMetricsCollector();
+    collector.enable();
 
     collector.getSnapshot(a);
     collector.getSnapshot(b);
@@ -68,6 +69,7 @@ public class MemoryMetricsTest extends SystemMetricsTest<MemoryMetrics> {
     MemoryMetrics sum = new MemoryMetrics();
 
     MemoryMetricsCollector collector = new MemoryMetricsCollector();
+    collector.enable();
 
     collector.getSnapshot(a);
     collector.getSnapshot(b);

@@ -10,6 +10,7 @@ package com.facebook.battery.metrics.memory;
 import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
 
 import android.os.Debug;
+import androidx.annotation.GuardedBy;
 import com.facebook.battery.metrics.core.ProcFileReader;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
@@ -27,10 +28,16 @@ public class MemoryMetricsCollector extends SystemMetricsCollector<MemoryMetrics
   private final ThreadLocal<ProcFileReader> mProcFileReader = new ThreadLocal<>();
   private final AtomicLong mCounter = new AtomicLong();
 
+  @GuardedBy("this")
+  private boolean mIsEnabled = false;
+
   @Override
   @ThreadSafe(enableChecks = false)
-  public boolean getSnapshot(MemoryMetrics snapshot) {
+  public synchronized boolean getSnapshot(MemoryMetrics snapshot) {
     checkNotNull(snapshot, "Null value passed to getSnapshot!");
+    if (!mIsEnabled) {
+      return false;
+    }
 
     /* this helps to track the latest snapshot, diff/sum always picks latest as truth */
     snapshot.sequenceNumber = mCounter.incrementAndGet();
@@ -63,6 +70,10 @@ public class MemoryMetricsCollector extends SystemMetricsCollector<MemoryMetrics
     }
 
     return true;
+  }
+
+  public synchronized void enable() {
+    mIsEnabled = true;
   }
 
   @Override

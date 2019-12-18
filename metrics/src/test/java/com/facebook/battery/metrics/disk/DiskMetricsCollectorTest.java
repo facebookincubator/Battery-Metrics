@@ -42,6 +42,15 @@ public class DiskMetricsCollectorTest
   }
 
   @Test
+  public void testDefaultDisabled() throws Exception {
+    DiskMetricsCollector collector = new DiskMetricsCollector();
+    DiskMetrics snapshot = new DiskMetrics();
+    assertThat(collector.getSnapshot(snapshot)).isFalse();
+    assertThat(snapshot.rcharBytes).isEqualTo(0);
+    assertThat(snapshot.wcharBytes).isEqualTo(0);
+  }
+
+  @Test
   public void testRealProcfile() throws Exception {
     String io =
         "rchar: 100\n"
@@ -162,6 +171,7 @@ class DiskMetricsCollectorWithProcFile extends DiskMetricsCollector {
   public synchronized DiskMetricsCollectorWithProcFile setPath(String io, String stat) {
     mIo = io;
     mStat = stat;
+    enable();
     return this;
   }
 

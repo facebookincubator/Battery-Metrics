@@ -9,6 +9,7 @@ package com.facebook.battery.metrics.disk;
 
 import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
 
+import androidx.annotation.GuardedBy;
 import com.facebook.battery.metrics.core.ProcFileReader;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
@@ -29,10 +30,16 @@ public class DiskMetricsCollector extends SystemMetricsCollector<DiskMetrics> {
   private static final String PROC_STAT_FILE_PATH = "/proc/self/stat";
   private final ThreadLocal<ProcFileReader> mProcStatFileReader = new ThreadLocal<>();
 
+  @GuardedBy("this")
+  private boolean mIsEnabled = false;
+
   @Override
   @ThreadSafe(enableChecks = false)
-  public boolean getSnapshot(DiskMetrics snapshot) {
+  public synchronized boolean getSnapshot(DiskMetrics snapshot) {
     checkNotNull(snapshot, "Null value passed to getSnapshot!");
+    if (!mIsEnabled) {
+      return false;
+    }
 
     try {
       ProcFileReader ioReader = mProcIoFileReader.get();
@@ -87,6 +94,10 @@ public class DiskMetricsCollector extends SystemMetricsCollector<DiskMetrics> {
     }
 
     return true;
+  }
+
+  public synchronized void enable() {
+    mIsEnabled = true;
   }
 
   @Override
