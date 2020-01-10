@@ -33,6 +33,9 @@ public class DiskMetricsCollector extends SystemMetricsCollector<DiskMetrics> {
   @GuardedBy("this")
   private boolean mIsEnabled = false;
 
+  @GuardedBy("this")
+  private boolean mIsFirstSnapShot = true;
+
   @Override
   @ThreadSafe(enableChecks = false)
   public synchronized boolean getSnapshot(DiskMetrics snapshot) {
@@ -42,16 +45,18 @@ public class DiskMetricsCollector extends SystemMetricsCollector<DiskMetrics> {
     }
 
     try {
-      ProcFileReader ioReader = mProcIoFileReader.get();
-      if (ioReader == null) {
-        ioReader = new ProcFileReader(getIoFilePath());
-        mProcIoFileReader.set(ioReader);
-      }
+      ProcFileReader ioReader = getIoFileReader();
+      ProcFileReader statReader = getStatFileReader();
 
       ioReader.reset();
-
-      if (!ioReader.isValid()) {
+      statReader.reset();
+      if (!ioReader.isValid() || !statReader.isValid()) {
         return false;
+      }
+
+      if (mIsFirstSnapShot) {
+        mIsFirstSnapShot = false;
+        return true;
       }
 
       snapshot.rcharBytes = readField(ioReader);
@@ -61,18 +66,6 @@ public class DiskMetricsCollector extends SystemMetricsCollector<DiskMetrics> {
       snapshot.readBytes = readField(ioReader);
       snapshot.writeBytes = readField(ioReader);
       snapshot.cancelledWriteBytes = readField(ioReader);
-
-      ProcFileReader statReader = mProcStatFileReader.get();
-      if (statReader == null) {
-        statReader = new ProcFileReader(getStatFilePath());
-        mProcStatFileReader.set(statReader);
-      }
-
-      statReader.reset();
-
-      if (!statReader.isValid()) {
-        return false;
-      }
 
       int index = 0;
       while (index < PROC_STAT_MAJOR_FAULTS_FIELD) {
@@ -94,6 +87,26 @@ public class DiskMetricsCollector extends SystemMetricsCollector<DiskMetrics> {
     }
 
     return true;
+  }
+
+  private ProcFileReader getIoFileReader() {
+    ProcFileReader ioReader = mProcIoFileReader.get();
+    if (ioReader == null) {
+      ioReader = new ProcFileReader(getIoFilePath());
+      mProcIoFileReader.set(ioReader);
+    }
+
+    return ioReader;
+  }
+
+  private ProcFileReader getStatFileReader() {
+    ProcFileReader statReader = mProcStatFileReader.get();
+    if (statReader == null) {
+      statReader = new ProcFileReader(getStatFilePath());
+      mProcStatFileReader.set(statReader);
+    }
+
+    return statReader;
   }
 
   public synchronized void enable() {
