@@ -63,9 +63,6 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
   @GuardedBy("this")
   private boolean mIsEnabled = true;
 
-  @GuardedBy("this")
-  private boolean mShouldReportAttribution;
-
   public synchronized void newWakeLock(
       PowerManager.WakeLock wakelock, int levelAndFlags, String tag) {
     if (!mIsEnabled) {
@@ -220,12 +217,6 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
 
   @Override
   public synchronized WakeLockMetrics createMetrics() {
-    return new WakeLockMetrics(mShouldReportAttribution);
-  }
-
-  /** Allows selecting if attribution should be included in the logged event. */
-  public synchronized WakeLockMetricsCollector setShouldReportAttribution(boolean enabled) {
-    mShouldReportAttribution = enabled;
-    return this;
+    return new WakeLockMetrics();
   }
 }
