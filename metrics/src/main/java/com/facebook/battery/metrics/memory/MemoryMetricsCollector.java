@@ -42,9 +42,8 @@ public class MemoryMetricsCollector extends SystemMetricsCollector<MemoryMetrics
     /* this helps to track the latest snapshot, diff/sum always picks latest as truth */
     snapshot.sequenceNumber = mCounter.incrementAndGet();
 
-    Runtime runtime = getRuntime();
-    snapshot.javaHeapMaxSizeKb = runtime.maxMemory() / KB;
-    snapshot.javaHeapAllocatedKb = (runtime.totalMemory() - runtime.freeMemory()) / KB;
+    snapshot.javaHeapMaxSizeKb = getRuntimeMaxMemory() / KB;
+    snapshot.javaHeapAllocatedKb = (getRuntimeTotalMemory() - getRuntimeFreeMemory()) / KB;
 
     snapshot.nativeHeapSizeKb = Debug.getNativeHeapSize() / KB;
     snapshot.nativeHeapAllocatedKb = Debug.getNativeHeapAllocatedSize() / KB;
@@ -91,7 +90,15 @@ public class MemoryMetricsCollector extends SystemMetricsCollector<MemoryMetrics
     return PROC_STAT_FILE_PATH;
   }
 
-  protected Runtime getRuntime() {
-    return Runtime.getRuntime();
+  protected long getRuntimeMaxMemory() {
+    return Runtime.getRuntime().maxMemory();
+  }
+
+  protected long getRuntimeTotalMemory() {
+    return Runtime.getRuntime().totalMemory();
+  }
+
+  protected long getRuntimeFreeMemory() {
+    return Runtime.getRuntime().freeMemory();
   }
 }

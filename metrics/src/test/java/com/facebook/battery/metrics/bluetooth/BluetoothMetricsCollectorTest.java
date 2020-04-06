@@ -8,12 +8,11 @@
 package com.facebook.battery.metrics.bluetooth;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanResult;
 import com.facebook.battery.metrics.core.ShadowSystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,23 +27,6 @@ public class BluetoothMetricsCollectorTest
 
   private BluetoothMetricsCollector mBluetoothMetricsCollector;
 
-  private static class DummyScanCallback extends ScanCallback {
-    @Override
-    public void onScanResult(int callbackType, ScanResult result) {
-      super.onScanResult(callbackType, result);
-    }
-
-    @Override
-    public void onBatchScanResults(List<ScanResult> results) {
-      super.onBatchScanResults(results);
-    }
-
-    @Override
-    public void onScanFailed(int errorCode) {
-      super.onScanFailed(errorCode);
-    }
-  }
-
   @Before
   public void setup() {
     mBluetoothMetricsCollector = new BluetoothMetricsCollector();
@@ -54,7 +36,7 @@ public class BluetoothMetricsCollectorTest
   public void testNonOpportunisticScan() {
     BluetoothMetrics bluetoothMetrics = new BluetoothMetrics();
 
-    ScanCallback callback = new DummyScanCallback();
+    ScanCallback callback = mock(ScanCallback.class);
 
     // Zero at beginning
     boolean isSuccess = mBluetoothMetricsCollector.getSnapshot(bluetoothMetrics);
@@ -97,7 +79,7 @@ public class BluetoothMetricsCollectorTest
   @Test
   public void testOpportunisticScan() {
     BluetoothMetrics bluetoothMetrics = new BluetoothMetrics();
-    ScanCallback callback = new DummyScanCallback();
+    ScanCallback callback = mock(ScanCallback.class);
 
     // Zero at beginning
     boolean isSuccess = mBluetoothMetricsCollector.getSnapshot(bluetoothMetrics);
@@ -151,9 +133,9 @@ public class BluetoothMetricsCollectorTest
   public void testOverlappingScans() {
     BluetoothMetrics bluetoothMetrics = new BluetoothMetrics();
 
-    ScanCallback callbackA = new DummyScanCallback();
-    ScanCallback callbackB = new DummyScanCallback();
-    ScanCallback callbackC = new DummyScanCallback();
+    ScanCallback callbackA = mock(ScanCallback.class);
+    ScanCallback callbackB = mock(ScanCallback.class);
+    ScanCallback callbackC = mock(ScanCallback.class);
 
     ShadowSystemClock.setUptimeMillis(1);
     mBluetoothMetricsCollector.startScan(callbackA, true);
@@ -191,10 +173,10 @@ public class BluetoothMetricsCollectorTest
 
   @Test
   public void testDuplicateStarts() {
-    ScanCallback callbackA = new DummyScanCallback();
+    ScanCallback callbackA = mock(ScanCallback.class);
 
     ShadowSystemClock.setUptimeMillis(1);
-    mBluetoothMetricsCollector.stopScan(new DummyScanCallback());
+    mBluetoothMetricsCollector.stopScan(mock(ScanCallback.class));
     ShadowSystemClock.setUptimeMillis(2);
     mBluetoothMetricsCollector.startScan(callbackA, false);
     ShadowSystemClock.setUptimeMillis(4);
@@ -202,7 +184,7 @@ public class BluetoothMetricsCollectorTest
     ShadowSystemClock.setUptimeMillis(8);
     mBluetoothMetricsCollector.startScan(callbackA, true);
     ShadowSystemClock.setUptimeMillis(16);
-    mBluetoothMetricsCollector.stopScan(new DummyScanCallback());
+    mBluetoothMetricsCollector.stopScan(mock(ScanCallback.class));
     ShadowSystemClock.setUptimeMillis(32);
     mBluetoothMetricsCollector.stopScan(callbackA);
     ShadowSystemClock.setUptimeMillis(64);

@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.shadows.ShadowProcess;
 
 @RunWith(RobolectricTestRunner.class)
 public class QTagUidNetworkBytesCollectorTest {
@@ -40,6 +41,7 @@ public class QTagUidNetworkBytesCollectorTest {
   @Before
   public void setup() throws IOException {
     mFolder.create();
+    ShadowProcess.setUid(0);
   }
 
   @Test

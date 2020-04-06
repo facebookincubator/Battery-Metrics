@@ -8,8 +8,8 @@
 package com.facebook.battery.metrics.cpu;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -72,7 +72,7 @@ public class CpuMetricsCollectorTest
     TestableCpuMetricsCollector collector = new TestableCpuMetricsCollector().setPath(path);
     CpuMetrics snapshot = new CpuMetrics();
     assertThat(collector.getSnapshot(snapshot)).isTrue();
-    verify(logger, never()).wtf(anyString(), anyString(), any(Throwable.class));
+    verify(logger, never()).wtf(anyString(), anyString(), (Throwable) any());
 
     StringBuilder secondEntry = new StringBuilder();
     for (int i = 0; i < 20; i++) {
@@ -80,7 +80,7 @@ public class CpuMetricsCollectorTest
     }
     overwriteFile(new File(path), secondEntry.toString());
     assertThat(collector.getSnapshot(snapshot)).isFalse();
-    verify(logger, times(1)).wtf(anyString(), anyString(), any(Throwable.class));
+    verify(logger, times(1)).wtf(anyString(), anyString(), (Throwable) any());
   }
 
   @Test

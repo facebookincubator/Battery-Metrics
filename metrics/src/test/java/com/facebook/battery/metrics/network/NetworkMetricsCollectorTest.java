@@ -14,8 +14,8 @@ import static com.facebook.battery.metrics.network.NetworkBytesCollector.RX;
 import static com.facebook.battery.metrics.network.NetworkBytesCollector.TX;
 import static com.facebook.battery.metrics.network.NetworkBytesCollector.WIFI;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -97,7 +97,7 @@ public class NetworkMetricsCollectorTest {
     mBytesCollector.yieldTotalBytes(bytes);
 
     assertThat(mMetricsCollector.getSnapshot(metrics)).isFalse();
-    verify(logger, times(1)).wtf(anyString(), anyString(), any(Throwable.class));
+    verify(logger, times(1)).wtf(anyString(), anyString(), (Throwable) any());
     assertThat(mMetricsCollector.getSnapshot(metrics)).isFalse();
 
     // Validate that any further snapshots, even if increasing, are disabled
@@ -106,7 +106,7 @@ public class NetworkMetricsCollectorTest {
     assertThat(mMetricsCollector.getSnapshot(metrics)).isFalse();
 
     // No new error logged because we've given up on this user session
-    verify(logger, times(1)).wtf(anyString(), anyString(), any(Throwable.class));
+    verify(logger, times(1)).wtf(anyString(), anyString(), (Throwable) any());
   }
 
   private static class TestNetworkBytesCollector extends NetworkBytesCollector {

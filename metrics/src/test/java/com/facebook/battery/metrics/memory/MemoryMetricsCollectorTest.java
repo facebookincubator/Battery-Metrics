@@ -8,8 +8,6 @@
 package com.facebook.battery.metrics.memory;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.facebook.battery.metrics.core.ShadowDebug;
 import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
@@ -150,13 +148,12 @@ public class MemoryMetricsCollectorTest
 
   @Test
   public void testJavaHeap() {
-    Runtime runtime = mock(Runtime.class);
-    MemoryMetricsCollectorWithRuntime collector =
-        new MemoryMetricsCollectorWithRuntime().setRuntime(runtime);
+    MemoryMetricsCollectorWithRuntimeStats collector =
+        new MemoryMetricsCollectorWithRuntimeStats()
+            .setRuntimeMaxMemory(8 * 1024L)
+            .setRuntimeTotalMemory(6 * 1024L);
+    collector.enable();
     MemoryMetrics snapshot = new MemoryMetrics();
-
-    when(runtime.maxMemory()).thenReturn(8 * 1024l);
-    when(runtime.totalMemory()).thenReturn(6 * 1024l);
 
     collector.getSnapshot(snapshot);
     assertThat(snapshot.javaHeapMaxSizeKb).isEqualTo(8);
@@ -197,18 +194,40 @@ class MemoryMetricsCollectorWithProcFile extends MemoryMetricsCollector {
   }
 }
 
-class MemoryMetricsCollectorWithRuntime extends MemoryMetricsCollector {
+class MemoryMetricsCollectorWithRuntimeStats extends MemoryMetricsCollector {
 
-  private Runtime mRuntime;
+  private long mRuntimeMaxMemory;
+  private long mRuntimeTotalMemory;
+  private long mRuntimeFreeMemory;
 
-  public synchronized MemoryMetricsCollectorWithRuntime setRuntime(Runtime runtime) {
-    mRuntime = runtime;
-    enable();
+  public synchronized MemoryMetricsCollectorWithRuntimeStats setRuntimeMaxMemory(long maxMemory) {
+    mRuntimeMaxMemory = maxMemory;
     return this;
   }
 
   @Override
-  protected synchronized Runtime getRuntime() {
-    return mRuntime;
+  protected long getRuntimeMaxMemory() {
+    return mRuntimeMaxMemory;
+  }
+
+  public synchronized MemoryMetricsCollectorWithRuntimeStats setRuntimeTotalMemory(
+      long totalMemory) {
+    mRuntimeTotalMemory = totalMemory;
+    return this;
+  }
+
+  @Override
+  protected long getRuntimeTotalMemory() {
+    return mRuntimeTotalMemory;
+  }
+
+  public synchronized MemoryMetricsCollectorWithRuntimeStats setRuntimeFreeMemory(long freeMemory) {
+    mRuntimeFreeMemory = freeMemory;
+    return this;
+  }
+
+  @Override
+  protected long getRuntimeFreeMemory() {
+    return mRuntimeFreeMemory;
   }
 }
