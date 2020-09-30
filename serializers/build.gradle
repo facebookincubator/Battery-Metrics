@@ -42,7 +42,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.assertj:assertj-core:2.8.0'
     testImplementation 'org.mockito:mockito-core:2.26.0'
-    testImplementation 'org.robolectric:robolectric:4.3.1'
+    testImplementation 'org.robolectric:robolectric:4.4'
 }
 
 apply from: rootProject.file('release.gradle')
