@@ -9,6 +9,7 @@ package com.facebook.battery.metrics.cpu;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
+import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -150,30 +151,49 @@ public class CpuFrequencyMetricsTest {
   }
 
   @Test
-  public void testSingleCoreToJSONObject() {
+  public void testSingleCoreToJSONObject() throws Exception {
     CpuFrequencyMetrics metrics = new CpuFrequencyMetrics();
     metrics.timeInStateS[0].put(100, 100);
-    assertThat(metrics.toJSONObject().toString()).isEqualTo("{\"1\":{\"100\":100}}");
+
+    JSONObject jsonObject = metrics.toJSONObject();
+
+    assertThat(jsonObject).isNotNull();
+    assertThat(jsonObject.length()).isEqualTo(1);
+    assertThat(jsonObject.has("1")).isTrue();
+    assertThat(jsonObject.get("1").toString()).isEqualTo("{\"100\":100}");
   }
 
   @Test
-  public void testMultipleCoresToJSONObject() {
+  public void testMultipleCoresToJSONObject() throws Exception {
     CpuFrequencyMetrics metrics = new CpuFrequencyMetrics();
     metrics.timeInStateS[0].put(100, 100);
     metrics.timeInStateS[2].put(200, 200);
-    assertThat(metrics.toJSONObject().toString())
-        .isEqualTo("{\"1\":{\"100\":100},\"4\":{\"200\":200}}");
+
+    JSONObject jsonObject = metrics.toJSONObject();
+
+    assertThat(jsonObject).isNotNull();
+    assertThat(jsonObject.length()).isEqualTo(2);
+    assertThat(jsonObject.has("1")).isTrue();
+    assertThat(jsonObject.get("1").toString()).isEqualTo("{\"100\":100}");
+    assertThat(jsonObject.has("4")).isTrue();
+    assertThat(jsonObject.get("4").toString()).isEqualTo("{\"200\":200}");
   }
 
   @Test
-  public void testCoreCombinationToJSONObject() {
+  public void testCoreCombinationToJSONObject() throws Exception {
     CpuFrequencyMetrics metrics = new CpuFrequencyMetrics();
     metrics.timeInStateS[0].put(100, 100);
     metrics.timeInStateS[2].put(100, 100);
     metrics.timeInStateS[1].put(200, 200);
     metrics.timeInStateS[3].put(200, 200);
 
-    assertThat(metrics.toJSONObject().toString())
-        .isEqualTo("{\"a\":{\"200\":200},\"5\":{\"100\":100}}");
+    JSONObject jsonObject = metrics.toJSONObject();
+
+    assertThat(jsonObject).isNotNull();
+    assertThat(jsonObject.length()).isEqualTo(2);
+    assertThat(jsonObject.has("a")).isTrue();
+    assertThat(jsonObject.get("a").toString()).isEqualTo("{\"200\":200}");
+    assertThat(jsonObject.has("5")).isTrue();
+    assertThat(jsonObject.get("5").toString()).isEqualTo("{\"100\":100}");
   }
 }
