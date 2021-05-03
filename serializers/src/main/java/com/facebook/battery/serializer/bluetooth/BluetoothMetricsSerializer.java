@@ -9,10 +9,12 @@ package com.facebook.battery.serializer.bluetooth;
 
 import com.facebook.battery.metrics.bluetooth.BluetoothMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class BluetoothMetricsSerializer extends SystemMetricsSerializer<BluetoothMetrics> {
 
   private static final long serialVersionUID = -4085774432413599882L;

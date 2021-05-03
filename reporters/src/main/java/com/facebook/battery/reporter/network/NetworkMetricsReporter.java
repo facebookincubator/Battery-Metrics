@@ -9,7 +9,9 @@ package com.facebook.battery.reporter.network;
 
 import com.facebook.battery.metrics.network.NetworkMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
+import com.facebook.infer.annotation.Nullsafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class NetworkMetricsReporter implements SystemMetricsReporter<NetworkMetrics> {
 
   public static final String MOBILE_BYTES_TX = "mobile_bytes_tx";

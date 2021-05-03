@@ -9,7 +9,9 @@ package com.facebook.battery.reporter.network;
 
 import com.facebook.battery.metrics.network.RadioStateMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
+import com.facebook.infer.annotation.Nullsafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class RadioStateReporter implements SystemMetricsReporter<RadioStateMetrics> {
 
   public static final String MOBILE_HIGH_POWER_ACTIVE_S = "mobile_high_power_active_s";

@@ -9,10 +9,12 @@ package com.facebook.battery.serializer.cpu;
 
 import com.facebook.battery.metrics.cpu.CpuMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class CpuMetricsSerializer extends SystemMetricsSerializer<CpuMetrics> {
 
   private static final long serialVersionUID = 2353414016265691865L;

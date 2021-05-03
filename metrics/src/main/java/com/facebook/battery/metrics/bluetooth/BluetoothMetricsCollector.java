@@ -16,6 +16,7 @@ import android.os.SystemClock;
 import android.util.SparseArray;
 import androidx.annotation.GuardedBy;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 
 /**
@@ -28,6 +29,7 @@ import com.facebook.infer.annotation.ThreadSafe;
  * the {@link ScanCallback} or {@link PendingIntent} object being passed to {@link
  * BluetoothLeScanner#startScan}.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class BluetoothMetricsCollector extends SystemMetricsCollector<BluetoothMetrics> {
 

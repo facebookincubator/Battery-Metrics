@@ -9,10 +9,12 @@ package com.facebook.battery.serializer.sensor;
 
 import com.facebook.battery.metrics.sensor.SensorMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class SensorMetricsSerializer extends SystemMetricsSerializer<SensorMetrics> {
 
   private static final long serialVersionUID = 1224L;
