@@ -8,6 +8,7 @@
 package com.facebook.battery.serializer.core;
 
 import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.io.IOException;
  * These help serialize SystemMetrics objects to disk cheaply as binary; using these helps avoid
  * reflection and unnecessary writes (as opposed to using Serializable).
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public abstract class SystemMetricsSerializer<T extends SystemMetrics<T>> {
 
   private static final short MAGIC = 0xFB;

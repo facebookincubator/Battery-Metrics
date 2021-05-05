@@ -14,9 +14,11 @@ import androidx.annotation.GuardedBy;
 import com.facebook.battery.metrics.core.ProcFileReader;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class MemoryMetricsCollector extends SystemMetricsCollector<MemoryMetrics> {
   private static final String TAG = "MemoryMetricsCollector";

@@ -9,7 +9,9 @@ package com.facebook.battery.reporter.sensor;
 
 import com.facebook.battery.metrics.sensor.SensorMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
+import com.facebook.infer.annotation.Nullsafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class SensorMetricsReporter implements SystemMetricsReporter<SensorMetrics> {
 
   public static final String TOTAL_POWER_MAH = "sensor_power_mah";

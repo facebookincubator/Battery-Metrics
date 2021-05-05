@@ -9,10 +9,12 @@ package com.facebook.battery.serializer.disk;
 
 import com.facebook.battery.metrics.disk.DiskMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class DiskMetricsSerializer extends SystemMetricsSerializer<DiskMetrics> {
 
   private static final long serialVersionUID = -3940877017738808059L;

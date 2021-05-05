@@ -9,10 +9,12 @@ package com.facebook.battery.serializer.devicebattery;
 
 import com.facebook.battery.metrics.devicebattery.DeviceBatteryMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class DeviceBatteryMetricsSerializer extends SystemMetricsSerializer<DeviceBatteryMetrics> {
 
   private static final long serialVersionUID = -2269842438411178483L;

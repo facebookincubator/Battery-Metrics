@@ -12,8 +12,10 @@ import androidx.annotation.RequiresApi;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.healthstats.HealthStatsMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
+import com.facebook.infer.annotation.Nullsafe;
 import org.json.JSONException;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class HealthStatsMetricsReporter implements SystemMetricsReporter<HealthStatsMetrics> {
 

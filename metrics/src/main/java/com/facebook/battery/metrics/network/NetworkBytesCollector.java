@@ -11,7 +11,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import androidx.annotation.Size;
+import com.facebook.infer.annotation.Nullsafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 abstract class NetworkBytesCollector {
 
   static final int RX = 0b000;

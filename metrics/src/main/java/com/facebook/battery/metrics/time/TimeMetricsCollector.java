@@ -11,6 +11,7 @@ import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
 
 import android.os.SystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 
 /**
@@ -18,6 +19,7 @@ import com.facebook.infer.annotation.ThreadSafe;
  * elapsed). This is a fairly core collector that can be used to normalize the values obtained by
  * all other collectors for comparison.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class TimeMetricsCollector extends SystemMetricsCollector<TimeMetrics> {
 

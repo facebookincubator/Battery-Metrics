@@ -12,12 +12,14 @@ import static com.facebook.battery.metrics.network.NetworkBytesCollector.FG;
 
 import android.content.Context;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 
 /**
  * Alternative to {@link NetworkMetricsCollector} which supports distinguishing
  * foreground/background app states where possible (in particular when using qtaguid stats).
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class EnhancedNetworkMetricsCollector
     extends SystemMetricsCollector<EnhancedNetworkMetrics> {
 

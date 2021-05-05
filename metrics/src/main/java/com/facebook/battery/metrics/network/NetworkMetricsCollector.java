@@ -17,6 +17,7 @@ import static com.facebook.battery.metrics.network.NetworkBytesCollector.WIFI;
 import android.content.Context;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 import java.util.Arrays;
 
@@ -30,6 +31,7 @@ import java.util.Arrays;
  * <p>See {@link EnhancedNetworkMetricsCollector} for distinguishing between foreground/background
  * app states as well.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class NetworkMetricsCollector extends SystemMetricsCollector<NetworkMetrics> {
   private static final String TAG = "NetworkMetricsCollector";

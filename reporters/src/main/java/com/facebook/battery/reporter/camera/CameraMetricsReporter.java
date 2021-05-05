@@ -9,7 +9,9 @@ package com.facebook.battery.reporter.camera;
 
 import com.facebook.battery.metrics.camera.CameraMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
+import com.facebook.infer.annotation.Nullsafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class CameraMetricsReporter implements SystemMetricsReporter<CameraMetrics> {
 
   public static final String CAMERA_OPEN_TIME_MS = "camera_open_time_ms";

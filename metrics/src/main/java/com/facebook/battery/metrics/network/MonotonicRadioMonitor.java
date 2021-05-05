@@ -9,6 +9,7 @@ package com.facebook.battery.metrics.network;
 
 import static java.lang.Math.max;
 
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,6 +20,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * {@link #onRadioActivate(long, long)} will be called with monotonically increasing transfer start
  * values.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class MonotonicRadioMonitor {
 

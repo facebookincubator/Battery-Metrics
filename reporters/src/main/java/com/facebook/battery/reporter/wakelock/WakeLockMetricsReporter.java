@@ -10,9 +10,11 @@ package com.facebook.battery.reporter.wakelock;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.wakelock.WakeLockMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
+import com.facebook.infer.annotation.Nullsafe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class WakeLockMetricsReporter implements SystemMetricsReporter<WakeLockMetrics> {
 
   public static final String TAG = WakeLockMetricsReporter.class.getSimpleName();
