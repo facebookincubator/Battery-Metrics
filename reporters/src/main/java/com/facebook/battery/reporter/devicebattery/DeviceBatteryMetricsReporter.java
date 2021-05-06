@@ -9,7 +9,9 @@ package com.facebook.battery.reporter.devicebattery;
 
 import com.facebook.battery.metrics.devicebattery.DeviceBatteryMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
+import com.facebook.infer.annotation.Nullsafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class DeviceBatteryMetricsReporter implements SystemMetricsReporter<DeviceBatteryMetrics> {
 
   public static final String BATTERY_PCT = "battery_pct";

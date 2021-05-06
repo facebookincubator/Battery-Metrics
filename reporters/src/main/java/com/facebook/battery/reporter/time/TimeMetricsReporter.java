@@ -9,7 +9,9 @@ package com.facebook.battery.reporter.time;
 
 import com.facebook.battery.metrics.time.TimeMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
+import com.facebook.infer.annotation.Nullsafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class TimeMetricsReporter implements SystemMetricsReporter<TimeMetrics> {
 
   public static final String REALTIME_MS = "realtime_ms";
