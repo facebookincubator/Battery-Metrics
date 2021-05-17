@@ -9,11 +9,13 @@ package com.facebook.battery.metrics.time;
 
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.infer.annotation.Nullsafe;
 
 /**
  * Maintain uptime and realtime for the application: remember to use real time for normalizing
  * metrics for comparison.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class TimeMetrics extends SystemMetrics<TimeMetrics> {
 
   public long uptimeMs;
@@ -60,7 +62,7 @@ public class TimeMetrics extends SystemMetrics<TimeMetrics> {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) {
       return true;
     }
