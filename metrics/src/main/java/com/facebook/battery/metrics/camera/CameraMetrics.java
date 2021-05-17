@@ -9,7 +9,9 @@ package com.facebook.battery.metrics.camera;
 
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.infer.annotation.Nullsafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class CameraMetrics extends SystemMetrics<CameraMetrics> {
 
   public long cameraPreviewTimeMs;
@@ -63,7 +65,7 @@ public class CameraMetrics extends SystemMetrics<CameraMetrics> {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) {
       return true;
     }
