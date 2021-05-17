@@ -11,6 +11,7 @@ import android.util.SparseIntArray;
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.infer.annotation.Nullsafe;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import org.json.JSONException;
@@ -24,6 +25,7 @@ import org.json.JSONObject;
  * that it can't change or cause unexpected bugs - see {@link
  * CpuFrequencyMetricsCollector#getTotalCores()}.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class CpuFrequencyMetrics extends SystemMetrics<CpuFrequencyMetrics> {
 
   public final SparseIntArray[] timeInStateS;
@@ -127,7 +129,7 @@ public class CpuFrequencyMetrics extends SystemMetrics<CpuFrequencyMetrics> {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) {
       return true;
     }
