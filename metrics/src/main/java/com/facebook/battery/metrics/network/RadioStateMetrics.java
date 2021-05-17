@@ -9,8 +9,10 @@ package com.facebook.battery.metrics.network;
 
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.infer.annotation.Nullsafe;
 
 /** Entity that contains info about radio uptime. */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class RadioStateMetrics extends SystemMetrics<RadioStateMetrics> {
 
   public long mobileLowPowerActiveS;
@@ -64,7 +66,7 @@ public class RadioStateMetrics extends SystemMetrics<RadioStateMetrics> {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) {
       return true;
     }
