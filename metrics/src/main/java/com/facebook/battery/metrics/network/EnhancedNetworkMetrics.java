@@ -9,8 +9,10 @@ package com.facebook.battery.metrics.network;
 
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.infer.annotation.Nullsafe;
 
 /** Alternative to {@link NetworkMetrics} which offers fg/bg app state distinction. */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class EnhancedNetworkMetrics extends SystemMetrics<EnhancedNetworkMetrics> {
 
   /**
@@ -64,7 +66,7 @@ public class EnhancedNetworkMetrics extends SystemMetrics<EnhancedNetworkMetrics
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
