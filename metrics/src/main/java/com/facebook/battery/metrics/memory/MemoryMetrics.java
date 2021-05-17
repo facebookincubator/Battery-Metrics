@@ -9,7 +9,9 @@ package com.facebook.battery.metrics.memory;
 
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.infer.annotation.Nullsafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class MemoryMetrics extends SystemMetrics<MemoryMetrics> {
   // Memory metrics takes snapshot of current state of memory, since the memory is not
   // monotonically increasing the sequence number to track the freshness. The sum()/diff()
@@ -82,7 +84,7 @@ public class MemoryMetrics extends SystemMetrics<MemoryMetrics> {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) {
       return true;
     }
