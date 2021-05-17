@@ -9,8 +9,10 @@ package com.facebook.battery.metrics.cpu;
 
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.infer.annotation.Nullsafe;
 
 /** Information about system and user cpu metrics: maintains a double per type of CPU time. */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class CpuMetrics extends SystemMetrics<CpuMetrics> {
 
   public double userTimeS;
@@ -66,7 +68,7 @@ public class CpuMetrics extends SystemMetrics<CpuMetrics> {
   }
 
   @Override
-  public boolean equals(Object other) {
+  public boolean equals(@Nullable Object other) {
     if (this == other) {
       return true;
     }
