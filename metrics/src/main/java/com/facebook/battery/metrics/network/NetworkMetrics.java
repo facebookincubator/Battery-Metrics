@@ -9,6 +9,7 @@ package com.facebook.battery.metrics.network;
 
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.infer.annotation.Nullsafe;
 
 /**
  * Information about network metrics: bytes sent/received on mobile radio and WiFi, as well as radio
@@ -16,6 +17,7 @@ import com.facebook.battery.metrics.core.SystemMetrics;
  *
  * <p>For foreground/background app state distinction, use {@link EnhancedNetworkMetrics}
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class NetworkMetrics extends SystemMetrics<NetworkMetrics> {
 
   public long mobileBytesTx;
@@ -69,7 +71,7 @@ public class NetworkMetrics extends SystemMetrics<NetworkMetrics> {
   }
 
   @Override
-  public boolean equals(Object other) {
+  public boolean equals(@Nullable Object other) {
     if (this == other) {
       return true;
     }
