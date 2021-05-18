@@ -9,12 +9,14 @@ package com.facebook.battery.metrics.devicebattery;
 
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.infer.annotation.Nullsafe;
 
 /**
  * This class contains the metrics for measuring the device level battery metrics. This is cheap to
  * record and can be a useful addition to modeled battery drain. We also measure the time spent on
  * battery and while charging since the start of the app
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class DeviceBatteryMetrics extends SystemMetrics<DeviceBatteryMetrics> {
 
   // Device battery level
@@ -70,7 +72,7 @@ public class DeviceBatteryMetrics extends SystemMetrics<DeviceBatteryMetrics> {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) {
       return true;
     }
