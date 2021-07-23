@@ -208,6 +208,10 @@ public class ProcFileReader {
     skipPast(' ');
   }
 
+  public void skipRightBrace() {
+    skipPast(')');
+  }
+
   public void skipLine() {
     skipPast('\n');
   }
