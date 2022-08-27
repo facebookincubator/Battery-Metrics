@@ -56,8 +56,15 @@ public class NetworkStatsManagerBytesCollector extends NetworkBytesCollector {
   private void getBytesForType(
       long[] bytes, int connectivityManagerType, int type, long startTimeMs, long endTimeMs)
       throws RemoteException {
-    NetworkStats stats =
-        mNetworkStatsManager.querySummary(connectivityManagerType, null, startTimeMs, endTimeMs);
+    NetworkStats stats;
+    try {
+      stats =
+          mNetworkStatsManager.querySummary(connectivityManagerType, null, startTimeMs, endTimeMs);
+    } catch (SecurityException e) {
+      SystemMetricsLogger.wtf(TAG, "NetworkStatsManager throws exception: ", e);
+      return;
+    }
+
     while (stats.hasNextBucket()) {
       stats.getNextBucket(mBucket);
 
