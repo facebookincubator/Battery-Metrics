@@ -8,18 +8,21 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.28.3"
     }
 }
 
 allprojects {
+    apply plugin: "com.jfrog.artifactory"
+    apply plugin: "maven-publish"
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 

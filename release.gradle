@@ -94,7 +94,7 @@ afterEvaluate { project ->
         from androidJavadoc.destinationDir
     }
 
-    task androidSourcesJar(type: Jar) {
+    task androidSourcesJar1(type: Jar) {
         classifier = 'sources'
         from android.sourceSets.main.java.srcDirs
     }
@@ -108,7 +108,7 @@ afterEvaluate { project ->
 
     artifacts {
         archives androidJavadocJar
-        archives androidSourcesJar
+        archives androidSourcesJar1
     }
 
     version = VERSION_NAME

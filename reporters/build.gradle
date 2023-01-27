@@ -37,7 +37,7 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     implementation project(':metrics')
-    implementation 'com.facebook.infer.annotation:infer-annotation:0.11.0'
+    implementation 'com.facebook.infer.annotation:infer-annotation:0.18.0'
     implementation 'androidx.legacy:legacy-support-core-utils:1.0.0'
 
     testImplementation 'junit:junit:4.12'
