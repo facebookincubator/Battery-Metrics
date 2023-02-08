@@ -45,4 +45,3 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:4.4'
 }
 
-apply from: rootProject.file('release.gradle')
