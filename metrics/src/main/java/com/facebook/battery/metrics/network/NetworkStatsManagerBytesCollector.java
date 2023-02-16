@@ -60,7 +60,7 @@ public class NetworkStatsManagerBytesCollector extends NetworkBytesCollector {
     try {
       stats =
           mNetworkStatsManager.querySummary(connectivityManagerType, null, startTimeMs, endTimeMs);
-    } catch (SecurityException e) {
+    } catch (SecurityException | IllegalStateException e) {
       SystemMetricsLogger.wtf(TAG, "NetworkStatsManager throws exception: ", e);
       return;
     }
