@@ -18,6 +18,7 @@ import android.net.NetworkInfo;
 import android.net.TrafficStats;
 import androidx.annotation.VisibleForTesting;
 import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
+import com.facebook.common.android.runtimereceivercompat.RuntimeReceiverCompat;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
@@ -66,7 +67,11 @@ class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
         (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
     mCurrentNetworkType = activeNetwork == null ? TYPE_NONE : activeNetwork.getType();
-    context.registerReceiver(mReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    RuntimeReceiverCompat.registerReceiver(
+        context,
+        mReceiver,
+        new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
+        true /* isExported */);
 
     updateTotalBytes();
   }
