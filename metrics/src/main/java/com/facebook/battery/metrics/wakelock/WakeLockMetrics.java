@@ -165,9 +165,12 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
 
     JSONObject attribution = new JSONObject();
     for (int i = 0, size = tagTimeMs.size(); i < size; i++) {
-      long currentTagTimeMs = tagTimeMs.valueAt(i);
-      if (currentTagTimeMs > 0) {
-        attribution.put(tagTimeMs.keyAt(i), currentTagTimeMs);
+      final Long value = tagTimeMs.valueAt(i);
+      if (value != null) {
+        long currentTagTimeMs = value;
+        if (currentTagTimeMs > 0) {
+          attribution.put(tagTimeMs.keyAt(i), currentTagTimeMs);
+        }
       }
     }
     return attribution;
