@@ -30,7 +30,9 @@ import org.mockito.Matchers;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
-@org.robolectric.annotation.Config(shadows = {ShadowSystemClock.class})
+@org.robolectric.annotation.Config(
+    sdk = 33,
+    shadows = {ShadowSystemClock.class})
 public class DeviceBatteryMetricsCollectorTest {
 
   @Rule public final ExpectedException mExpectedException = ExpectedException.none();

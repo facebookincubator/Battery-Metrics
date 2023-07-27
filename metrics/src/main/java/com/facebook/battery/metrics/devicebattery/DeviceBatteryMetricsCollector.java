@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
+import com.facebook.common.android.runtimereceivercompat.RuntimeReceiverCompat;
 import com.facebook.infer.annotation.ThreadSafe;
 import javax.annotation.concurrent.GuardedBy;
 
@@ -64,7 +65,8 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
 
     // Register the receiver for power connected and disconnected
     // This is not very accurate after targeting SDK 26
-    context.registerReceiver(
+    RuntimeReceiverCompat.registerReceiver(
+        context,
         new BroadcastReceiver() {
           @Override
           public void onReceive(Context context, Intent intent) {
@@ -98,7 +100,8 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
             }
           }
         },
-        intentFilter);
+        intentFilter,
+        true /* isExported */);
   }
 
   @Override
@@ -127,7 +130,8 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
   /** This can be null for devices without any battery (like a TV) or because of buggy firmware. */
   private @Nullable Intent getBatteryIntent() {
     try {
-      return mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+      return RuntimeReceiverCompat.registerReceiver(
+          mContext, null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED), true /* isExported */);
     } catch (Exception ex) {
       // There is a weird bug that causes this to crash sometimes in android versions <= 4.2
       // with a SecurityException - handling the exception to avoid the crash
