@@ -14,12 +14,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.SystemClock;
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
-import com.facebook.common.android.runtimereceivercompat.RuntimeReceiverCompat;
 import com.facebook.infer.annotation.ThreadSafe;
 import javax.annotation.concurrent.GuardedBy;
 
@@ -65,7 +65,7 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
 
     // Register the receiver for power connected and disconnected
     // This is not very accurate after targeting SDK 26
-    RuntimeReceiverCompat.registerReceiver(
+    compatRegisterReceiver(
         context,
         new BroadcastReceiver() {
           @Override
@@ -130,7 +130,7 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
   /** This can be null for devices without any battery (like a TV) or because of buggy firmware. */
   private @Nullable Intent getBatteryIntent() {
     try {
-      return RuntimeReceiverCompat.registerReceiver(
+      return compatRegisterReceiver(
           mContext, null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED), true /* isExported */);
     } catch (Exception ex) {
       // There is a weird bug that causes this to crash sometimes in android versions <= 4.2
@@ -158,6 +158,26 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
         batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1) : -1;
     return status == BatteryManager.BATTERY_STATUS_CHARGING
         || status == BatteryManager.BATTERY_STATUS_FULL;
+  }
+
+  /**
+   * Starting with Android 14, apps and services that target Android 14 and use context-registered
+   * receivers are required to specify a flag to indicate whether or not the receiver should be
+   * exported to all other apps on the device: either RECEIVER_EXPORTED or RECEIVER_NOT_EXPORTED
+   *
+   * <p>https://developer.android.com/about/versions/14/behavior-changes-14#runtime-receivers-exported
+   */
+  private @Nullable Intent compatRegisterReceiver(
+      Context context,
+      @Nullable BroadcastReceiver receiver,
+      IntentFilter filter,
+      boolean exported) {
+    if (Build.VERSION.SDK_INT >= 34 && context.getApplicationInfo().targetSdkVersion >= 34) {
+      return context.registerReceiver(
+          receiver, filter, exported ? Context.RECEIVER_EXPORTED : Context.RECEIVER_NOT_EXPORTED);
+    } else {
+      return context.registerReceiver(receiver, filter);
+    }
   }
 
   /**

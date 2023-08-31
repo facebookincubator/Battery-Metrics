@@ -16,9 +16,10 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.TrafficStats;
+import android.os.Build;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
-import com.facebook.common.android.runtimereceivercompat.RuntimeReceiverCompat;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
@@ -67,7 +68,7 @@ class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
         (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
     mCurrentNetworkType = activeNetwork == null ? TYPE_NONE : activeNetwork.getType();
-    RuntimeReceiverCompat.registerReceiver(
+    compatRegisterReceiver(
         context,
         mReceiver,
         new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
@@ -90,6 +91,26 @@ class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
     updateTotalBytes();
     System.arraycopy(mTotalBytes, 0, bytes, 0, bytes.length);
     return true;
+  }
+
+  /**
+   * Starting with Android 14, apps and services that target Android 14 and use context-registered
+   * receivers are required to specify a flag to indicate whether or not the receiver should be
+   * exported to all other apps on the device: either RECEIVER_EXPORTED or RECEIVER_NOT_EXPORTED
+   *
+   * <p>https://developer.android.com/about/versions/14/behavior-changes-14#runtime-receivers-exported
+   */
+  private @Nullable Intent compatRegisterReceiver(
+      Context context,
+      @Nullable BroadcastReceiver receiver,
+      IntentFilter filter,
+      boolean exported) {
+    if (Build.VERSION.SDK_INT >= 34 && context.getApplicationInfo().targetSdkVersion >= 34) {
+      return context.registerReceiver(
+          receiver, filter, exported ? Context.RECEIVER_EXPORTED : Context.RECEIVER_NOT_EXPORTED);
+    } else {
+      return context.registerReceiver(receiver, filter);
+    }
   }
 
   @VisibleToAvoidSynthetics
