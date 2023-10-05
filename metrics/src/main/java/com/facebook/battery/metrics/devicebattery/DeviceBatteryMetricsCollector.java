@@ -14,7 +14,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
-import android.os.Build;
 import android.os.SystemClock;
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
@@ -65,7 +64,7 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
 
     // Register the receiver for power connected and disconnected
     // This is not very accurate after targeting SDK 26
-    compatRegisterReceiver(
+    registerProtectedBroadcastReceiver(
         context,
         new BroadcastReceiver() {
           @Override
@@ -100,8 +99,7 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
             }
           }
         },
-        intentFilter,
-        true /* isExported */);
+        intentFilter);
   }
 
   @Override
@@ -130,8 +128,8 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
   /** This can be null for devices without any battery (like a TV) or because of buggy firmware. */
   private @Nullable Intent getBatteryIntent() {
     try {
-      return compatRegisterReceiver(
-          mContext, null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED), true /* isExported */);
+      return registerProtectedBroadcastReceiver(
+          mContext, null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     } catch (Exception ex) {
       // There is a weird bug that causes this to crash sometimes in android versions <= 4.2
       // with a SecurityException - handling the exception to avoid the crash
@@ -161,23 +159,16 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
   }
 
   /**
-   * Starting with Android 14, apps and services that target Android 14 and use context-registered
-   * receivers are required to specify a flag to indicate whether or not the receiver should be
-   * exported to all other apps on the device: either RECEIVER_EXPORTED or RECEIVER_NOT_EXPORTED
+   * Register receivers for protected broadcasts (these are broadcasts that can only be sent by the
+   * system). This is to avoid attacks in case the protected broadcast action becomes non-protected
+   * in the future version of Android, and to help the security team correctly analyze the risk of
+   * these receivers.
    *
    * <p>https://developer.android.com/about/versions/14/behavior-changes-14#runtime-receivers-exported
    */
-  private @Nullable Intent compatRegisterReceiver(
-      Context context,
-      @Nullable BroadcastReceiver receiver,
-      IntentFilter filter,
-      boolean exported) {
-    if (Build.VERSION.SDK_INT >= 34 && context.getApplicationInfo().targetSdkVersion >= 34) {
-      return context.registerReceiver(
-          receiver, filter, exported ? Context.RECEIVER_EXPORTED : Context.RECEIVER_NOT_EXPORTED);
-    } else {
-      return context.registerReceiver(receiver, filter);
-    }
+  private @Nullable Intent registerProtectedBroadcastReceiver(
+      Context context, @Nullable BroadcastReceiver receiver, IntentFilter filter) {
+    return context.registerReceiver(receiver, filter);
   }
 
   /**
