@@ -60,8 +60,10 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
         return false;
       }
 
+      reader.skipRightBrace();
+
       int index = 0;
-      while (index < PROC_USER_TIME_FIELD) {
+      while (index < PROC_USER_TIME_FIELD - 1) {
         reader.skipSpaces();
         index++;
       }
