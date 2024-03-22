@@ -86,7 +86,9 @@ public class CpuMetricsCollectorTest
   @Test
   public void testRealProcfile() throws Exception {
     String stat =
-        "21031 (facebook.katana) S 354 354 0 0 -1 1077952832 227718 1446 318 0 9852 889 6 11 20 0 133 0 502496 2050461696 70553 4294967295 1 1 0 0 0 0 4608 0 1166120188 4294967295 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+        "21031 (facebook.katana) S 354 354 0 0 -1 1077952832 227718 1446 318 0 9852 889 6 11 20 0"
+            + " 133 0 502496 2050461696 70553 4294967295 1 1 0 0 0 0 4608 0 1166120188 4294967295 0"
+            + " 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
     TestableCpuMetricsCollector collector =
         new TestableCpuMetricsCollector().setPath(createFile(stat));
 
