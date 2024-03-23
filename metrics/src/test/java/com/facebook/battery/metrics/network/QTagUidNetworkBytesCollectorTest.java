@@ -32,7 +32,10 @@ import org.robolectric.shadows.ShadowProcess;
 public class QTagUidNetworkBytesCollectorTest {
 
   private static final String HEADERS =
-      "idx iface acct_tag_hex uid_tag_int cnt_set rx_bytes rx_packets tx_bytes tx_packets rx_tcp_bytes rx_tcp_packets rx_udp_bytes rx_udp_packets rx_other_bytes rx_other_packets tx_tcp_bytes tx_tcp_packets tx_udp_bytes tx_udp_packets tx_other_bytes tx_other_packets";
+      "idx iface acct_tag_hex uid_tag_int cnt_set rx_bytes rx_packets tx_bytes tx_packets"
+          + " rx_tcp_bytes rx_tcp_packets rx_udp_bytes rx_udp_packets rx_other_bytes"
+          + " rx_other_packets tx_tcp_bytes tx_tcp_packets tx_udp_bytes tx_udp_packets"
+          + " tx_other_bytes tx_other_packets";
   private static final String[] INDEXES = HEADERS.split(" ");
 
   TemporaryFolder mFolder = new TemporaryFolder();
