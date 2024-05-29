@@ -9,7 +9,11 @@ package com.facebook.battery.metrics.memory;
 
 import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Debug;
+import android.system.Os;
+import android.system.OsConstants;
 import androidx.annotation.GuardedBy;
 import com.facebook.battery.metrics.core.ProcFileReader;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
@@ -25,10 +29,25 @@ public class MemoryMetricsCollector extends SystemMetricsCollector<MemoryMetrics
 
   private static final String PROC_STAT_FILE_PATH = "/proc/self/statm";
   private static final int KB = 1024;
-  private static final int PAGE_SIZE_KB = 4;
 
   private final ThreadLocal<ProcFileReader> mProcFileReader = new ThreadLocal<>();
   private final AtomicLong mCounter = new AtomicLong();
+  private long pageSizeKb;
+
+  @TargetApi(21)
+  public MemoryMetricsCollector() {
+    pageSizeKb = 4;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      try {
+        long pageSizeB = Os.sysconf(OsConstants._SC_PAGESIZE);
+        if (pageSizeB > 0) {
+          pageSizeKb = pageSizeB / KB;
+        }
+      } catch (Throwable t) {
+        // shouldn't happen; fallback to default value
+      }
+    }
+  }
 
   @GuardedBy("this")
   private boolean mIsEnabled = false;
@@ -82,8 +101,8 @@ public class MemoryMetricsCollector extends SystemMetricsCollector<MemoryMetrics
     return new MemoryMetrics();
   }
 
-  private static long readField(ProcFileReader reader) {
-    long memoryKb = reader.readNumber() * PAGE_SIZE_KB;
+  private long readField(ProcFileReader reader) {
+    long memoryKb = reader.readNumber() * pageSizeKb;
     reader.skipSpaces();
     return memoryKb;
   }
