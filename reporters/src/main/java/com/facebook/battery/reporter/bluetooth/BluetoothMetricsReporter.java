@@ -9,7 +9,9 @@ package com.facebook.battery.reporter.bluetooth;
 
 import com.facebook.battery.metrics.bluetooth.BluetoothMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
+import com.facebook.infer.annotation.Nullsafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class BluetoothMetricsReporter implements SystemMetricsReporter<BluetoothMetrics> {
 
   public static final String BLE_SCAN_COUNT = "ble_scan_count";
