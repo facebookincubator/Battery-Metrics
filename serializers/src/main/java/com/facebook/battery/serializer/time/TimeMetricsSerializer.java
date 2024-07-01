@@ -9,10 +9,12 @@ package com.facebook.battery.serializer.time;
 
 import com.facebook.battery.metrics.time.TimeMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class TimeMetricsSerializer extends SystemMetricsSerializer<TimeMetrics> {
 
   private static final long serialVersionUID = 4345974300167284411L;
