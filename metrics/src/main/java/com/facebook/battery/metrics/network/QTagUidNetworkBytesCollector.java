@@ -13,6 +13,7 @@ import com.facebook.battery.metrics.core.ProcFileReader;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import java.nio.CharBuffer;
 import java.util.Arrays;
+import javax.annotation.Nullable;
 
 /**
  * The QTagUid based bytes collector reads bytes from xt_qtaguid/stats.
@@ -44,7 +45,7 @@ class QTagUidNetworkBytesCollector extends NetworkBytesCollector {
   private static final CharBuffer LOOPBACK_IFACE = CharBuffer.wrap("lo");
 
   private final CharBuffer mBuffer = CharBuffer.allocate(128);
-  private ProcFileReader mProcFileReader;
+  @Nullable private ProcFileReader mProcFileReader;
 
   @Override
   public boolean supportsBgDistinction() {
