@@ -19,6 +19,7 @@ import android.net.TrafficStats;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
+import com.facebook.infer.annotation.Nullsafe;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
@@ -31,6 +32,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  *
  * <p>TODO(#16381416): Accept a background handler for broadcasts
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @NotThreadSafe
 class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
 
@@ -63,6 +65,7 @@ class TrafficStatsNetworkBytesCollector extends NetworkBytesCollector {
     Context applicationContext = context.getApplicationContext();
     context = applicationContext != null ? applicationContext : context;
 
+    // NULLSAFE_FIXME[Field Not Nullable]
     mConnectivityManager =
         (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
