@@ -9,10 +9,12 @@ package com.facebook.battery.serializer.wakelock;
 
 import com.facebook.battery.metrics.wakelock.WakeLockMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class WakeLockMetricsSerializer extends SystemMetricsSerializer<WakeLockMetrics> {
 
   private static final long serialVersionUID = -153197510099727452L;
@@ -32,6 +34,7 @@ public class WakeLockMetricsSerializer extends SystemMetricsSerializer<WakeLockM
       output.writeInt(size);
       for (int i = 0; i < size; i++) {
         String key = metrics.tagTimeMs.keyAt(i);
+        // NULLSAFE_FIXME[Nullable Dereference]
         long value = metrics.tagTimeMs.valueAt(i);
         output.writeInt(key.length());
         output.writeChars(key);
