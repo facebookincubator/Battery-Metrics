@@ -14,10 +14,12 @@ import androidx.collection.ArrayMap;
 import com.facebook.battery.metrics.healthstats.HealthStatsMetrics;
 import com.facebook.battery.metrics.healthstats.HealthStatsMetrics.TimerMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class HealthStatsMetricsSerializer extends SystemMetricsSerializer<HealthStatsMetrics> {
 
@@ -55,6 +57,7 @@ public class HealthStatsMetricsSerializer extends SystemMetricsSerializer<Health
       output.writeInt(currentMeasurementLength);
       for (int j = 0; j < currentMeasurementLength; j++) {
         writeString(currentMeasurement.keyAt(j), output);
+        // NULLSAFE_FIXME[Parameter Not Nullable]
         output.writeLong(currentMeasurement.valueAt(j));
       }
     }
@@ -68,6 +71,7 @@ public class HealthStatsMetricsSerializer extends SystemMetricsSerializer<Health
       output.writeInt(currentTimerLength);
       for (int j = 0; j < currentTimerLength; j++) {
         writeString(currentTimer.keyAt(j), output);
+        // NULLSAFE_FIXME[Parameter Not Nullable]
         writeTimer(currentTimer.valueAt(j), output);
       }
     }
@@ -81,6 +85,7 @@ public class HealthStatsMetricsSerializer extends SystemMetricsSerializer<Health
       output.writeInt(currentStatsLength);
       for (int j = 0; j < currentStatsLength; j++) {
         writeString(currentStats.keyAt(j), output);
+        // NULLSAFE_FIXME[Parameter Not Nullable]
         serializeContents(currentStats.valueAt(j), output);
       }
     }
@@ -103,6 +108,7 @@ public class HealthStatsMetricsSerializer extends SystemMetricsSerializer<Health
   @Override
   public boolean deserializeContents(HealthStatsMetrics metrics, DataInput input)
       throws IOException {
+    // NULLSAFE_FIXME[Field Not Nullable]
     metrics.dataType = readString(input);
 
     int measurementLength = input.readInt();
