@@ -14,8 +14,10 @@ import android.net.ConnectivityManager;
 import android.os.RemoteException;
 import androidx.annotation.RequiresApi;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.infer.annotation.Nullsafe;
 import java.util.Arrays;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @RequiresApi(api = 28)
 public class NetworkStatsManagerBytesCollector extends NetworkBytesCollector {
 
@@ -25,6 +27,7 @@ public class NetworkStatsManagerBytesCollector extends NetworkBytesCollector {
   private final long mStartTime;
 
   public NetworkStatsManagerBytesCollector(Context context) {
+    // NULLSAFE_FIXME[Field Not Nullable]
     mNetworkStatsManager = context.getSystemService(NetworkStatsManager.class);
     mStartTime = Long.MIN_VALUE;
   }
@@ -65,7 +68,9 @@ public class NetworkStatsManagerBytesCollector extends NetworkBytesCollector {
       return;
     }
 
+    // NULLSAFE_FIXME[Nullable Dereference]
     while (stats.hasNextBucket()) {
+      // NULLSAFE_FIXME[Nullable Dereference]
       stats.getNextBucket(mBucket);
 
       int appState =
@@ -75,6 +80,7 @@ public class NetworkStatsManagerBytesCollector extends NetworkBytesCollector {
       bytes[type | RX | appState] += mBucket.getRxBytes();
       bytes[type | TX | appState] += mBucket.getTxBytes();
     }
+    // NULLSAFE_FIXME[Nullable Dereference]
     stats.close();
   }
 }
