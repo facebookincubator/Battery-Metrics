@@ -9,6 +9,7 @@ package com.facebook.battery.metrics.core;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
+import com.facebook.infer.annotation.Nullsafe;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -16,6 +17,7 @@ import java.lang.reflect.Modifier;
  * Utilities for applying reflection on {@link com.facebook.battery.metrics.core.SystemMetrics}
  * classes.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class MetricsUtil {
   public static <T> T createInitializedInstance(Class<T> clazz) throws Exception {
     T t = clazz.newInstance();
@@ -52,6 +54,7 @@ public class MetricsUtil {
       typedValue = (long) value;
     }
 
+    // NULLSAFE_FIXME[Parameter Not Nullable, Not Vetted Third-Party]
     assertThat(field.get(t)).isEqualTo(typedValue);
   }
 }
