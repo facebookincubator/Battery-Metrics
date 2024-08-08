@@ -12,6 +12,7 @@ import android.os.Build;
 import android.system.Os;
 import android.system.OsConstants;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.infer.annotation.Nullsafe;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -26,7 +27,8 @@ import java.lang.reflect.InvocationTargetException;
  * @see <a href="https://fburl.com/wf5sbpjs">The CPP implementation of Posix</a>
  * @see <a href="https://fburl.com/9kyylxzu">Libcore singleton with a Posix instance</a>
  */
-/*package*/ class Sysconf {
+/*package*/ @Nullsafe(Nullsafe.Mode.LOCAL)
+class Sysconf {
 
   private static final String TAG = "Sysconf";
 
@@ -60,6 +62,7 @@ import java.lang.reflect.InvocationTargetException;
       Class libcoreClass = Class.forName("libcore.io.Libcore");
       Class osClass = Class.forName("libcore.io.Os");
       Object osInstance = libcoreClass.getField("os").get(null);
+      // NULLSAFE_FIXME[Nullable Dereference]
       return (long) osClass.getMethod("sysconf", int.class).invoke(osInstance, scClkTck);
     } catch (NoSuchMethodException ex) {
       logReflectionException(ex);
