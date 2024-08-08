@@ -9,7 +9,9 @@ package com.facebook.battery.metrics.disk;
 
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.infer.annotation.Nullsafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class DiskMetrics extends SystemMetrics<DiskMetrics> {
   public long rcharBytes;
   public long wcharBytes;
