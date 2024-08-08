@@ -8,6 +8,7 @@
 package com.facebook.battery.metrics.core;
 
 import androidx.annotation.Nullable;
+import com.facebook.infer.annotation.Nullsafe;
 
 /**
  * A utility class that composes collectors to reduce boilerplate for collectors that are used to
@@ -26,6 +27,7 @@ import androidx.annotation.Nullable;
  * <p>Note - creating a Stateful collector immediately takes an initial snapshot. - this class is
  * _not_ thread safe.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class StatefulSystemMetricsCollector<
     R extends SystemMetrics<R>, S extends SystemMetricsCollector<R>> {
 
