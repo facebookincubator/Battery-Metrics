@@ -14,6 +14,7 @@ import androidx.annotation.VisibleForTesting;
 import com.facebook.battery.metrics.core.ProcFileReader;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -31,6 +32,7 @@ import javax.annotation.concurrent.GuardedBy;
  * <p>The available statistics are well documented on kernel.org at
  * https://www.kernel.org/doc/Documentation/cpu-freq/cpufreq-stats.txt.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class CpuFrequencyMetricsCollector extends SystemMetricsCollector<CpuFrequencyMetrics> {
 
@@ -150,6 +152,7 @@ public class CpuFrequencyMetricsCollector extends SystemMetricsCollector<CpuFreq
                   return name.matches("cpu\\d+");
                 }
               });
+      // NULLSAFE_FIXME[Nullable Dereference]
       return cpuFiles.length;
     }
   }
