@@ -9,7 +9,9 @@ package com.facebook.battery.metrics.bluetooth;
 
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.infer.annotation.Nullsafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class BluetoothMetrics extends SystemMetrics<BluetoothMetrics> {
 
   public int bleScanCount;
