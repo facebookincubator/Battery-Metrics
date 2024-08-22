@@ -12,7 +12,9 @@ import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.composite.CompositeMetrics;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
+import com.facebook.infer.annotation.Nullsafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class CompositeMetricsReporter implements SystemMetricsReporter<CompositeMetrics> {
 
   private final SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetricsReporter<?>>
@@ -24,6 +26,7 @@ public class CompositeMetricsReporter implements SystemMetricsReporter<Composite
       if (metrics.isValid(metricsClass)) {
         SystemMetrics systemMetrics = metrics.getMetric(metricsClass);
         SystemMetricsReporter reporter = mMetricsReporterMap.get(metricsClass);
+        // NULLSAFE_FIXME[Nullable Dereference]
         reporter.reportTo(systemMetrics, event);
       }
     }
