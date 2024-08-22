@@ -11,11 +11,13 @@ import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.infer.annotation.Nullsafe;
 
 /**
  * Class that binds a {@link SystemMetrics} class to its respective driver classes. See {@link
  * CompositeMetricsHolder}.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class MetricsDef<T extends SystemMetrics<T>> {
   public final Class<T> clazz;
   public final SystemMetricsCollector<T> collector;
