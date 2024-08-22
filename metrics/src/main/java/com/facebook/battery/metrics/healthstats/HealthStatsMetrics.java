@@ -24,6 +24,7 @@ import androidx.collection.ArrayMap;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.core.Utilities;
+import com.facebook.infer.annotation.Nullsafe;
 import java.lang.reflect.Field;
 import java.util.Map;
 import org.json.JSONException;
@@ -43,6 +44,7 @@ import org.json.JSONObject;
  * collectors. For my own sanity I waste a lot of memory on snapshots to avoid bugs; this can be
  * optimized a lot by reusing objects for the internals/using object pools as the need arises.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
 
@@ -72,6 +74,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     }
 
     @Override
+    // NULLSAFE_FIXME[Inconsistent Subclass Parameter Annotation]
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
@@ -100,6 +103,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
   private static final String TAG = "HealthStatsMetrics";
   private static final SparseArray<String> sKeyNames = new SparseArray<>();
 
+  // NULLSAFE_FIXME[Field Not Initialized]
   public String dataType;
 
   public final SparseArray<Long> measurement = new SparseArray<>();
@@ -174,7 +178,9 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
 
   /** Checks the age difference of snapshots, similar to String comparisons. */
   private static long compareSnapshotAge(HealthStatsMetrics a, HealthStatsMetrics b) {
+    // NULLSAFE_FIXME[Nullable Dereference]
     long aRealtimeBatteryMs = a.measurement.get(UidHealthStats.MEASUREMENT_REALTIME_BATTERY_MS, 0L);
+    // NULLSAFE_FIXME[Nullable Dereference]
     long bRealtimeBatteryMs = b.measurement.get(UidHealthStats.MEASUREMENT_REALTIME_BATTERY_MS, 0L);
     return aRealtimeBatteryMs - bRealtimeBatteryMs;
   }
@@ -215,8 +221,10 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     if (op == OP_SUM) {
       int bSize = b == null ? 0 : b.size();
       for (int i = 0; i < bSize; i++) {
+        // NULLSAFE_FIXME[Nullable Dereference]
         K key = b.keyAt(i);
         if (a.get(key) == null) {
+          // NULLSAFE_FIXME[Nullable Dereference]
           output.put(key, b.valueAt(i));
         }
       }
@@ -240,7 +248,9 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
       }
 
       TimerMetrics timerMetrics = new TimerMetrics();
+      // NULLSAFE_FIXME[Nullable Dereference]
       timerMetrics.count = timerMetricsA.count + op * timerMetricsB.count;
+      // NULLSAFE_FIXME[Nullable Dereference]
       timerMetrics.timeMs = timerMetricsA.timeMs + op * timerMetricsB.timeMs;
       return timerMetrics;
     }
@@ -286,6 +296,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
       ArrayMap<String, TimerMetrics> bValue = b.timers.valueAt(i);
       ArrayMap<String, TimerMetrics> value = new ArrayMap<>();
       for (int j = 0; j < bValue.size(); j++) {
+        // NULLSAFE_FIXME[Parameter Not Nullable]
         value.put(bValue.keyAt(j), new TimerMetrics(bValue.valueAt(j)));
       }
       timers.append(b.timers.keyAt(i), value);
@@ -296,6 +307,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
       ArrayMap<String, HealthStatsMetrics> bValue = b.stats.valueAt(i);
       ArrayMap<String, HealthStatsMetrics> value = new ArrayMap<>();
       for (int j = 0; j < bValue.size(); j++) {
+        // NULLSAFE_FIXME[Parameter Not Nullable]
         value.put(bValue.keyAt(j), new HealthStatsMetrics(bValue.valueAt(j)));
       }
       stats.append(b.stats.keyAt(i), value);
@@ -305,6 +317,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
   }
 
   public HealthStatsMetrics set(HealthStats healthStats) {
+    // NULLSAFE_FIXME[Not Vetted Third-Party]
     dataType = healthStats.getDataType();
 
     measurement.clear();
@@ -317,6 +330,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     for (int i = 0; i < healthStats.getMeasurementsKeyCount(); i++) {
       int key = healthStats.getMeasurementsKeyAt(i);
       ArrayMap<String, Long> value = new ArrayMap<>();
+      // NULLSAFE_FIXME[Not Vetted Third-Party]
       for (Map.Entry<String, Long> entry : healthStats.getMeasurements(key).entrySet()) {
         value.put(entry.getKey(), entry.getValue());
       }
@@ -335,6 +349,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     for (int i = 0; i < healthStats.getTimersKeyCount(); i++) {
       int key = healthStats.getTimersKeyAt(i);
       ArrayMap<String, TimerMetrics> value = new ArrayMap<>();
+      // NULLSAFE_FIXME[Not Vetted Third-Party]
       for (Map.Entry<String, TimerStat> entry : healthStats.getTimers(key).entrySet()) {
         value.put(entry.getKey(), new TimerMetrics(entry.getValue()));
       }
@@ -345,6 +360,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     for (int i = 0; i < healthStats.getStatsKeyCount(); i++) {
       int key = healthStats.getStatsKeyAt(i);
       ArrayMap<String, HealthStatsMetrics> value = new ArrayMap<>();
+      // NULLSAFE_FIXME[Not Vetted Third-Party]
       for (Map.Entry<String, HealthStats> entry : healthStats.getStats(key).entrySet()) {
         value.put(entry.getKey(), new HealthStatsMetrics(entry.getValue()));
       }
@@ -371,6 +387,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     if (sKeyNames.size() == 0) {
       readKeyNames();
     }
+    // NULLSAFE_FIXME[Return Not Nullable]
     return sKeyNames.get(key, String.valueOf(key));
   }
 
@@ -448,6 +465,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
       ArrayMap<String, Long> value = measurements.valueAt(i);
       JSONObject valueOutput = new JSONObject();
       for (int j = 0, valueSize = value.size(); j < valueSize; j++) {
+        // NULLSAFE_FIXME[Nullable Dereference]
         long v = value.valueAt(j);
         if (v != 0) {
           valueOutput.put(value.keyAt(j), v);
@@ -470,7 +488,9 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
       ArrayMap<String, TimerMetrics> value = timers.valueAt(i);
       for (int j = 0, valueCount = value.size(); j < valueCount; j++) {
         TimerMetrics v = value.valueAt(j);
+        // NULLSAFE_FIXME[Nullable Dereference]
         if (v.count != 0 || v.timeMs != 0) {
+          // NULLSAFE_FIXME[Nullable Dereference]
           valueOutput.put(value.keyAt(j), v.toJSONObject());
         }
       }
@@ -489,6 +509,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
       JSONObject valueOutput = new JSONObject();
       ArrayMap<String, HealthStatsMetrics> value = stats.valueAt(i);
       for (int j = 0, valueCount = value.size(); j < valueCount; j++) {
+        // NULLSAFE_FIXME[Nullable Dereference]
         JSONObject v = value.valueAt(j).toJSONObject();
         if (v.length() > 0) {
           valueOutput.put(value.keyAt(j), v);
@@ -505,6 +526,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
   }
 
   @Override
+  // NULLSAFE_FIXME[Inconsistent Subclass Parameter Annotation]
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
