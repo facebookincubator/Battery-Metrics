@@ -8,6 +8,7 @@
 package com.facebook.battery.metrics.core;
 
 import androidx.annotation.Nullable;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.Serializable;
 
 /**
@@ -16,6 +17,7 @@ import java.io.Serializable;
  *
  * <p>The are simply monoids, and can be added/subtracted with utility functions to reset.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public abstract class SystemMetrics<T extends SystemMetrics<T>> implements Serializable {
 
   /**
