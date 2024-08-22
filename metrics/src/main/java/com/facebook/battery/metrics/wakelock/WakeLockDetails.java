@@ -10,6 +10,7 @@ package com.facebook.battery.metrics.wakelock;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.infer.annotation.Nullsafe;
 import java.lang.ref.WeakReference;
 
 /**
@@ -23,7 +24,8 @@ import java.lang.ref.WeakReference;
  * state about how many wakelocks are currently active to maintain an overall wakelock acquired
  * time.
  */
-/* package */ class WakeLockDetails {
+/* package */ @Nullsafe(Nullsafe.Mode.LOCAL)
+class WakeLockDetails {
   public final String tag;
   public final int levelAndFlags;
   public final WeakReference<PowerManager.WakeLock> wakeLockReference;
