@@ -12,10 +12,12 @@ import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupReas
 
 import com.facebook.battery.metrics.appwakeup.AppWakeupMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class AppWakeupMetricsSerializer extends SystemMetricsSerializer<AppWakeupMetrics> {
 
   private static final long serialVersionUID = -3421285698064072703L;
@@ -33,8 +35,11 @@ public class AppWakeupMetricsSerializer extends SystemMetricsSerializer<AppWakeu
       AppWakeupMetrics.WakeupDetails details = metrics.appWakeups.valueAt(i);
       output.writeInt(wakeupName.length());
       output.writeChars(wakeupName);
+      // NULLSAFE_FIXME[Nullable Dereference]
       output.writeInt(details.reason.ordinal());
+      // NULLSAFE_FIXME[Nullable Dereference]
       output.writeLong(details.count);
+      // NULLSAFE_FIXME[Nullable Dereference]
       output.writeLong(details.wakeupTimeMs);
     }
   }
