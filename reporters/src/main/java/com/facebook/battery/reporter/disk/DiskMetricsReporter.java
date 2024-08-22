@@ -9,7 +9,9 @@ package com.facebook.battery.reporter.disk;
 
 import com.facebook.battery.metrics.disk.DiskMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
+import com.facebook.infer.annotation.Nullsafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class DiskMetricsReporter implements SystemMetricsReporter<DiskMetrics> {
 
   public static final String RCHAR_BYTES = "rchar_bytes";
