@@ -7,6 +7,8 @@
 
 package com.facebook.battery.metrics.core;
 
+import com.facebook.infer.annotation.Nullsafe;
+
 /**
  * Takes snapshots of a given metric. There are generally two types of metrics collectors - - those
  * that depend on an underlying api, such as the {@link
@@ -15,6 +17,7 @@ package com.facebook.battery.metrics.core;
  * com.facebook.battery.metrics.camera.CameraMetricsCollector} which should be triggered with every
  * call to the android camera api.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public abstract class SystemMetricsCollector<T extends SystemMetrics> {
 
   /**
