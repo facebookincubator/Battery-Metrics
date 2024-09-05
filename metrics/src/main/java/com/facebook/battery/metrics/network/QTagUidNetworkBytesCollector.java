@@ -11,6 +11,7 @@ import android.annotation.SuppressLint;
 import androidx.annotation.VisibleForTesting;
 import com.facebook.battery.metrics.core.ProcFileReader;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.infer.annotation.Nullsafe;
 import java.nio.CharBuffer;
 import java.util.Arrays;
 import javax.annotation.Nullable;
@@ -36,6 +37,7 @@ import javax.annotation.Nullable;
  * dummy0 and lo are mobile networks as a simplification to minimize state maintained within the
  * collector.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 class QTagUidNetworkBytesCollector extends NetworkBytesCollector {
   private static final String TAG = "QTagUidNetworkBytesCollector";
   private static final String STATS_PATH = "/proc/net/xt_qtaguid/stats";
