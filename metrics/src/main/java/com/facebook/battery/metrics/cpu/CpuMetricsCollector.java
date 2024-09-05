@@ -14,6 +14,7 @@ import com.facebook.battery.metrics.core.ProcFileReader;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 
 /**
@@ -21,6 +22,7 @@ import com.facebook.infer.annotation.ThreadSafe;
  *
  * <p>This data is read from {@code /proc/<pid>/stat} -- see the corresponding man page for details.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
   private static final String TAG = "CpuMetricsCollector";
@@ -80,15 +82,21 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
     }
 
     CpuMetrics lastSnapshot = mLastSnapshot.get();
+    // NULLSAFE_FIXME[Nullable Dereference]
     if (Double.compare(snapshot.userTimeS, lastSnapshot.userTimeS) < 0
+        // NULLSAFE_FIXME[Nullable Dereference]
         || Double.compare(snapshot.systemTimeS, lastSnapshot.systemTimeS) < 0
+        // NULLSAFE_FIXME[Nullable Dereference]
         || Double.compare(snapshot.childUserTimeS, lastSnapshot.childUserTimeS) < 0
+        // NULLSAFE_FIXME[Nullable Dereference]
         || Double.compare(snapshot.childSystemTimeS, lastSnapshot.childSystemTimeS) < 0) {
       SystemMetricsLogger.wtf(
+          // NULLSAFE_FIXME[Nullable Dereference]
           TAG, "Cpu Time Decreased from " + lastSnapshot.toString() + " to " + snapshot.toString());
       return false;
     }
 
+    // NULLSAFE_FIXME[Nullable Dereference]
     lastSnapshot.set(snapshot);
     return true;
   }
