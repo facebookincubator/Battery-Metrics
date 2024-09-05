@@ -11,9 +11,11 @@ import android.util.SparseArray;
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.Utilities;
+import com.facebook.infer.annotation.Nullsafe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class SensorMetrics extends SystemMetrics<SensorMetrics> {
 
   public boolean isAttributionEnabled;
