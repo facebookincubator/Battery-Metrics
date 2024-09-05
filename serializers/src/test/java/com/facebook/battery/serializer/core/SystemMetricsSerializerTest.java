@@ -11,12 +11,14 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import com.facebook.battery.metrics.core.MetricsUtil;
 import com.facebook.battery.metrics.core.SystemMetrics;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import org.junit.Test;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public abstract class SystemMetricsSerializerTest<T extends SystemMetrics<T>> {
 
   @Test
@@ -28,7 +30,9 @@ public abstract class SystemMetricsSerializerTest<T extends SystemMetrics<T>> {
     ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
     T output = createInstance();
 
+    // NULLSAFE_FIXME[Not Vetted Third-Party]
     assertThat(getSerializer().deserialize(output, new DataInputStream(bais))).isTrue();
+    // NULLSAFE_FIXME[Not Vetted Third-Party]
     assertThat(output).isEqualTo(instance);
   }
 
@@ -41,7 +45,9 @@ public abstract class SystemMetricsSerializerTest<T extends SystemMetrics<T>> {
     ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
     T output = createInstance();
 
+    // NULLSAFE_FIXME[Not Vetted Third-Party]
     assertThat(getSerializer().deserializeContents(output, new DataInputStream(bais))).isTrue();
+    // NULLSAFE_FIXME[Not Vetted Third-Party]
     assertThat(output).isEqualTo(instance);
   }
 
@@ -53,6 +59,7 @@ public abstract class SystemMetricsSerializerTest<T extends SystemMetrics<T>> {
 
     DataInputStream dis = new DataInputStream(new ByteArrayInputStream(baos.toByteArray()));
     T output = createInstance();
+    // NULLSAFE_FIXME[Not Vetted Third-Party]
     assertThat(getSerializer().deserialize(output, dis)).isFalse();
   }
 
