@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.os.SystemClock;
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 
 /**
@@ -25,6 +26,7 @@ import com.facebook.infer.annotation.ThreadSafe;
  * turns On and Off taking care of eventual tail time. The latter is the amount of time Radio might
  * be kept active to preserve battery consumption and reduce latency of transition.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class RadioStateCollector extends SystemMetricsCollector<RadioStateMetrics> {
 
@@ -38,6 +40,7 @@ public class RadioStateCollector extends SystemMetricsCollector<RadioStateMetric
       new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
   public RadioStateCollector(Context context) {
+    // NULLSAFE_FIXME[Field Not Nullable]
     mConnectivityManager =
         (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
   }
@@ -72,6 +75,7 @@ public class RadioStateCollector extends SystemMetricsCollector<RadioStateMetric
   @Nullable
   private MonotonicRadioMonitor getCurrentRadioMonitor() {
     final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
+    // NULLSAFE_FIXME[Parameter Not Nullable]
     final int currentNetworkType = getNetworkType(info);
     switch (currentNetworkType) {
       case NONE:
