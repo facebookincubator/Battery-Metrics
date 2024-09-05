@@ -20,6 +20,7 @@ import android.util.SparseArray;
 import androidx.annotation.GuardedBy;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 
 /**
@@ -42,6 +43,7 @@ import com.facebook.infer.annotation.ThreadSafe;
  * CameraCaptureSession#close()} -> {@link #recordPreviewStop(Object)} - {@link CameraDevice#close}
  * -> {@link #recordCameraClose(Object)}
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class CameraMetricsCollector extends SystemMetricsCollector<CameraMetrics> {
   private static final String TAG = "CameraMetricsCollector";
