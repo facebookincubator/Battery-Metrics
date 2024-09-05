@@ -9,6 +9,7 @@ package com.facebook.battery.metrics.core;
 
 import android.util.Log;
 import androidx.annotation.Nullable;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -17,6 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * hook this up with error trace collection to sanity check against any errors in the Metrics
  * Collectors.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public final class SystemMetricsLogger {
 
