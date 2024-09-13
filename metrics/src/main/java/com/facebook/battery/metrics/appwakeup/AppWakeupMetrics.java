@@ -12,6 +12,7 @@ import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.core.Utilities;
+import com.facebook.infer.annotation.Nullsafe;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +23,7 @@ import org.json.JSONObject;
  * can add more reasons in the future. We record the number of times and the total duration of
  * execution for each of these wakeups.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
 
   public enum WakeupReason {
@@ -51,12 +53,15 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
       output.appWakeups.clear();
       for (int i = 0; i < appWakeups.size(); i++) {
         String tag = appWakeups.keyAt(i);
+        // NULLSAFE_FIXME[Nullable Dereference]
         output.appWakeups.put(tag, new WakeupDetails(appWakeups.valueAt(i).reason));
+        // NULLSAFE_FIXME[Nullable Dereference, Parameter Not Nullable]
         appWakeups.valueAt(i).sum(b.appWakeups.get(tag), output.appWakeups.get(tag));
       }
       for (int i = 0; i < b.appWakeups.size(); i++) {
         String tag = b.appWakeups.keyAt(i);
         if (!output.appWakeups.containsKey(tag)) {
+          // NULLSAFE_FIXME[Parameter Not Nullable]
           output.appWakeups.put(tag, b.appWakeups.valueAt(i));
         }
       }
@@ -76,7 +81,9 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
       output.appWakeups.clear();
       for (int i = 0; i < appWakeups.size(); i++) {
         String tag = appWakeups.keyAt(i);
+        // NULLSAFE_FIXME[Nullable Dereference]
         output.appWakeups.put(tag, new WakeupDetails(appWakeups.valueAt(i).reason));
+        // NULLSAFE_FIXME[Nullable Dereference, Parameter Not Nullable]
         appWakeups.valueAt(i).diff(b.appWakeups.get(tag), output.appWakeups.get(tag));
       }
     }
@@ -84,6 +91,7 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
   }
 
   @Override
+  // NULLSAFE_FIXME[Inconsistent Subclass Parameter Annotation]
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
@@ -113,8 +121,11 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
       JSONObject obj = new JSONObject();
       AppWakeupMetrics.WakeupDetails details = appWakeups.valueAt(i);
       obj.put("key", appWakeups.keyAt(i));
+      // NULLSAFE_FIXME[Nullable Dereference]
       obj.put("type", details.reason.toString());
+      // NULLSAFE_FIXME[Nullable Dereference]
       obj.put("count", details.count);
+      // NULLSAFE_FIXME[Nullable Dereference]
       obj.put("time_ms", details.wakeupTimeMs);
       jsonArray.put(obj);
     }
@@ -126,6 +137,7 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
    * execution in ms for the wakeup.
    */
   public static class WakeupDetails {
+    // NULLSAFE_FIXME[Field Not Initialized]
     public WakeupReason reason;
     public long count;
     public long wakeupTimeMs;
@@ -186,6 +198,7 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
     }
 
     @Override
+    // NULLSAFE_FIXME[Inconsistent Subclass Parameter Annotation]
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
