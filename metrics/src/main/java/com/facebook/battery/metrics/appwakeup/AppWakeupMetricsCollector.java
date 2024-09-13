@@ -13,6 +13,7 @@ import static com.facebook.battery.metrics.core.Utilities.checkNotNull;
 import android.os.SystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 
 /**
@@ -20,6 +21,7 @@ import com.facebook.infer.annotation.ThreadSafe;
  * start {@link #recordWakeupStart(AppWakeupMetrics.WakeupReason, String)} and end {@link
  * #recordWakeupEnd(String)} of a wakeup
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class AppWakeupMetricsCollector extends SystemMetricsCollector<AppWakeupMetrics> {
   private static final String TAG = "AppWakeupMetricsCollector";
@@ -40,6 +42,7 @@ public class AppWakeupMetricsCollector extends SystemMetricsCollector<AppWakeupM
     snapshot.appWakeups.clear();
     for (int i = 0; i < mMetrics.appWakeups.size(); i++) {
       WakeupDetails details = new WakeupDetails();
+      // NULLSAFE_FIXME[Parameter Not Nullable]
       details.set(mMetrics.appWakeups.valueAt(i));
       snapshot.appWakeups.put(mMetrics.appWakeups.keyAt(i), details);
     }
@@ -81,10 +84,13 @@ public class AppWakeupMetricsCollector extends SystemMetricsCollector<AppWakeupM
       return;
     }
     AppWakeupMetrics.WakeupDetails details = mRunningWakeups.appWakeups.get(id);
+    // NULLSAFE_FIXME[Nullable Dereference]
     details.wakeupTimeMs = SystemClock.elapsedRealtime() - details.wakeupTimeMs;
     if (!mMetrics.appWakeups.containsKey(id)) {
+      // NULLSAFE_FIXME[Parameter Not Nullable]
       mMetrics.appWakeups.put(id, new AppWakeupMetrics.WakeupDetails().set(details));
     } else {
+      // NULLSAFE_FIXME[Nullable Dereference, Parameter Not Nullable]
       mMetrics.appWakeups.get(id).sum(details, mMetrics.appWakeups.get(id));
     }
     mRunningWakeups.appWakeups.remove(id);
