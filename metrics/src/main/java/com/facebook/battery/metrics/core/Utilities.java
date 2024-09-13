@@ -10,6 +10,7 @@ package com.facebook.battery.metrics.core;
 import android.util.SparseArray;
 import androidx.annotation.Nullable;
 import androidx.collection.SimpleArrayMap;
+import com.facebook.infer.annotation.Nullsafe;
 
 /**
  * A static class with a collection of utilities that didn't quite fit anywhere else.
@@ -18,6 +19,7 @@ import androidx.collection.SimpleArrayMap;
  * requires state, significant new dependencies or a collection of interlinked functions, consider
  * making it a separate module/package.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public abstract class Utilities {
 
   /**
