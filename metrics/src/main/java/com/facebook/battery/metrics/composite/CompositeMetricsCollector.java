@@ -13,6 +13,7 @@ import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 
 /**
@@ -25,6 +26,7 @@ import com.facebook.infer.annotation.ThreadSafe;
  * collector.createMetrics(); collector.getSnapshot(snapshot); <p>long uptimeMs =
  * snapshot.getMetric(TimeMetrics.class).uptimeMs; // etc. }
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class CompositeMetricsCollector extends SystemMetricsCollector<CompositeMetrics> {
 
@@ -110,6 +112,7 @@ public class CompositeMetricsCollector extends SystemMetricsCollector<CompositeM
     CompositeMetrics metrics = new CompositeMetrics();
     for (int i = 0, size = mMetricsCollectorMap.size(); i < size; i++) {
       Class metricsClass = mMetricsCollectorMap.keyAt(i);
+      // NULLSAFE_FIXME[Nullable Dereference]
       metrics.putMetric(metricsClass, mMetricsCollectorMap.valueAt(i).createMetrics());
     }
     return metrics;
