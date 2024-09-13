@@ -7,6 +7,7 @@
 
 package com.facebook.battery.metrics.core;
 
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.CharBuffer;
@@ -21,6 +22,7 @@ import javax.annotation.Nullable;
  *
  * <p>This file is not threadsafe: access to it must be synchronized.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class ProcFileReader {
 
   private final String mPath;
