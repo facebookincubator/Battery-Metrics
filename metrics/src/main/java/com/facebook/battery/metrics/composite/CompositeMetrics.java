@@ -11,11 +11,13 @@ import androidx.annotation.Nullable;
 import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.Utilities;
+import com.facebook.infer.annotation.Nullsafe;
 
 /**
  * Maintains a set of metrics internally that can be simply iterated over and used by being wrapped
  * with this class.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
 
   private final SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetrics> mMetricsMap =
@@ -24,6 +26,7 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
       new SimpleArrayMap<>();
 
   @Override
+  // NULLSAFE_FIXME[Inconsistent Subclass Parameter Annotation]
   public CompositeMetrics diff(@Nullable CompositeMetrics b, CompositeMetrics result) {
     if (result == null) {
       throw new IllegalArgumentException("CompositeMetrics doesn't support nullable results");
@@ -54,6 +57,7 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
    * metrics are invalid.
    */
   @Override
+  // NULLSAFE_FIXME[Inconsistent Subclass Parameter Annotation]
   public CompositeMetrics sum(@Nullable CompositeMetrics b, CompositeMetrics result) {
     if (result == null) {
       throw new IllegalArgumentException("CompositeMetrics doesn't support nullable results");
@@ -148,7 +152,7 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) {
       return true;
     }
