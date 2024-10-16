@@ -26,8 +26,7 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
       new SimpleArrayMap<>();
 
   @Override
-  // NULLSAFE_FIXME[Inconsistent Subclass Parameter Annotation]
-  public CompositeMetrics diff(@Nullable CompositeMetrics b, CompositeMetrics result) {
+  public CompositeMetrics diff(@Nullable CompositeMetrics b, @Nullable CompositeMetrics result) {
     if (result == null) {
       throw new IllegalArgumentException("CompositeMetrics doesn't support nullable results");
     }
