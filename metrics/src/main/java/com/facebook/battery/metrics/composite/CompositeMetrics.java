@@ -56,8 +56,7 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
    * metrics are invalid.
    */
   @Override
-  // NULLSAFE_FIXME[Inconsistent Subclass Parameter Annotation]
-  public CompositeMetrics sum(@Nullable CompositeMetrics b, CompositeMetrics result) {
+  public CompositeMetrics sum(@Nullable CompositeMetrics b, @Nullable CompositeMetrics result) {
     if (result == null) {
       throw new IllegalArgumentException("CompositeMetrics doesn't support nullable results");
     }
