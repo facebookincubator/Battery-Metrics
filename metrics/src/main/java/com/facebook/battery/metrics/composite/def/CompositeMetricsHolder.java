@@ -14,9 +14,11 @@ import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.reporter.composite.CompositeMetricsReporter;
 import com.facebook.battery.serializer.composite.CompositeMetricsSerializer;
+import com.facebook.infer.annotation.Nullsafe;
 import java.util.ArrayList;
 import java.util.List;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class CompositeMetricsHolder {
   public final CompositeMetricsCollector collector;
   public final CompositeMetricsReporter reporter;
