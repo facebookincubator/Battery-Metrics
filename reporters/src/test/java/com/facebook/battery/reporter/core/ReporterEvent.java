@@ -8,12 +8,14 @@
 package com.facebook.battery.metrics.core;
 
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
+import com.facebook.infer.annotation.Nullsafe;
 import java.util.HashMap;
 import javax.annotation.Nullable;
 
 /**
  * This class implements SystemMetricsReporter.Event for testing purpose of all metrics reporters.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class ReporterEvent implements SystemMetricsReporter.Event {
 
   public HashMap<String, Object> eventMap = new HashMap<>();
