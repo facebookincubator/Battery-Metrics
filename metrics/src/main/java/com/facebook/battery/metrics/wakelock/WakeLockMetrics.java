@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.Utilities;
+import com.facebook.infer.annotation.Nullsafe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,6 +21,7 @@ import org.json.JSONObject;
  * <p>A wakelock metrics object can also maintain attribution data if enabled at creation time --
  * this will come at the cost of extra memory to maintain this information.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
 
   /** Whether this object should also record attribution */
@@ -61,11 +63,13 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
           String tag = tagTimeMs.keyAt(i);
           Long currentTimeMs = b.tagTimeMs.get(tag);
           output.tagTimeMs.put(
+              // NULLSAFE_FIXME[Nullable Dereference]
               tag, tagTimeMs.valueAt(i) + (currentTimeMs == null ? 0 : currentTimeMs));
         }
         for (int i = 0, size = b.tagTimeMs.size(); i < size; i++) {
           String tag = b.tagTimeMs.keyAt(i);
           if (tagTimeMs.get(tag) == null) {
+            // NULLSAFE_FIXME[Parameter Not Nullable]
             output.tagTimeMs.put(tag, b.tagTimeMs.valueAt(i));
           }
         }
@@ -91,6 +95,7 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
         for (int i = 0, size = tagTimeMs.size(); i < size; i++) {
           String tag = tagTimeMs.keyAt(i);
           Long currentTimeMs = b.tagTimeMs.get(tag);
+          // NULLSAFE_FIXME[Nullable Dereference]
           long difference = tagTimeMs.valueAt(i) - (currentTimeMs == null ? 0 : currentTimeMs);
           if (difference != 0) {
             output.tagTimeMs.put(tag, difference);
@@ -114,6 +119,7 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
   }
 
   @Override
+  // NULLSAFE_FIXME[Inconsistent Subclass Parameter Annotation]
   public boolean equals(Object o) {
     if (this == o) {
       return true;
