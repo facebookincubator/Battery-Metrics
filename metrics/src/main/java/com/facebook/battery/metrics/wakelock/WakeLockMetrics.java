@@ -119,8 +119,7 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
   }
 
   @Override
-  // NULLSAFE_FIXME[Inconsistent Subclass Parameter Annotation]
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) {
       return true;
     }
