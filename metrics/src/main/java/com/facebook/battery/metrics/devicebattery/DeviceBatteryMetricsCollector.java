@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.core.VisibleToAvoidSynthetics;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 import javax.annotation.concurrent.GuardedBy;
 
@@ -27,6 +28,7 @@ import javax.annotation.concurrent.GuardedBy;
  * and hence will probably not work in Doze mode (N+) where the broadcasts for power
  * connected/disconnected are not guranteed to be relayed to the app.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<DeviceBatteryMetrics> {
   private static final String TAG = "DeviceBatteryMetricsCollector";
@@ -71,6 +73,7 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
           public void onReceive(Context context, Intent intent) {
             long now = SystemClock.elapsedRealtime();
             synchronized (DeviceBatteryMetricsCollector.this) {
+              // NULLSAFE_FIXME[Nullable Dereference]
               switch (intent.getAction()) {
                 case Intent.ACTION_POWER_CONNECTED:
                   if (!mIsCurrentlyCharging) {
