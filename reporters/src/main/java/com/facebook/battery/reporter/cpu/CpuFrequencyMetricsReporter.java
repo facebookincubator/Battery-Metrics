@@ -21,7 +21,7 @@ import org.json.JSONObject;
  * <p>The reporter groups equal frequency values together into a cpumask (similar to that reported
  * by the topology sysfs files) mapped to the corresponding frequency.
  */
-@Nullsafe(Nullsafe.Mode.LOCAL)
+@Nullsafe(Nullsafe.Mode.RUNTIME)
 public class CpuFrequencyMetricsReporter implements SystemMetricsReporter<CpuFrequencyMetrics> {
 
   @VisibleForTesting static final String CPU_TIME_IN_STATE_S = "cpu_time_in_state_s";

@@ -11,7 +11,7 @@ import com.facebook.battery.metrics.cpu.CpuMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
 import com.facebook.infer.annotation.Nullsafe;
 
-@Nullsafe(Nullsafe.Mode.LOCAL)
+@Nullsafe(Nullsafe.Mode.RUNTIME)
 public class CpuMetricsReporter implements SystemMetricsReporter<CpuMetrics> {
 
   public static final String CPU_USER_TIME_S = "cpu_user_time_s";
