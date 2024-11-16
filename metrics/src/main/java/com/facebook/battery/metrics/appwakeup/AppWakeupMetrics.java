@@ -23,7 +23,7 @@ import org.json.JSONObject;
  * can add more reasons in the future. We record the number of times and the total duration of
  * execution for each of these wakeups.
  */
-@Nullsafe(Nullsafe.Mode.LOCAL)
+@Nullsafe(Nullsafe.Mode.RUNTIME)
 public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
 
   public enum WakeupReason {

@@ -21,7 +21,7 @@ import com.facebook.infer.annotation.ThreadSafe;
  * start {@link #recordWakeupStart(AppWakeupMetrics.WakeupReason, String)} and end {@link
  * #recordWakeupEnd(String)} of a wakeup
  */
-@Nullsafe(Nullsafe.Mode.LOCAL)
+@Nullsafe(Nullsafe.Mode.RUNTIME)
 @ThreadSafe
 public class AppWakeupMetricsCollector extends SystemMetricsCollector<AppWakeupMetrics> {
   private static final String TAG = "AppWakeupMetricsCollector";
