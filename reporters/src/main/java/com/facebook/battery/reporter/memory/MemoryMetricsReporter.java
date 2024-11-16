@@ -11,7 +11,7 @@ import com.facebook.battery.metrics.memory.MemoryMetrics;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
 import com.facebook.infer.annotation.Nullsafe;
 
-@Nullsafe(Nullsafe.Mode.LOCAL)
+@Nullsafe(Nullsafe.Mode.RUNTIME)
 public class MemoryMetricsReporter implements SystemMetricsReporter<MemoryMetrics> {
 
   public static final String JAVA_HEAP_MAX_SIZE_KB = "java_heap_max_size_kb";
