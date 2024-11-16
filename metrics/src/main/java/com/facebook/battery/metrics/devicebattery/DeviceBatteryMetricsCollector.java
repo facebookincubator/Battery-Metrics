@@ -28,7 +28,7 @@ import javax.annotation.concurrent.GuardedBy;
  * and hence will probably not work in Doze mode (N+) where the broadcasts for power
  * connected/disconnected are not guranteed to be relayed to the app.
  */
-@Nullsafe(Nullsafe.Mode.LOCAL)
+@Nullsafe(Nullsafe.Mode.RUNTIME)
 @ThreadSafe
 public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<DeviceBatteryMetrics> {
   private static final String TAG = "DeviceBatteryMetricsCollector";

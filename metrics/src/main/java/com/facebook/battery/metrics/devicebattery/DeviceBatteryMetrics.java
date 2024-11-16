@@ -16,7 +16,7 @@ import com.facebook.infer.annotation.Nullsafe;
  * record and can be a useful addition to modeled battery drain. We also measure the time spent on
  * battery and while charging since the start of the app
  */
-@Nullsafe(Nullsafe.Mode.LOCAL)
+@Nullsafe(Nullsafe.Mode.RUNTIME)
 public class DeviceBatteryMetrics extends SystemMetrics<DeviceBatteryMetrics> {
 
   // Device battery level
