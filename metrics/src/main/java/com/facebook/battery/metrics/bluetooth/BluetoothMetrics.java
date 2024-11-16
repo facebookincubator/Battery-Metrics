@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.infer.annotation.Nullsafe;
 
-@Nullsafe(Nullsafe.Mode.LOCAL)
+@Nullsafe(Nullsafe.Mode.RUNTIME)
 public class BluetoothMetrics extends SystemMetrics<BluetoothMetrics> {
 
   public int bleScanCount;

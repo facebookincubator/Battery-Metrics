@@ -29,7 +29,7 @@ import com.facebook.infer.annotation.ThreadSafe;
  * the {@link ScanCallback} or {@link PendingIntent} object being passed to {@link
  * BluetoothLeScanner#startScan}.
  */
-@Nullsafe(Nullsafe.Mode.LOCAL)
+@Nullsafe(Nullsafe.Mode.RUNTIME)
 @ThreadSafe
 public class BluetoothMetricsCollector extends SystemMetricsCollector<BluetoothMetrics> {
 
