@@ -13,8 +13,10 @@ import android.os.health.SystemHealthManager;
 import androidx.annotation.RequiresApi;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @RequiresApi(api = Build.VERSION_CODES.N)
 @ThreadSafe(enableChecks = false)
 public class HealthStatsMetricsCollector extends SystemMetricsCollector<HealthStatsMetrics> {
@@ -23,6 +25,7 @@ public class HealthStatsMetricsCollector extends SystemMetricsCollector<HealthSt
   private final SystemHealthManager mSystemHealthManager;
 
   public HealthStatsMetricsCollector(Context context) {
+    // NULLSAFE_FIXME[Field Not Nullable]
     mSystemHealthManager =
         (SystemHealthManager) context.getSystemService(Context.SYSTEM_HEALTH_SERVICE);
   }
