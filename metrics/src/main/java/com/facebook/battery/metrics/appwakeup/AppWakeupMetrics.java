@@ -12,6 +12,7 @@ import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.metrics.core.Utilities;
+import com.facebook.common.preconditions.Preconditions;
 import com.facebook.infer.annotation.Nullsafe;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,9 +54,9 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
       output.appWakeups.clear();
       for (int i = 0; i < appWakeups.size(); i++) {
         String tag = appWakeups.keyAt(i);
-        // NULLSAFE_FIXME[Nullable Dereference]
-        output.appWakeups.put(tag, new WakeupDetails(appWakeups.valueAt(i).reason));
-        // NULLSAFE_FIXME[Nullable Dereference, Parameter Not Nullable]
+        output.appWakeups.put(
+            tag, new WakeupDetails(Preconditions.checkNotNull(appWakeups.valueAt(i)).reason));
+        // NULLSAFE_FIXME[Parameter Not Nullable]
         appWakeups.valueAt(i).sum(b.appWakeups.get(tag), output.appWakeups.get(tag));
       }
       for (int i = 0; i < b.appWakeups.size(); i++) {
@@ -81,9 +82,9 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
       output.appWakeups.clear();
       for (int i = 0; i < appWakeups.size(); i++) {
         String tag = appWakeups.keyAt(i);
-        // NULLSAFE_FIXME[Nullable Dereference]
-        output.appWakeups.put(tag, new WakeupDetails(appWakeups.valueAt(i).reason));
-        // NULLSAFE_FIXME[Nullable Dereference, Parameter Not Nullable]
+        output.appWakeups.put(
+            tag, new WakeupDetails(Preconditions.checkNotNull(appWakeups.valueAt(i)).reason));
+        // NULLSAFE_FIXME[Parameter Not Nullable]
         appWakeups.valueAt(i).diff(b.appWakeups.get(tag), output.appWakeups.get(tag));
       }
     }
