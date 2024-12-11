@@ -11,6 +11,7 @@ import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.composite.CompositeMetrics;
 import com.facebook.battery.metrics.core.SystemMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.common.preconditions.Preconditions;
 import com.facebook.infer.annotation.Nullsafe;
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -67,9 +68,7 @@ public class CompositeMetricsSerializer extends SystemMetricsSerializer<Composit
       Class metricsClass = mSerializers.keyAt(i);
       if (metrics.isValid(metricsClass)) {
         SystemMetricsSerializer serializer = mSerializers.valueAt(i);
-        // NULLSAFE_FIXME[Nullable Dereference]
-        output.writeLong(serializer.getTag());
-        // NULLSAFE_FIXME[Nullable Dereference]
+        output.writeLong(Preconditions.checkNotNull(serializer).getTag());
         serializer.serializeContents(metrics.getMetric(metricsClass), output);
       }
     }
