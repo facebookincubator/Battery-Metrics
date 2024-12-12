@@ -12,6 +12,7 @@ import android.os.SystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.infer.annotation.Nullsafe;
 import java.lang.ref.WeakReference;
+import javax.annotation.Nullable;
 
 /**
  * A simple container to maintain wakelock information.
@@ -38,7 +39,8 @@ class WakeLockDetails {
   private long mHeldTimeMs;
   private long mLastReleasedMs = -1;
 
-  public WakeLockDetails(PowerManager.WakeLock wakeLockReference, String tag, int levelAndFlags) {
+  public WakeLockDetails(
+      @Nullable PowerManager.WakeLock wakeLockReference, String tag, int levelAndFlags) {
     this.tag = tag;
     this.levelAndFlags = levelAndFlags;
     this.wakeLockReference = new WeakReference<>(wakeLockReference);

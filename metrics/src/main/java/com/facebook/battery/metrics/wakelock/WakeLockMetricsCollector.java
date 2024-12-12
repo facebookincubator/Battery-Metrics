@@ -15,9 +15,11 @@ import androidx.annotation.GuardedBy;
 import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.infer.annotation.Nullsafe;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.WeakHashMap;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
@@ -34,6 +36,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * PowerManager.WakeLock#setReferenceCounted(boolean)} -> {@link
  * #setReferenceCounted(PowerManager.WakeLock, boolean)}
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMetrics> {
 
@@ -64,7 +67,7 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
   private boolean mIsEnabled = true;
 
   public synchronized void newWakeLock(
-      PowerManager.WakeLock wakelock, int levelAndFlags, String tag) {
+      @Nullable PowerManager.WakeLock wakelock, int levelAndFlags, String tag) {
     if (!mIsEnabled) {
       return;
     }
@@ -74,7 +77,7 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
     mActiveWakeLockDetails.add(details);
   }
 
-  public synchronized void acquire(PowerManager.WakeLock wakelock, long timeout) {
+  public synchronized void acquire(@Nullable PowerManager.WakeLock wakelock, long timeout) {
     if (!mIsEnabled) {
       return;
     }
@@ -97,7 +100,7 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
     }
   }
 
-  public synchronized void release(PowerManager.WakeLock wakelock, int flags) {
+  public synchronized void release(@Nullable PowerManager.WakeLock wakelock, int flags) {
     if (!mIsEnabled) {
       return;
     }
@@ -119,7 +122,8 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
     }
   }
 
-  public synchronized void setReferenceCounted(PowerManager.WakeLock wakelock, boolean value) {
+  public synchronized void setReferenceCounted(
+      @Nullable PowerManager.WakeLock wakelock, boolean value) {
     if (!mIsEnabled) {
       return;
     }
@@ -208,6 +212,7 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
         String tag = mPrevWakeLockMs.keyAt(i);
         Long existingValue = snapshot.tagTimeMs.get(tag);
         snapshot.tagTimeMs.put(
+            // NULLSAFE_FIXME[Nullable Dereference]
             tag, (existingValue == null ? 0 : existingValue) + mPrevWakeLockMs.valueAt(i));
       }
     }
