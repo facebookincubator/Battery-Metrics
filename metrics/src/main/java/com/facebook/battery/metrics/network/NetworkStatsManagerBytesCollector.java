@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.os.RemoteException;
 import androidx.annotation.RequiresApi;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
+import com.facebook.common.preconditions.Preconditions;
 import com.facebook.infer.annotation.Nullsafe;
 import java.util.Arrays;
 
@@ -68,10 +69,8 @@ public class NetworkStatsManagerBytesCollector extends NetworkBytesCollector {
       return;
     }
 
-    // NULLSAFE_FIXME[Nullable Dereference]
-    while (stats.hasNextBucket()) {
-      // NULLSAFE_FIXME[Nullable Dereference]
-      stats.getNextBucket(mBucket);
+    while (Preconditions.checkNotNull(stats).hasNextBucket()) {
+      Preconditions.checkNotNull(stats).getNextBucket(mBucket);
 
       int appState =
           mBucket.getState() == NetworkStats.Bucket.STATE_FOREGROUND
@@ -80,7 +79,6 @@ public class NetworkStatsManagerBytesCollector extends NetworkBytesCollector {
       bytes[type | RX | appState] += mBucket.getRxBytes();
       bytes[type | TX | appState] += mBucket.getTxBytes();
     }
-    // NULLSAFE_FIXME[Nullable Dereference]
     stats.close();
   }
 }
