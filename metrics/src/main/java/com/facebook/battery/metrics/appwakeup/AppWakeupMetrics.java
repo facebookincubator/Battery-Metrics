@@ -121,11 +121,8 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
       JSONObject obj = new JSONObject();
       AppWakeupMetrics.WakeupDetails details = appWakeups.valueAt(i);
       obj.put("key", appWakeups.keyAt(i));
-      // NULLSAFE_FIXME[Nullable Dereference]
-      obj.put("type", details.reason.toString());
-      // NULLSAFE_FIXME[Nullable Dereference]
+      obj.put("type", Preconditions.checkNotNull(details).reason.toString());
       obj.put("count", details.count);
-      // NULLSAFE_FIXME[Nullable Dereference]
       obj.put("time_ms", details.wakeupTimeMs);
       jsonArray.put(obj);
     }
