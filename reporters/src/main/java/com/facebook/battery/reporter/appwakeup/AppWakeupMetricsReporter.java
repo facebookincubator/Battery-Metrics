@@ -10,6 +10,7 @@ package com.facebook.battery.reporter.appwakeup;
 import com.facebook.battery.metrics.appwakeup.AppWakeupMetrics;
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import com.facebook.battery.reporter.core.SystemMetricsReporter;
+import com.facebook.common.preconditions.Preconditions;
 import com.facebook.infer.annotation.Nullsafe;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,8 +27,7 @@ public class AppWakeupMetricsReporter implements SystemMetricsReporter<AppWakeup
     try {
       JSONArray representation = metrics.toJSON();
       if (representation != null) {
-        // NULLSAFE_FIXME[Parameter Not Nullable]
-        event.add(APP_WAKEUPS, representation.toString());
+        event.add(APP_WAKEUPS, Preconditions.checkNotNull(representation.toString()));
       }
     } catch (JSONException jsone) {
       SystemMetricsLogger.wtf(TAG, "Unable to report AppWakeupMetrics", jsone);
