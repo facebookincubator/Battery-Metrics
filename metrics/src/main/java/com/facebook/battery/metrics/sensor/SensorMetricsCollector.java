@@ -16,10 +16,12 @@ import androidx.annotation.Nullable;
 import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetricsCollector;
 import com.facebook.battery.metrics.core.Utilities;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.infer.annotation.ThreadSafe;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class SensorMetricsCollector extends SystemMetricsCollector<SensorMetrics> {
 
@@ -149,10 +151,12 @@ public class SensorMetricsCollector extends SystemMetricsCollector<SensorMetrics
       Sensor sensor = mActiveSensors.keyAt(i);
       SensorData data = mActiveSensors.valueAt(i);
 
+      // NULLSAFE_FIXME[Nullable Dereference]
       if (data.activeCount <= 0) {
         continue;
       }
 
+      // NULLSAFE_FIXME[Nullable Dereference]
       long sensorActiveTimeMs = currentTimeMs - data.startTimeMs;
       double sensorPowerMah = energyConsumedMah(sensor, sensorActiveTimeMs);
       snapshot.total.activeTimeMs += sensorActiveTimeMs;
