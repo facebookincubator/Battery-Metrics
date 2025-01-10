@@ -102,8 +102,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
   private static final String TAG = "HealthStatsMetrics";
   private static final SparseArray<String> sKeyNames = new SparseArray<>();
 
-  // NULLSAFE_FIXME[Field Not Initialized]
-  public String dataType;
+  @Nullable public String dataType;
 
   public final SparseArray<Long> measurement = new SparseArray<>();
   public final SparseArray<TimerMetrics> timer = new SparseArray<>();
@@ -316,7 +315,6 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
   }
 
   public HealthStatsMetrics set(HealthStats healthStats) {
-    // NULLSAFE_FIXME[Not Vetted Third-Party]
     dataType = healthStats.getDataType();
 
     measurement.clear();
