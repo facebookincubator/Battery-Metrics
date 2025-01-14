@@ -108,7 +108,6 @@ public class HealthStatsMetricsSerializer extends SystemMetricsSerializer<Health
   @Override
   public boolean deserializeContents(HealthStatsMetrics metrics, DataInput input)
       throws IOException {
-    // NULLSAFE_FIXME[Field Not Nullable]
     metrics.dataType = readString(input);
 
     int measurementLength = input.readInt();
