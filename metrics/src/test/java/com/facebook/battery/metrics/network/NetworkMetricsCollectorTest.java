@@ -17,32 +17,38 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.facebook.battery.metrics.core.SystemMetricsLogger;
 import java.util.ArrayDeque;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({NetworkBytesCollector.class})
 public class NetworkMetricsCollectorTest {
   private NetworkMetricsCollector mMetricsCollector;
   private TestNetworkBytesCollector mBytesCollector;
+  private MockedStatic<NetworkBytesCollector> mockedNetworkBytesCollector;
 
   @Before
   public void setUp() {
-    PowerMockito.mockStatic(NetworkBytesCollector.class);
-
+    mockedNetworkBytesCollector = mockStatic(NetworkBytesCollector.class);
     mBytesCollector = new TestNetworkBytesCollector();
-    PowerMockito.when(NetworkBytesCollector.create(null)).thenReturn(mBytesCollector);
-    PowerMockito.when(NetworkBytesCollector.createByteArray()).thenCallRealMethod();
+    mockedNetworkBytesCollector
+        .when(() -> NetworkBytesCollector.create(null))
+        .thenReturn(mBytesCollector);
+    mockedNetworkBytesCollector
+        .when(() -> NetworkBytesCollector.createByteArray())
+        .thenCallRealMethod();
     mMetricsCollector = new NetworkMetricsCollector(null);
+  }
+
+  @After
+  public void tearDownStaticMocks() {
+    mockedNetworkBytesCollector.close();
   }
 
   @Test
@@ -112,6 +118,7 @@ public class NetworkMetricsCollectorTest {
   private static class TestNetworkBytesCollector extends NetworkBytesCollector {
     private final ArrayDeque<long[]> mNextBytes = new ArrayDeque<>();
     private boolean mSupportsBgDistinction;
+    private MockedStatic<NetworkBytesCollector> mockedNetworkBytesCollector;
 
     public void yieldTotalBytes(long[] bytes) {
       mSupportsBgDistinction = determineSupportsBgDistinction(bytes.length);
