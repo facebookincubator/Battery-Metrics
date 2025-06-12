@@ -10,7 +10,7 @@ package com.facebook.battery.metrics.camera;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import android.hardware.Camera;
 import androidx.annotation.Nullable;
@@ -45,7 +45,7 @@ public class CameraMetricsCollectorTest
     // Sanity check no exceptions after disabling
     collector.recordPreviewStop(testCamera);
     collector.recordCameraClose(testCamera);
-    verifyZeroInteractions(mockDelegate);
+    verifyNoMoreInteractions(mockDelegate);
   }
 
   @Test
