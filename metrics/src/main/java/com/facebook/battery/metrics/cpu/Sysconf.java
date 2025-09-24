@@ -37,7 +37,7 @@ class Sysconf {
     long result = fallback;
     if (Build.VERSION.SDK_INT >= 21) {
       result = Os.sysconf(OsConstants._SC_CLK_TCK);
-    } else if (Build.VERSION.SDK_INT >= 14) {
+    } else {
       result = fromLibcore("_SC_CLK_TCK", fallback);
     }
 
@@ -48,11 +48,9 @@ class Sysconf {
   public static long getScNProcessorsConf(long fallback) {
     if (Build.VERSION.SDK_INT >= 21) {
       return Os.sysconf(OsConstants._SC_NPROCESSORS_CONF);
-    } else if (Build.VERSION.SDK_INT >= 14) {
+    } else {
       return fromLibcore("_SC_NPROCESSORS_CONF", fallback);
     }
-
-    return fallback;
   }
 
   private static long fromLibcore(String field, long fallback) {
