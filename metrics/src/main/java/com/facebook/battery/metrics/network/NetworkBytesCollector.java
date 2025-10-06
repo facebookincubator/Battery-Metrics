@@ -35,7 +35,7 @@ abstract class NetworkBytesCollector {
   public static NetworkBytesCollector create(Context context) {
     if (Build.VERSION.SDK_INT >= 28) {
       return new NetworkStatsManagerBytesCollector(context);
-    } else if (Build.VERSION.SDK_INT >= 14) {
+    } else {
       long[] bytes = new long[8];
       QTagUidNetworkBytesCollector collector = new QTagUidNetworkBytesCollector();
 
