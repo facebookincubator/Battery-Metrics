@@ -7,8 +7,6 @@
 
 package com.facebook.battery.metrics.memory
 
-import android.annotation.TargetApi
-import android.os.Build
 import android.os.Debug
 import android.system.Os
 import android.system.OsConstants
@@ -21,8 +19,7 @@ import com.facebook.infer.annotation.ThreadSafe
 import java.util.concurrent.atomic.AtomicLong
 
 @ThreadSafe
-class MemoryMetricsCollector @TargetApi(21) constructor() :
-    SystemMetricsCollector<MemoryMetrics?>() {
+class MemoryMetricsCollector constructor() : SystemMetricsCollector<MemoryMetrics?>() {
 
   private val procFileReader = ThreadLocal<ProcFileReader>()
   private val counter = AtomicLong()
@@ -96,15 +93,13 @@ class MemoryMetricsCollector @TargetApi(21) constructor() :
     get() = Runtime.getRuntime().freeMemory()
 
   init {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      try {
-        val pageSizeB = Os.sysconf(OsConstants._SC_PAGESIZE)
-        if (pageSizeB > 0) {
-          this.pageSizeKb = pageSizeB / KB
-        }
-      } catch (t: Throwable) {
-        // shouldn't happen; fallback to default value
+    try {
+      val pageSizeB = Os.sysconf(OsConstants._SC_PAGESIZE)
+      if (pageSizeB > 0) {
+        this.pageSizeKb = pageSizeB / KB
       }
+    } catch (t: Throwable) {
+      // shouldn't happen; fallback to default value
     }
   }
 
