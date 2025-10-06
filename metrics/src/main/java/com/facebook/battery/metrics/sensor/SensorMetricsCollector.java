@@ -9,7 +9,6 @@ package com.facebook.battery.metrics.sensor;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
-import android.os.Build;
 import android.os.SystemClock;
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
@@ -199,7 +198,7 @@ public class SensorMetricsCollector extends SystemMetricsCollector<SensorMetrics
 
   private static class Util {
     static boolean isWakeupSensor(Sensor sensor) {
-      return Build.VERSION.SDK_INT >= 21 && sensor.isWakeUpSensor();
+      return sensor.isWakeUpSensor();
     }
   }
 }
