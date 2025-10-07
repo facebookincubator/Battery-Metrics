@@ -13,7 +13,6 @@ import android.hardware.Camera;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CaptureRequest;
-import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.SparseArray;
@@ -174,8 +173,7 @@ public class CameraMetricsCollector extends SystemMetricsCollector<CameraMetrics
   }
 
   private static void validateArgument(Object camera) {
-    if (!(camera instanceof Camera)
-        && (Build.VERSION.SDK_INT < 21 || !(camera instanceof CameraDevice))) {
+    if (!(camera instanceof Camera) && !(camera instanceof CameraDevice)) {
       throw new IllegalArgumentException("Must pass in a Camera or a CameraDevice");
     }
   }
