@@ -130,7 +130,7 @@ public class CpuFrequencyMetricsCollector extends SystemMetricsCollector<CpuFreq
       if (sCoresForTest > 0) {
         configuredProcessors = sCoresForTest;
       } else {
-        configuredProcessors = (int) Sysconf.getScNProcessorsConf(-1);
+        configuredProcessors = (int) Sysconf.getScNProcessorsConf();
         if (configuredProcessors < 0) {
           configuredProcessors = getProcessorCountFromProc();
         }
