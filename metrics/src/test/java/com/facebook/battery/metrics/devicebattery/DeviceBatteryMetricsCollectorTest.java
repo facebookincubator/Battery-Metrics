@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
@@ -48,7 +48,8 @@ public class DeviceBatteryMetricsCollectorTest {
   public void testInitialSnapshot() {
     ShadowSystemClock.setElapsedRealtime(5000);
     when(mContext.registerReceiver(
-            Matchers.isNull(BroadcastReceiver.class), Matchers.any(IntentFilter.class)))
+            ArgumentMatchers.isNull(BroadcastReceiver.class),
+            ArgumentMatchers.any(IntentFilter.class)))
         .thenReturn(createBatteryIntent(BatteryManager.BATTERY_STATUS_CHARGING, 20, 100));
     DeviceBatteryMetrics metrics = new DeviceBatteryMetrics();
     DeviceBatteryMetricsCollector collector = new DeviceBatteryMetricsCollector(mContext);
@@ -68,7 +69,8 @@ public class DeviceBatteryMetricsCollectorTest {
   @Test
   public void testNullSnapshot() {
     when(mContext.registerReceiver(
-            Matchers.isNull(BroadcastReceiver.class), Matchers.any(IntentFilter.class)))
+            ArgumentMatchers.isNull(BroadcastReceiver.class),
+            ArgumentMatchers.any(IntentFilter.class)))
         .thenReturn(createBatteryIntent(BatteryManager.BATTERY_STATUS_CHARGING, 20, 100));
     DeviceBatteryMetricsCollector collector = new DeviceBatteryMetricsCollector(mContext);
     mExpectedException.expect(IllegalArgumentException.class);
@@ -78,7 +80,8 @@ public class DeviceBatteryMetricsCollectorTest {
   @Test
   public void testExceptionInRegisterReceiver() {
     when(mContext.registerReceiver(
-            Matchers.isNull(BroadcastReceiver.class), Matchers.any(IntentFilter.class)))
+            ArgumentMatchers.isNull(BroadcastReceiver.class),
+            ArgumentMatchers.any(IntentFilter.class)))
         .thenThrow(new SecurityException("Testing exception"));
     DeviceBatteryMetrics metrics = new DeviceBatteryMetrics();
     DeviceBatteryMetricsCollector collector = new DeviceBatteryMetricsCollector(mContext);
@@ -91,17 +94,20 @@ public class DeviceBatteryMetricsCollectorTest {
     // Set up the collector
     ShadowSystemClock.setElapsedRealtime(5000);
     when(mContext.registerReceiver(
-            Matchers.isNull(BroadcastReceiver.class), Matchers.any(IntentFilter.class)))
+            ArgumentMatchers.isNull(BroadcastReceiver.class),
+            ArgumentMatchers.any(IntentFilter.class)))
         .thenReturn(createBatteryIntent(BatteryManager.BATTERY_STATUS_CHARGING, 50, 100));
     when(mContext.registerReceiver(
-            Matchers.isNotNull(BroadcastReceiver.class), Matchers.any(IntentFilter.class)))
+            ArgumentMatchers.isNotNull(BroadcastReceiver.class),
+            ArgumentMatchers.any(IntentFilter.class)))
         .thenReturn(null);
     DeviceBatteryMetrics metrics = new DeviceBatteryMetrics();
     DeviceBatteryMetricsCollector collector = new DeviceBatteryMetricsCollector(mContext);
 
     // Get a handle of the receiver
     ArgumentCaptor<BroadcastReceiver> captor = ArgumentCaptor.forClass(BroadcastReceiver.class);
-    verify(mContext, times(2)).registerReceiver(captor.capture(), Matchers.any(IntentFilter.class));
+    verify(mContext, times(2))
+        .registerReceiver(captor.capture(), ArgumentMatchers.any(IntentFilter.class));
     final List<BroadcastReceiver> receivers = captor.getAllValues();
     assertThat(receivers.size()).isEqualTo(2);
     BroadcastReceiver receiver = receivers.get(1);
@@ -118,7 +124,8 @@ public class DeviceBatteryMetricsCollectorTest {
     // Get snapshot
     ShadowSystemClock.setElapsedRealtime(28000);
     when(mContext.registerReceiver(
-            Matchers.isNull(BroadcastReceiver.class), Matchers.any(IntentFilter.class)))
+            ArgumentMatchers.isNull(BroadcastReceiver.class),
+            ArgumentMatchers.any(IntentFilter.class)))
         .thenReturn(createBatteryIntent(BatteryManager.BATTERY_STATUS_CHARGING, 20, 100));
     collector.getSnapshot(metrics);
     verifySnapshot(metrics, 20, 12000, 11000);
@@ -128,7 +135,8 @@ public class DeviceBatteryMetricsCollectorTest {
     receiver.onReceive(mContext, new Intent(Intent.ACTION_POWER_CONNECTED));
     ShadowSystemClock.setElapsedRealtime(42000);
     when(mContext.registerReceiver(
-            Matchers.isNull(BroadcastReceiver.class), Matchers.any(IntentFilter.class)))
+            ArgumentMatchers.isNull(BroadcastReceiver.class),
+            ArgumentMatchers.any(IntentFilter.class)))
         .thenReturn(createBatteryIntent(BatteryManager.BATTERY_STATUS_CHARGING, 30, 100));
     collector.getSnapshot(metrics);
     verifySnapshot(metrics, 30, 14000, 23000);
@@ -138,7 +146,8 @@ public class DeviceBatteryMetricsCollectorTest {
     receiver.onReceive(mContext, new Intent(Intent.ACTION_POWER_CONNECTED));
     ShadowSystemClock.setElapsedRealtime(51000);
     when(mContext.registerReceiver(
-            Matchers.isNull(BroadcastReceiver.class), Matchers.any(IntentFilter.class)))
+            ArgumentMatchers.isNull(BroadcastReceiver.class),
+            ArgumentMatchers.any(IntentFilter.class)))
         .thenReturn(createBatteryIntent(BatteryManager.BATTERY_STATUS_CHARGING, 40, 100));
     collector.getSnapshot(metrics);
     verifySnapshot(metrics, 40, 14000, 32000);
@@ -150,7 +159,8 @@ public class DeviceBatteryMetricsCollectorTest {
     receiver.onReceive(mContext, new Intent(Intent.ACTION_POWER_DISCONNECTED));
     ShadowSystemClock.setElapsedRealtime(65000);
     when(mContext.registerReceiver(
-            Matchers.isNull(BroadcastReceiver.class), Matchers.any(IntentFilter.class)))
+            ArgumentMatchers.isNull(BroadcastReceiver.class),
+            ArgumentMatchers.any(IntentFilter.class)))
         .thenReturn(createBatteryIntent(BatteryManager.BATTERY_STATUS_CHARGING, 60, 100));
     collector.getSnapshot(metrics);
     verifySnapshot(metrics, 60, 24000, 36000);
