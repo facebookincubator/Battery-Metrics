@@ -7,8 +7,7 @@
 
 package com.facebook.battery.metrics.network;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -25,8 +24,8 @@ public class MonotonicRadioMonitorTest {
     MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
     final int radioActiveS = getRadioActiveS(radioMonitor);
-    assertThat(radioActiveS, is(0));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(0));
+    assertThat(radioActiveS).isEqualTo(0);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(0);
   }
 
   @Test
@@ -35,9 +34,9 @@ public class MonotonicRadioMonitorTest {
 
     int radioActiveS = radioMonitor.onRadioActivate(0L, 3000L);
 
-    assertThat(radioActiveS, is(0));
-    assertThat(getRadioActiveS(radioMonitor), is(3 + WAKEUP_INTERVAL_S));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(1));
+    assertThat(radioActiveS).isEqualTo(0);
+    assertThat(getRadioActiveS(radioMonitor)).isEqualTo(3 + WAKEUP_INTERVAL_S);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(1);
   }
 
   @Test
@@ -45,19 +44,19 @@ public class MonotonicRadioMonitorTest {
     MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
     int firstRadioActiveS = radioMonitor.onRadioActivate(0L, 2000L);
-    assertThat(firstRadioActiveS, is(0));
-    assertThat(getRadioActiveS(radioMonitor), is(2 + WAKEUP_INTERVAL_S));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(1));
+    assertThat(firstRadioActiveS).isEqualTo(0);
+    assertThat(getRadioActiveS(radioMonitor)).isEqualTo(2 + WAKEUP_INTERVAL_S);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(1);
 
     int secondRadioActiveS = radioMonitor.onRadioActivate(2000L, 3000L);
-    assertThat(secondRadioActiveS, is(2 + WAKEUP_INTERVAL_S));
-    assertThat(getRadioActiveS(radioMonitor), is(3 + WAKEUP_INTERVAL_S));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(1));
+    assertThat(secondRadioActiveS).isEqualTo(2 + WAKEUP_INTERVAL_S);
+    assertThat(getRadioActiveS(radioMonitor)).isEqualTo(3 + WAKEUP_INTERVAL_S);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(1);
 
     int thirdRadioActiveS = radioMonitor.onRadioActivate(3000L, 4000L);
-    assertThat(thirdRadioActiveS, is(3 + WAKEUP_INTERVAL_S));
-    assertThat(getRadioActiveS(radioMonitor), is(4 + WAKEUP_INTERVAL_S));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(1));
+    assertThat(thirdRadioActiveS).isEqualTo(3 + WAKEUP_INTERVAL_S);
+    assertThat(getRadioActiveS(radioMonitor)).isEqualTo(4 + WAKEUP_INTERVAL_S);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(1);
   }
 
   @Test
@@ -65,20 +64,20 @@ public class MonotonicRadioMonitorTest {
     MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
     int firstRadioActiveS = radioMonitor.onRadioActivate(0L, 2000L);
-    assertThat(firstRadioActiveS, is(0));
-    assertThat(getRadioActiveS(radioMonitor), is(2 + WAKEUP_INTERVAL_S));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(1));
+    assertThat(firstRadioActiveS).isEqualTo(0);
+    assertThat(getRadioActiveS(radioMonitor)).isEqualTo(2 + WAKEUP_INTERVAL_S);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(1);
 
     long delay = TimeUnit.SECONDS.toMillis(WAKEUP_INTERVAL_S);
     int secondRadioActiveS = radioMonitor.onRadioActivate(2000L + delay, 3000L + delay);
-    assertThat(secondRadioActiveS, is(2 + WAKEUP_INTERVAL_S));
-    assertThat(getRadioActiveS(radioMonitor), is(3 + 2 * WAKEUP_INTERVAL_S));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(2));
+    assertThat(secondRadioActiveS).isEqualTo(2 + WAKEUP_INTERVAL_S);
+    assertThat(getRadioActiveS(radioMonitor)).isEqualTo(3 + 2 * WAKEUP_INTERVAL_S);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(2);
 
     int thirdRadioActiveS = radioMonitor.onRadioActivate(3000L + 2 * delay, 4000L + 2 * delay);
-    assertThat(thirdRadioActiveS, is(3 + 2 * WAKEUP_INTERVAL_S));
-    assertThat(getRadioActiveS(radioMonitor), is(4 + 3 * WAKEUP_INTERVAL_S));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(3));
+    assertThat(thirdRadioActiveS).isEqualTo(3 + 2 * WAKEUP_INTERVAL_S);
+    assertThat(getRadioActiveS(radioMonitor)).isEqualTo(4 + 3 * WAKEUP_INTERVAL_S);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(3);
   }
 
   @Test
@@ -86,14 +85,14 @@ public class MonotonicRadioMonitorTest {
     MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
     int firstRadioActiveS = radioMonitor.onRadioActivate(1000L, 2000L);
-    assertThat(firstRadioActiveS, is(0));
-    assertThat(getRadioActiveS(radioMonitor), is(1 + WAKEUP_INTERVAL_S));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(1));
+    assertThat(firstRadioActiveS).isEqualTo(0);
+    assertThat(getRadioActiveS(radioMonitor)).isEqualTo(1 + WAKEUP_INTERVAL_S);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(1);
 
     int secondRadioActiveS = radioMonitor.onRadioActivate(2000L, 3000L);
-    assertThat(secondRadioActiveS, is(1 + WAKEUP_INTERVAL_S));
-    assertThat(getRadioActiveS(radioMonitor), is(2 + WAKEUP_INTERVAL_S));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(1));
+    assertThat(secondRadioActiveS).isEqualTo(1 + WAKEUP_INTERVAL_S);
+    assertThat(getRadioActiveS(radioMonitor)).isEqualTo(2 + WAKEUP_INTERVAL_S);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(1);
   }
 
   @Test
@@ -101,14 +100,14 @@ public class MonotonicRadioMonitorTest {
     MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
     int firstRadioActiveS = radioMonitor.onRadioActivate(1000L, 3000L);
-    assertThat(firstRadioActiveS, is(0));
-    assertThat(getRadioActiveS(radioMonitor), is(2 + WAKEUP_INTERVAL_S));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(1));
+    assertThat(firstRadioActiveS).isEqualTo(0);
+    assertThat(getRadioActiveS(radioMonitor)).isEqualTo(2 + WAKEUP_INTERVAL_S);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(1);
 
     int secondRadioActiveS = radioMonitor.onRadioActivate(2000L, 3000L);
-    assertThat(secondRadioActiveS, is(0));
-    assertThat(getRadioActiveS(radioMonitor), is(2 + WAKEUP_INTERVAL_S));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(1));
+    assertThat(secondRadioActiveS).isEqualTo(0);
+    assertThat(getRadioActiveS(radioMonitor)).isEqualTo(2 + WAKEUP_INTERVAL_S);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(1);
   }
 
   @Test
@@ -116,14 +115,14 @@ public class MonotonicRadioMonitorTest {
     MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
 
     int firstRadioActiveS = radioMonitor.onRadioActivate(1000L, 4000L);
-    assertThat(firstRadioActiveS, is(0));
-    assertThat(getRadioActiveS(radioMonitor), is(3 + WAKEUP_INTERVAL_S));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(1));
+    assertThat(firstRadioActiveS).isEqualTo(0);
+    assertThat(getRadioActiveS(radioMonitor)).isEqualTo(3 + WAKEUP_INTERVAL_S);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(1);
 
     int secondRadioActiveS = radioMonitor.onRadioActivate(2000L, 3000L);
-    assertThat(secondRadioActiveS, is(0));
-    assertThat(getRadioActiveS(radioMonitor), is(3 + WAKEUP_INTERVAL_S));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(1));
+    assertThat(secondRadioActiveS).isEqualTo(0);
+    assertThat(getRadioActiveS(radioMonitor)).isEqualTo(3 + WAKEUP_INTERVAL_S);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(1);
   }
 
   @Test
@@ -138,9 +137,9 @@ public class MonotonicRadioMonitorTest {
 
     int radioActiveS = radioMonitor.onRadioActivate(29000L, 30000L);
 
-    assertThat(radioActiveS, is(6 + 2 * WAKEUP_INTERVAL_S));
-    assertThat(getRadioActiveS(radioMonitor), is(7 + 3 * WAKEUP_INTERVAL_S));
-    assertThat(radioMonitor.mWakeupCounter.get(), is(3));
+    assertThat(radioActiveS).isEqualTo(6 + 2 * WAKEUP_INTERVAL_S);
+    assertThat(getRadioActiveS(radioMonitor)).isEqualTo(7 + 3 * WAKEUP_INTERVAL_S);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(3);
   }
 
   private static int getRadioActiveS(MonotonicRadioMonitor radioMonitor) {
