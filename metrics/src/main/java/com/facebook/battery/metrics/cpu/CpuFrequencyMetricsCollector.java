@@ -152,8 +152,10 @@ public class CpuFrequencyMetricsCollector extends SystemMetricsCollector<CpuFreq
                   return name.matches("cpu\\d+");
                 }
               });
-      // NULLSAFE_FIXME[Nullable Dereference]
-      return cpuFiles.length;
+      if (cpuFiles != null) {
+        return cpuFiles.length;
+      }
+      return 0;
     }
   }
 }
