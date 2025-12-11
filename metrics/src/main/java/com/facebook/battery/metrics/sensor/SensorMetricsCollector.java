@@ -150,12 +150,14 @@ public class SensorMetricsCollector extends SystemMetricsCollector<SensorMetrics
       Sensor sensor = mActiveSensors.keyAt(i);
       SensorData data = mActiveSensors.valueAt(i);
 
-      // NULLSAFE_FIXME[Nullable Dereference]
+      if (data == null) {
+        continue;
+      }
+
       if (data.activeCount <= 0) {
         continue;
       }
 
-      // NULLSAFE_FIXME[Nullable Dereference]
       long sensorActiveTimeMs = currentTimeMs - data.startTimeMs;
       double sensorPowerMah = energyConsumedMah(sensor, sensorActiveTimeMs);
       snapshot.total.activeTimeMs += sensorActiveTimeMs;
