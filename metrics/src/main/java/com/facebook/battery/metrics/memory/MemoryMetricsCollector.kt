@@ -19,7 +19,7 @@ import com.facebook.infer.annotation.ThreadSafe
 import java.util.concurrent.atomic.AtomicLong
 
 @ThreadSafe
-class MemoryMetricsCollector constructor() : SystemMetricsCollector<MemoryMetrics?>() {
+open class MemoryMetricsCollector constructor() : SystemMetricsCollector<MemoryMetrics?>() {
 
   private val procFileReader = ThreadLocal<ProcFileReader>()
   private val counter = AtomicLong()
@@ -80,16 +80,16 @@ class MemoryMetricsCollector constructor() : SystemMetricsCollector<MemoryMetric
     return memoryKb
   }
 
-  protected val path: String
+  protected open val path: String
     get() = PROC_STAT_FILE_PATH
 
-  protected val runtimeMaxMemory: Long
+  protected open val runtimeMaxMemory: Long
     get() = Runtime.getRuntime().maxMemory()
 
-  protected val runtimeTotalMemory: Long
+  protected open val runtimeTotalMemory: Long
     get() = Runtime.getRuntime().totalMemory()
 
-  protected val runtimeFreeMemory: Long
+  protected open val runtimeFreeMemory: Long
     get() = Runtime.getRuntime().freeMemory()
 
   init {
