@@ -77,26 +77,21 @@ public class CpuMetricsCollector extends SystemMetricsCollector<CpuMetrics> {
       return false;
     }
 
-    if (mLastSnapshot.get() == null) {
-      mLastSnapshot.set(new CpuMetrics());
+    CpuMetrics lastSnapshot = mLastSnapshot.get();
+    if (lastSnapshot == null) {
+      lastSnapshot = new CpuMetrics();
+      mLastSnapshot.set(lastSnapshot);
     }
 
-    CpuMetrics lastSnapshot = mLastSnapshot.get();
-    // NULLSAFE_FIXME[Nullable Dereference]
     if (Double.compare(snapshot.userTimeS, lastSnapshot.userTimeS) < 0
-        // NULLSAFE_FIXME[Nullable Dereference]
         || Double.compare(snapshot.systemTimeS, lastSnapshot.systemTimeS) < 0
-        // NULLSAFE_FIXME[Nullable Dereference]
         || Double.compare(snapshot.childUserTimeS, lastSnapshot.childUserTimeS) < 0
-        // NULLSAFE_FIXME[Nullable Dereference]
         || Double.compare(snapshot.childSystemTimeS, lastSnapshot.childSystemTimeS) < 0) {
       SystemMetricsLogger.wtf(
-          // NULLSAFE_FIXME[Nullable Dereference]
           TAG, "Cpu Time Decreased from " + lastSnapshot.toString() + " to " + snapshot.toString());
       return false;
     }
 
-    // NULLSAFE_FIXME[Nullable Dereference]
     lastSnapshot.set(snapshot);
     return true;
   }
