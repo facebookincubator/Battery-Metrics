@@ -102,6 +102,22 @@ public class CpuMetricsCollectorTest
   }
 
   @Test
+  public void testRealProcfileWithBlankedComm() throws Exception {
+    String stat =
+        "21031 (facebook.blank katana) S 354 354 0 0 -1 1077952832 227718 1446 318 0 9852 889 6 11 20 0 133 0 502496 2050461696 70553 4294967295 1 1 0 0 0 0 4608 0 1166120188 4294967295 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+    TestableCpuMetricsCollector collector =
+        new TestableCpuMetricsCollector().setPath(createFile(stat));
+
+    CpuMetrics snapshot = new CpuMetrics();
+    assertThat(collector.getSnapshot(snapshot)).isTrue();
+
+    assertThat(snapshot.userTimeS).isEqualTo(9852.0 / 100);
+    assertThat(snapshot.systemTimeS).isEqualTo(889.0 / 100);
+    assertThat(snapshot.childUserTimeS).isEqualTo(6.0 / 100);
+    assertThat(snapshot.childSystemTimeS).isEqualTo(11.0 / 100);
+  }
+
+  @Test
   public void testSaneProcFile() throws Exception {
     StringBuilder testStringBuilder = new StringBuilder();
     for (int i = 0; i < 20; i++) {
