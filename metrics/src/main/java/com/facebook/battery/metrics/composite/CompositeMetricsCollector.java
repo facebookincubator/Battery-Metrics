@@ -112,8 +112,10 @@ public class CompositeMetricsCollector extends SystemMetricsCollector<CompositeM
     CompositeMetrics metrics = new CompositeMetrics();
     for (int i = 0, size = mMetricsCollectorMap.size(); i < size; i++) {
       Class metricsClass = mMetricsCollectorMap.keyAt(i);
-      // NULLSAFE_FIXME[Nullable Dereference]
-      metrics.putMetric(metricsClass, mMetricsCollectorMap.valueAt(i).createMetrics());
+      SystemMetricsCollector<?> collector = mMetricsCollectorMap.valueAt(i);
+      if (collector != null) {
+        metrics.putMetric(metricsClass, collector.createMetrics());
+      }
     }
     return metrics;
   }
