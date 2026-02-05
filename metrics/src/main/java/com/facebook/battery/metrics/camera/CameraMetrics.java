@@ -14,6 +14,8 @@ import com.facebook.infer.annotation.Nullsafe;
 @Nullsafe(Nullsafe.Mode.LOCAL)
 public class CameraMetrics extends SystemMetrics<CameraMetrics> {
 
+  private static final long serialVersionUID = 1L;
+
   public long cameraPreviewTimeMs;
   public long cameraOpenTimeMs;
 

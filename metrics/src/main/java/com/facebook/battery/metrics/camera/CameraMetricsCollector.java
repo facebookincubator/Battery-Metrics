@@ -42,6 +42,7 @@ import com.facebook.infer.annotation.ThreadSafe;
  * CameraCaptureSession#close()} -> {@link #recordPreviewStop(Object)} - {@link CameraDevice#close}
  * -> {@link #recordCameraClose(Object)}
  */
+@SuppressWarnings("deprecation")
 @Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
 public class CameraMetricsCollector extends SystemMetricsCollector<CameraMetrics> {
