@@ -11,7 +11,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEventListener
 import com.facebook.battery.metrics.core.ShadowSystemClock
 import com.facebook.battery.metrics.core.SystemMetricsCollectorTest
-import org.assertj.core.api.Java6Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

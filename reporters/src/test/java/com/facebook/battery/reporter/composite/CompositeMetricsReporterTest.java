@@ -7,7 +7,7 @@
 
 package com.facebook.battery.reporter.composite;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.facebook.battery.metrics.composite.CompositeMetrics;
 import com.facebook.battery.metrics.core.ReporterEvent;

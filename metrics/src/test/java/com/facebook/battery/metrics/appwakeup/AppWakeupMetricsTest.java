@@ -9,7 +9,7 @@ package com.facebook.battery.metrics.appwakeup;
 
 import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupDetails;
 import static com.facebook.battery.metrics.appwakeup.AppWakeupMetrics.WakeupReason;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import androidx.collection.SimpleArrayMap;
 import com.facebook.battery.metrics.core.SystemMetricsTest;

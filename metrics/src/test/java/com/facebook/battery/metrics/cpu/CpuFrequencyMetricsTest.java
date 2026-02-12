@@ -7,7 +7,7 @@
 
 package com.facebook.battery.metrics.cpu;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.json.JSONObject;
 import org.junit.BeforeClass;

@@ -9,7 +9,7 @@ package com.facebook.battery.metrics.healthstats;
 
 import static com.facebook.battery.metrics.healthstats.HealthStatsMetrics.OP_DIFF;
 import static com.facebook.battery.metrics.healthstats.HealthStatsMetrics.OP_SUM;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import android.os.health.UidHealthStats;
 import android.util.SparseArray;

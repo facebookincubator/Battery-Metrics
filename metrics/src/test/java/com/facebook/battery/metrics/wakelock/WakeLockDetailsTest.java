@@ -7,7 +7,7 @@
 
 package com.facebook.battery.metrics.wakelock;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import android.content.Context;
 import android.os.PowerManager;

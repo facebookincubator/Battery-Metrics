@@ -7,7 +7,7 @@
 
 package com.facebook.battery.metrics.composite;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import androidx.annotation.Nullable;
 import com.facebook.battery.metrics.core.SystemMetrics;

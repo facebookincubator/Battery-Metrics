@@ -7,7 +7,7 @@
 
 package com.facebook.battery.metrics.core;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.facebook.infer.annotation.Nullsafe;
 import java.lang.reflect.Field;
@@ -54,7 +54,7 @@ public class MetricsUtil {
       typedValue = (long) value;
     }
 
-    // NULLSAFE_FIXME[Parameter Not Nullable, Not Vetted Third-Party]
+    // NULLSAFE_FIXME[Parameter Not Nullable]
     assertThat(field.get(t)).isEqualTo(typedValue);
   }
 }

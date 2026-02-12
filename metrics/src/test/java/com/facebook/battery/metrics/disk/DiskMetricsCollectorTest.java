@@ -7,7 +7,7 @@
 
 package com.facebook.battery.metrics.disk;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;
 import java.io.File;

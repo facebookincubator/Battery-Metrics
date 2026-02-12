@@ -12,7 +12,7 @@ import static com.facebook.battery.metrics.network.NetworkBytesCollector.MOBILE;
 import static com.facebook.battery.metrics.network.NetworkBytesCollector.RX;
 import static com.facebook.battery.metrics.network.NetworkBytesCollector.TX;
 import static com.facebook.battery.metrics.network.NetworkBytesCollector.WIFI;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

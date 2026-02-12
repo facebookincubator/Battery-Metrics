@@ -7,7 +7,7 @@
 
 package com.facebook.battery.metrics.time;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.facebook.battery.metrics.core.ShadowSystemClock;
 import com.facebook.battery.metrics.core.SystemMetricsCollectorTest;

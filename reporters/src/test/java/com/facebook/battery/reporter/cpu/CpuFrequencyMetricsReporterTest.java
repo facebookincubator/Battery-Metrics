@@ -7,7 +7,7 @@
 
 package com.facebook.battery.reporter.cpu;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.facebook.battery.metrics.core.ReporterEvent;
 import com.facebook.battery.metrics.cpu.CpuFrequencyMetrics;

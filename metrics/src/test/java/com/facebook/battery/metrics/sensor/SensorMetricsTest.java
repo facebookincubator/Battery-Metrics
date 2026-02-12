@@ -7,7 +7,7 @@
 
 package com.facebook.battery.metrics.sensor;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.facebook.battery.metrics.core.SystemMetricsTest;
 import org.junit.Test;
