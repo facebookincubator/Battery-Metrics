@@ -15,10 +15,10 @@ import java.io.IOException
 
 class CpuMetricsSerializer constructor() : SystemMetricsSerializer<CpuMetrics?>() {
 
-  public override fun getTag(): Long = serialVersionUID
+  override fun getTag(): Long = serialVersionUID
 
   @Throws(IOException::class)
-  public override fun serializeContents(metrics: CpuMetrics, output: DataOutput) {
+  override fun serializeContents(metrics: CpuMetrics, output: DataOutput) {
     output.writeDouble(metrics.userTimeS)
     output.writeDouble(metrics.systemTimeS)
     output.writeDouble(metrics.childUserTimeS)
@@ -26,7 +26,7 @@ class CpuMetricsSerializer constructor() : SystemMetricsSerializer<CpuMetrics?>(
   }
 
   @Throws(IOException::class)
-  public override fun deserializeContents(metrics: CpuMetrics, input: DataInput): Boolean {
+  override fun deserializeContents(metrics: CpuMetrics, input: DataInput): Boolean {
     metrics.userTimeS = input.readDouble()
     metrics.systemTimeS = input.readDouble()
     metrics.childUserTimeS = input.readDouble()

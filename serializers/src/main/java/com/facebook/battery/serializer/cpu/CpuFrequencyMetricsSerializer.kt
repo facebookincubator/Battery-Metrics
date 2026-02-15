@@ -16,10 +16,10 @@ import java.io.IOException
 class CpuFrequencyMetricsSerializer constructor() :
     SystemMetricsSerializer<CpuFrequencyMetrics?>() {
 
-  public override fun getTag(): Long = serialVersionUID
+  override fun getTag(): Long = serialVersionUID
 
   @Throws(IOException::class)
-  public override fun serializeContents(metrics: CpuFrequencyMetrics, output: DataOutput) {
+  override fun serializeContents(metrics: CpuFrequencyMetrics, output: DataOutput) {
     val cores = metrics.timeInStateS.size
     output.writeInt(metrics.timeInStateS.size)
     for (i in 0 until cores) {
@@ -34,7 +34,7 @@ class CpuFrequencyMetricsSerializer constructor() :
   }
 
   @Throws(IOException::class)
-  public override fun deserializeContents(metrics: CpuFrequencyMetrics, input: DataInput): Boolean {
+  override fun deserializeContents(metrics: CpuFrequencyMetrics, input: DataInput): Boolean {
     val cores = input.readInt()
     if (metrics.timeInStateS.size != cores) {
       return false
