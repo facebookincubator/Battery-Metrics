@@ -214,7 +214,7 @@ public class ProcFileReader {
     skipPast('\n');
   }
 
-  public void skipPast(char skipPast) {
+  private void skipPast(char skipPast) {
     boolean found = false;
     while (hasNext()) {
       next();
