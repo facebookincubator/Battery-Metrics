@@ -32,4 +32,9 @@ public class ShadowSystemClock {
   public static long elapsedRealtime() {
     return sElapsedRealtime;
   }
+
+  @org.robolectric.annotation.Implementation
+  public static long elapsedRealtimeNanos() {
+    return sElapsedRealtime * 1_000_000;
+  }
 }
