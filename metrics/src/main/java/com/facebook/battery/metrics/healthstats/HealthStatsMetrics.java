@@ -380,7 +380,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     return stringValue.toString();
   }
 
-  public static String getKeyName(int key) {
+  private static String getKeyName(int key) {
     if (sKeyNames.size() == 0) {
       readKeyNames();
     }
