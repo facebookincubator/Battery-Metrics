@@ -108,7 +108,7 @@ public class MonotonicRadioMonitor {
     return mWakeupCounter.get();
   }
 
-  static long makeIdleValue(long nextIdleS, long totalTransferS, long totalTailS) {
+  private static long makeIdleValue(long nextIdleS, long totalTransferS, long totalTailS) {
     return (nextIdleS << 32) | (totalTransferS << 16) | totalTailS;
   }
 
