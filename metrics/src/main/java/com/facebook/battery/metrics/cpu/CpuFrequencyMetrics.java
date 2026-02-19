@@ -164,7 +164,7 @@ public class CpuFrequencyMetrics extends SystemMetrics<CpuFrequencyMetrics> {
    *
    * <p>TODO Make this a utility method, along with hashcode.
    */
-  public static boolean sparseIntArrayEquals(SparseIntArray a, SparseIntArray b) {
+  private static boolean sparseIntArrayEquals(SparseIntArray a, SparseIntArray b) {
     if (a == b) {
       return true;
     }
