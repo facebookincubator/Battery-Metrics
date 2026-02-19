@@ -112,7 +112,7 @@ public class MonotonicRadioMonitor {
     return (nextIdleS << 32) | (totalTransferS << 16) | totalTailS;
   }
 
-  static long nextIdle(long nextIdleTimeActive) {
+  private static long nextIdle(long nextIdleTimeActive) {
     return nextIdleTimeActive >> 32;
   }
 
