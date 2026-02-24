@@ -19,6 +19,8 @@ import com.facebook.infer.annotation.Nullsafe;
 @Nullsafe(Nullsafe.Mode.RUNTIME)
 public class DeviceBatteryMetrics extends SystemMetrics<DeviceBatteryMetrics> {
 
+  private static final long serialVersionUID = 1L;
+
   // Device battery level
   public float batteryLevelPct;
   // Elapsed Realtime on battery since the start of the app
