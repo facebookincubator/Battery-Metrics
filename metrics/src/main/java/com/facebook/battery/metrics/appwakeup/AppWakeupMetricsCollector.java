@@ -84,14 +84,16 @@ public class AppWakeupMetricsCollector extends SystemMetricsCollector<AppWakeupM
       return;
     }
     AppWakeupMetrics.WakeupDetails details = mRunningWakeups.appWakeups.get(id);
-    // NULLSAFE_FIXME[Nullable Dereference]
-    details.wakeupTimeMs = SystemClock.elapsedRealtime() - details.wakeupTimeMs;
-    if (!mMetrics.appWakeups.containsKey(id)) {
-      // NULLSAFE_FIXME[Parameter Not Nullable]
-      mMetrics.appWakeups.put(id, new AppWakeupMetrics.WakeupDetails().set(details));
-    } else {
-      // NULLSAFE_FIXME[Nullable Dereference, Parameter Not Nullable]
-      mMetrics.appWakeups.get(id).sum(details, mMetrics.appWakeups.get(id));
+    if (details != null) {
+      details.wakeupTimeMs = SystemClock.elapsedRealtime() - details.wakeupTimeMs;
+      if (!mMetrics.appWakeups.containsKey(id)) {
+        mMetrics.appWakeups.put(id, new AppWakeupMetrics.WakeupDetails().set(details));
+      } else {
+        AppWakeupMetrics.WakeupDetails existingDetails = mMetrics.appWakeups.get(id);
+        if (existingDetails != null) {
+          existingDetails.sum(details, existingDetails);
+        }
+      }
     }
     mRunningWakeups.appWakeups.remove(id);
   }
