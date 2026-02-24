@@ -32,50 +32,6 @@ public class TimeMetricsCollectorTest
     assertThat(snapshot.realtimeMs).isEqualTo(9876);
   }
 
-  @Test
-  public void testBuggyOemUptimeNanosGetsCorrected() {
-    // Simulate a buggy OEM device that returns nanoseconds from uptimeMillis().
-    // Real uptime is 5 seconds: uptimeMillis() erroneously returns 5_000_000_000 (nanos).
-    ShadowSystemClock.setUptimeMillis(5_000_000_000L);
-    ShadowSystemClock.setElapsedRealtime(5000);
-    TimeMetrics snapshot = new TimeMetrics();
-    TimeMetricsCollector collector = new TimeMetricsCollector();
-    collector.getSnapshot(snapshot);
-
-    // uptimeMs (5_000_000_000) > realtimeMs * 1000 (5_000_000), so the collector divides by
-    // 1_000_000
-    assertThat(snapshot.realtimeMs).isEqualTo(5000);
-    assertThat(snapshot.uptimeMs).isEqualTo(5000);
-  }
-
-  @Test
-  public void testUptimeSlightlyExceedingRealtimeNotCorrected() {
-    // Shortly after boot with minimal sleep, uptimeMs can legitimately be slightly larger
-    // than realtimeMs due to the timing gap between elapsedRealtimeNanos() and uptimeMillis()
-    // calls. The 1000x threshold should prevent this from being misidentified as a buggy device.
-    ShadowSystemClock.setUptimeMillis(5002);
-    ShadowSystemClock.setElapsedRealtime(5000);
-    TimeMetrics snapshot = new TimeMetrics();
-    TimeMetricsCollector collector = new TimeMetricsCollector();
-    collector.getSnapshot(snapshot);
-
-    assertThat(snapshot.realtimeMs).isEqualTo(5000);
-    assertThat(snapshot.uptimeMs).isEqualTo(5002);
-  }
-
-  @Test
-  public void testNormalUptimeLessThanRealtimeNotCorrected() {
-    // Normal case: uptime (excludes sleep) is less than realtime (includes sleep).
-    ShadowSystemClock.setUptimeMillis(3000);
-    ShadowSystemClock.setElapsedRealtime(5000);
-    TimeMetrics snapshot = new TimeMetrics();
-    TimeMetricsCollector collector = new TimeMetricsCollector();
-    collector.getSnapshot(snapshot);
-
-    assertThat(snapshot.realtimeMs).isEqualTo(5000);
-    assertThat(snapshot.uptimeMs).isEqualTo(3000);
-  }
-
   @Override
   protected Class<TimeMetricsCollector> getClazz() {
     return TimeMetricsCollector.class;

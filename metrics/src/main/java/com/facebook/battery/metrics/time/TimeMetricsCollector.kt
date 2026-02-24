@@ -23,17 +23,8 @@ class TimeMetricsCollector : SystemMetricsCollector<TimeMetrics?>() {
   @ThreadSafe(enableChecks = false)
   override fun getSnapshot(snapshot: TimeMetrics): Boolean {
     Utilities.checkNotNull(snapshot, "Null value passed to getSnapshot!")
-    // Use elapsedRealtimeNanos and convert to millis to avoid an OEM bug where some
-    // manufacturers incorrectly return nanoseconds from elapsedRealtime().
-    snapshot.realtimeMs = SystemClock.elapsedRealtimeNanos() / 1_000_000
+    snapshot.realtimeMs = SystemClock.elapsedRealtime()
     snapshot.uptimeMs = SystemClock.uptimeMillis()
-    // Uptime (excludes sleep) can never legitimately exceed realtime (includes sleep).
-    // If it does, uptimeMillis() likely returned nanos on a buggy OEM device.
-    // Use a 1000x threshold to avoid false positives from the small timing gap
-    // between the elapsedRealtimeNanos() and uptimeMillis() calls above.
-    if (snapshot.uptimeMs > snapshot.realtimeMs * 1000) {
-      snapshot.uptimeMs = snapshot.uptimeMs / 1_000_000
-    }
     return true
   }
 
