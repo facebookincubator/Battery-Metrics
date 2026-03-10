@@ -32,7 +32,7 @@ public class MetricsUtil {
 
   // Note: rename to isModifiableNumericField after landing dependent diffs
   public static boolean isNumericField(Field field) {
-    Class fieldClass = field.getType();
+    Class<?> fieldClass = field.getType();
     return !Modifier.isFinal(field.getModifiers())
         && (fieldClass.isAssignableFrom(int.class)
             || fieldClass.isAssignableFrom(float.class)
@@ -42,7 +42,7 @@ public class MetricsUtil {
 
   /** Handles casting the integer to the expected values, making it easy to check. */
   public static <T> void testValue(T t, Field field, int value) throws Exception {
-    Class clazz = field.getType();
+    Class<?> clazz = field.getType();
     Object typedValue = null;
     if (clazz == int.class) {
       typedValue = value;
