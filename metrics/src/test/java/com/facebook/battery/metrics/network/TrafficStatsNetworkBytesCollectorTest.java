@@ -21,8 +21,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowConnectivityManager;
 import org.robolectric.shadows.ShadowNetworkInfo;
 
@@ -75,7 +75,7 @@ public class TrafficStatsNetworkBytesCollectorTest {
     ConnectivityManager connectivityManager =
         (ConnectivityManager)
             RuntimeEnvironment.application.getSystemService(Context.CONNECTIVITY_SERVICE);
-    ShadowConnectivityManager shadowConnectivityManager = Shadows.shadowOf(connectivityManager);
+    ShadowConnectivityManager shadowConnectivityManager = Shadow.extract(connectivityManager);
     NetworkInfo networkInfo =
         ShadowNetworkInfo.newInstance(null, ConnectivityManager.TYPE_WIFI, 0, true, true);
     shadowConnectivityManager.setActiveNetworkInfo(networkInfo);
