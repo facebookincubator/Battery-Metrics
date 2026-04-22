@@ -22,16 +22,22 @@ public class CompositeMetricsSerializer extends SystemMetricsSerializer<Composit
 
   private static final long serialVersionUID = -3137023965338009377L;
 
-  private final SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetricsSerializer<?>>
+  @SuppressWarnings("rawtypes")
+  private final SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetricsSerializer>
       mSerializers = new SimpleArrayMap<>();
-  private final SimpleArrayMap<Long, SystemMetricsSerializer<? extends SystemMetrics<?>>>
-      mDeserializers = new SimpleArrayMap<>();
-  private final SimpleArrayMap<Long, Class<? extends SystemMetrics<?>>> mDeserializerClasses =
+
+  @SuppressWarnings("rawtypes")
+  private final SimpleArrayMap<Long, SystemMetricsSerializer> mDeserializers =
       new SimpleArrayMap<>();
 
+  @SuppressWarnings("rawtypes")
+  private final SimpleArrayMap<Long, Class<? extends SystemMetrics>> mDeserializerClasses =
+      new SimpleArrayMap<>();
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public <T extends SystemMetrics<T>> CompositeMetricsSerializer addMetricsSerializer(
       Class<T> metricsClass, SystemMetricsSerializer<T> serializer) {
-    Class<? extends SystemMetrics<?>> existingClass = mDeserializerClasses.get(serializer.getTag());
+    Class<? extends SystemMetrics> existingClass = mDeserializerClasses.get(serializer.getTag());
     if (existingClass != null && existingClass != metricsClass) {
       throw new RuntimeException(
           "Serializers "
@@ -54,6 +60,7 @@ public class CompositeMetricsSerializer extends SystemMetricsSerializer<Composit
     return serialVersionUID;
   }
 
+  @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
   public void serializeContents(CompositeMetrics metrics, DataOutput output) throws IOException {
     int size = mSerializers.size();
@@ -74,6 +81,7 @@ public class CompositeMetricsSerializer extends SystemMetricsSerializer<Composit
     }
   }
 
+  @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
   public boolean deserializeContents(CompositeMetrics metrics, DataInput input) throws IOException {
     // First, reset the metrics object to expect all invalid metrics
@@ -91,7 +99,7 @@ public class CompositeMetricsSerializer extends SystemMetricsSerializer<Composit
         return false;
       }
 
-      SystemMetrics<? extends SystemMetrics<?>> metric = metrics.getMetric(metricsClass);
+      SystemMetrics metric = metrics.getMetric(metricsClass);
       if (!deserializer.deserializeContents(metric, input)) {
         return false;
       }
