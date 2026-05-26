@@ -10,7 +10,7 @@ package com.facebook.battery.reporter.sensor
 import com.facebook.battery.metrics.sensor.SensorMetrics
 import com.facebook.battery.reporter.core.SystemMetricsReporter
 
-class SensorMetricsReporter : SystemMetricsReporter<SensorMetrics> {
+class SensorMetricsReporter() : SystemMetricsReporter<SensorMetrics> {
 
   override fun reportTo(metrics: SensorMetrics, event: SystemMetricsReporter.Event) {
     if (metrics.total.powerMah != 0.0) {
