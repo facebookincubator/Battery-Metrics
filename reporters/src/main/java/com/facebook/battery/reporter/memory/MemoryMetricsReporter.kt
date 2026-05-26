@@ -10,7 +10,7 @@ package com.facebook.battery.reporter.memory
 import com.facebook.battery.metrics.memory.MemoryMetrics
 import com.facebook.battery.reporter.core.SystemMetricsReporter
 
-class MemoryMetricsReporter : SystemMetricsReporter<MemoryMetrics> {
+class MemoryMetricsReporter() : SystemMetricsReporter<MemoryMetrics> {
 
   override fun reportTo(metrics: MemoryMetrics, event: SystemMetricsReporter.Event) {
     if (metrics.javaHeapMaxSizeKb != 0L) {
