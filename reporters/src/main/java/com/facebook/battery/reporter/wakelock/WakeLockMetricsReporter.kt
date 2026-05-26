@@ -12,7 +12,7 @@ import com.facebook.battery.metrics.wakelock.WakeLockMetrics
 import com.facebook.battery.reporter.core.SystemMetricsReporter
 import org.json.JSONException
 
-class WakeLockMetricsReporter : SystemMetricsReporter<WakeLockMetrics> {
+class WakeLockMetricsReporter() : SystemMetricsReporter<WakeLockMetrics> {
 
   private var shouldReportAttribution = true
 
