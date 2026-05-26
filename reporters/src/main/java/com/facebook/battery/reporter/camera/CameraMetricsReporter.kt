@@ -10,7 +10,7 @@ package com.facebook.battery.reporter.camera
 import com.facebook.battery.metrics.camera.CameraMetrics
 import com.facebook.battery.reporter.core.SystemMetricsReporter
 
-class CameraMetricsReporter : SystemMetricsReporter<CameraMetrics> {
+class CameraMetricsReporter() : SystemMetricsReporter<CameraMetrics> {
 
   override fun reportTo(metrics: CameraMetrics, event: SystemMetricsReporter.Event) {
     // Do not report value if value is 0
