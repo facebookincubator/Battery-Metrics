@@ -10,7 +10,7 @@ package com.facebook.battery.reporter.cpu
 import com.facebook.battery.metrics.cpu.CpuMetrics
 import com.facebook.battery.reporter.core.SystemMetricsReporter
 
-class CpuMetricsReporter : SystemMetricsReporter<CpuMetrics> {
+class CpuMetricsReporter() : SystemMetricsReporter<CpuMetrics> {
 
   override fun reportTo(metrics: CpuMetrics, event: SystemMetricsReporter.Event) {
     if (metrics.userTimeS != 0.0) {

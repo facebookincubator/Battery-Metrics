@@ -19,7 +19,7 @@ import com.facebook.battery.reporter.core.SystemMetricsReporter
  * The reporter groups equal frequency values together into a cpumask (similar to that reported by
  * the topology sysfs files) mapped to the corresponding frequency.
  */
-class CpuFrequencyMetricsReporter : SystemMetricsReporter<CpuFrequencyMetrics> {
+class CpuFrequencyMetricsReporter() : SystemMetricsReporter<CpuFrequencyMetrics> {
 
   override fun reportTo(metrics: CpuFrequencyMetrics, event: SystemMetricsReporter.Event) {
     val output = metrics.toJSONObject()
