@@ -10,7 +10,7 @@ package com.facebook.battery.reporter.devicebattery
 import com.facebook.battery.metrics.devicebattery.DeviceBatteryMetrics
 import com.facebook.battery.reporter.core.SystemMetricsReporter
 
-class DeviceBatteryMetricsReporter : SystemMetricsReporter<DeviceBatteryMetrics> {
+class DeviceBatteryMetricsReporter() : SystemMetricsReporter<DeviceBatteryMetrics> {
 
   override fun reportTo(metrics: DeviceBatteryMetrics, event: SystemMetricsReporter.Event) {
     event.add(BATTERY_PCT, metrics.batteryLevelPct.toDouble())
