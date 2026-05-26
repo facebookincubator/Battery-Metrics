@@ -10,7 +10,7 @@ package com.facebook.battery.reporter.bluetooth
 import com.facebook.battery.metrics.bluetooth.BluetoothMetrics
 import com.facebook.battery.reporter.core.SystemMetricsReporter
 
-class BluetoothMetricsReporter : SystemMetricsReporter<BluetoothMetrics> {
+class BluetoothMetricsReporter() : SystemMetricsReporter<BluetoothMetrics> {
 
   override fun reportTo(metrics: BluetoothMetrics, event: SystemMetricsReporter.Event) {
     if (metrics.bleScanCount != 0) {
