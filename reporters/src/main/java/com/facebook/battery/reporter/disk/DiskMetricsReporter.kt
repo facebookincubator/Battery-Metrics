@@ -10,7 +10,7 @@ package com.facebook.battery.reporter.disk
 import com.facebook.battery.metrics.disk.DiskMetrics
 import com.facebook.battery.reporter.core.SystemMetricsReporter
 
-class DiskMetricsReporter : SystemMetricsReporter<DiskMetrics> {
+class DiskMetricsReporter() : SystemMetricsReporter<DiskMetrics> {
 
   override fun reportTo(metrics: DiskMetrics, event: SystemMetricsReporter.Event) {
     if (metrics.rcharBytes != 0L) {
