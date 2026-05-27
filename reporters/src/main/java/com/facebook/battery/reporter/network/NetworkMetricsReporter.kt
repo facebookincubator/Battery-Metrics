@@ -10,7 +10,7 @@ package com.facebook.battery.reporter.network
 import com.facebook.battery.metrics.network.NetworkMetrics
 import com.facebook.battery.reporter.core.SystemMetricsReporter
 
-class NetworkMetricsReporter : SystemMetricsReporter<NetworkMetrics> {
+class NetworkMetricsReporter() : SystemMetricsReporter<NetworkMetrics> {
 
   override fun reportTo(metrics: NetworkMetrics, event: SystemMetricsReporter.Event) {
     if (metrics.mobileBytesTx != 0L) {

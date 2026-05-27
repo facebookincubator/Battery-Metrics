@@ -10,7 +10,7 @@ package com.facebook.battery.reporter.network
 import com.facebook.battery.metrics.network.RadioStateMetrics
 import com.facebook.battery.reporter.core.SystemMetricsReporter
 
-class RadioStateReporter : SystemMetricsReporter<RadioStateMetrics> {
+class RadioStateReporter() : SystemMetricsReporter<RadioStateMetrics> {
 
   override fun reportTo(metrics: RadioStateMetrics, event: SystemMetricsReporter.Event) {
     if (metrics.mobileHighPowerActiveS != 0L) {
