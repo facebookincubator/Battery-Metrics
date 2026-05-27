@@ -21,10 +21,10 @@ import com.facebook.infer.annotation.ThreadSafe
 class TimeMetricsCollector : SystemMetricsCollector<TimeMetrics?>() {
 
   @ThreadSafe(enableChecks = false)
-  override fun getSnapshot(snapshot: TimeMetrics): Boolean {
-    Utilities.checkNotNull(snapshot, "Null value passed to getSnapshot!")
-    snapshot.realtimeMs = SystemClock.elapsedRealtime()
-    snapshot.uptimeMs = SystemClock.uptimeMillis()
+  override fun getSnapshot(p0: TimeMetrics): Boolean {
+    Utilities.checkNotNull(p0, "Null value passed to getSnapshot!")
+    p0.realtimeMs = SystemClock.elapsedRealtime()
+    p0.uptimeMs = SystemClock.uptimeMillis()
     return true
   }
 

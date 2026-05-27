@@ -19,53 +19,53 @@ class TimeMetrics : SystemMetrics<TimeMetrics?>() {
 
   @JvmField var realtimeMs: Long = 0
 
-  override fun set(metrics: TimeMetrics): TimeMetrics {
-    this.uptimeMs = metrics.uptimeMs
-    this.realtimeMs = metrics.realtimeMs
+  override fun set(p0: TimeMetrics): TimeMetrics {
+    this.uptimeMs = p0.uptimeMs
+    this.realtimeMs = p0.realtimeMs
     return this
   }
 
-  override fun sum(b: TimeMetrics?, output: TimeMetrics?): TimeMetrics {
-    var output = output
+  override fun sum(p0: TimeMetrics?, p1: TimeMetrics?): TimeMetrics {
+    var output = p1
     if (output == null) {
       output = TimeMetrics()
     }
 
-    if (b == null) {
+    if (p0 == null) {
       output.set(this)
     } else {
-      output.uptimeMs = uptimeMs + b.uptimeMs
-      output.realtimeMs = realtimeMs + b.realtimeMs
+      output.uptimeMs = uptimeMs + p0.uptimeMs
+      output.realtimeMs = realtimeMs + p0.realtimeMs
     }
 
     return output
   }
 
-  override fun diff(b: TimeMetrics?, output: TimeMetrics?): TimeMetrics {
-    var output = output
+  override fun diff(p0: TimeMetrics?, p1: TimeMetrics?): TimeMetrics {
+    var output = p1
     if (output == null) {
       output = TimeMetrics()
     }
 
-    if (b == null) {
+    if (p0 == null) {
       output.set(this)
     } else {
-      output.uptimeMs = uptimeMs - b.uptimeMs
-      output.realtimeMs = realtimeMs - b.realtimeMs
+      output.uptimeMs = uptimeMs - p0.uptimeMs
+      output.realtimeMs = realtimeMs - p0.realtimeMs
     }
 
     return output
   }
 
-  override fun equals(o: Any?): Boolean {
-    if (this === o) {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) {
       return true
     }
-    if (o == null || javaClass != o.javaClass) {
+    if (other == null || javaClass != other.javaClass) {
       return false
     }
 
-    val that = o as TimeMetrics
+    val that = other as TimeMetrics
 
     return uptimeMs == that.uptimeMs && realtimeMs == that.realtimeMs
   }
