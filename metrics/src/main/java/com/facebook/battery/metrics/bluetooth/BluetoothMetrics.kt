@@ -19,56 +19,56 @@ class BluetoothMetrics : SystemMetrics<BluetoothMetrics?>() {
 
   @JvmField var bleOpportunisticScanDurationMs: Long = 0
 
-  override fun sum(b: BluetoothMetrics?, output: BluetoothMetrics?): BluetoothMetrics {
-    var output = output
+  override fun sum(p0: BluetoothMetrics?, p1: BluetoothMetrics?): BluetoothMetrics {
+    var output = p1
     if (output == null) {
       output = BluetoothMetrics()
     }
-    if (b == null) {
+    if (p0 == null) {
       output.set(this)
     } else {
-      output.bleScanCount = bleScanCount + b.bleScanCount
-      output.bleScanDurationMs = bleScanDurationMs + b.bleScanDurationMs
-      output.bleOpportunisticScanCount = bleOpportunisticScanCount + b.bleOpportunisticScanCount
+      output.bleScanCount = bleScanCount + p0.bleScanCount
+      output.bleScanDurationMs = bleScanDurationMs + p0.bleScanDurationMs
+      output.bleOpportunisticScanCount = bleOpportunisticScanCount + p0.bleOpportunisticScanCount
       output.bleOpportunisticScanDurationMs =
-          bleOpportunisticScanDurationMs + b.bleOpportunisticScanDurationMs
+          bleOpportunisticScanDurationMs + p0.bleOpportunisticScanDurationMs
     }
     return output
   }
 
-  override fun diff(b: BluetoothMetrics?, output: BluetoothMetrics?): BluetoothMetrics {
-    var output = output
+  override fun diff(p0: BluetoothMetrics?, p1: BluetoothMetrics?): BluetoothMetrics {
+    var output = p1
     if (output == null) {
       output = BluetoothMetrics()
     }
-    if (b == null) {
+    if (p0 == null) {
       output.set(this)
     } else {
-      output.bleScanCount = bleScanCount - b.bleScanCount
-      output.bleScanDurationMs = bleScanDurationMs - b.bleScanDurationMs
-      output.bleOpportunisticScanCount = bleOpportunisticScanCount - b.bleOpportunisticScanCount
+      output.bleScanCount = bleScanCount - p0.bleScanCount
+      output.bleScanDurationMs = bleScanDurationMs - p0.bleScanDurationMs
+      output.bleOpportunisticScanCount = bleOpportunisticScanCount - p0.bleOpportunisticScanCount
       output.bleOpportunisticScanDurationMs =
-          bleOpportunisticScanDurationMs - b.bleOpportunisticScanDurationMs
+          bleOpportunisticScanDurationMs - p0.bleOpportunisticScanDurationMs
     }
     return output
   }
 
-  override fun set(b: BluetoothMetrics): BluetoothMetrics {
-    this.bleScanCount = b.bleScanCount
-    this.bleScanDurationMs = b.bleScanDurationMs
-    this.bleOpportunisticScanCount = b.bleOpportunisticScanCount
-    this.bleOpportunisticScanDurationMs = b.bleOpportunisticScanDurationMs
+  override fun set(p0: BluetoothMetrics): BluetoothMetrics {
+    this.bleScanCount = p0.bleScanCount
+    this.bleScanDurationMs = p0.bleScanDurationMs
+    this.bleOpportunisticScanCount = p0.bleOpportunisticScanCount
+    this.bleOpportunisticScanDurationMs = p0.bleOpportunisticScanDurationMs
     return this
   }
 
-  override fun equals(o: Any?): Boolean {
-    if (this === o) {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) {
       return true
     }
-    if (o == null || javaClass != o.javaClass) {
+    if (other == null || javaClass != other.javaClass) {
       return false
     }
-    val that = o as BluetoothMetrics
+    val that = other as BluetoothMetrics
     if (
         bleScanCount != that.bleScanCount ||
             bleScanDurationMs != that.bleScanDurationMs ||

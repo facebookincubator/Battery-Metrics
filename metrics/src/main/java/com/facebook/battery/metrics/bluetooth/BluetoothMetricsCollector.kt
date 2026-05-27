@@ -46,12 +46,12 @@ class BluetoothMetricsCollector : SystemMetricsCollector<BluetoothMetrics?>() {
   @GuardedBy("this") private val opportunisticScan = ScanMetrics()
 
   @Synchronized
-  override fun getSnapshot(snapshot: BluetoothMetrics): Boolean {
-    Utilities.checkNotNull(snapshot, "Null value passed to getSnapshot!")
-    snapshot.bleScanCount = nonOpportunisticScan.count
-    snapshot.bleOpportunisticScanCount = opportunisticScan.count
-    snapshot.bleScanDurationMs = nonOpportunisticScan.totalDuration
-    snapshot.bleOpportunisticScanDurationMs = opportunisticScan.totalDuration
+  override fun getSnapshot(p0: BluetoothMetrics): Boolean {
+    Utilities.checkNotNull(p0, "Null value passed to getSnapshot!")
+    p0.bleScanCount = nonOpportunisticScan.count
+    p0.bleOpportunisticScanCount = opportunisticScan.count
+    p0.bleScanDurationMs = nonOpportunisticScan.totalDuration
+    p0.bleOpportunisticScanDurationMs = opportunisticScan.totalDuration
     return true
   }
 
