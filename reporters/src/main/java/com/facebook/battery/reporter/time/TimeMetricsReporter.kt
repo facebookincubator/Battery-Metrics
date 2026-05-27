@@ -10,7 +10,7 @@ package com.facebook.battery.reporter.time
 import com.facebook.battery.metrics.time.TimeMetrics
 import com.facebook.battery.reporter.core.SystemMetricsReporter
 
-class TimeMetricsReporter : SystemMetricsReporter<TimeMetrics> {
+class TimeMetricsReporter() : SystemMetricsReporter<TimeMetrics> {
 
   override fun reportTo(metrics: TimeMetrics, event: SystemMetricsReporter.Event) {
     if (metrics.realtimeMs != 0L) {
