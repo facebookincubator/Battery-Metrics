@@ -18,9 +18,13 @@ import org.json.JSONObject;
 @Nullsafe(Nullsafe.Mode.LOCAL)
 public class SensorMetrics extends SystemMetrics<SensorMetrics> {
 
+  private static final long serialVersionUID = 1L;
+
   public boolean isAttributionEnabled;
 
   public final Consumption total = new Consumption();
+
+  @SuppressWarnings("serial") // SparseArray is Android-specific and not Serializable
   public final SparseArray<Consumption> sensorConsumption = new SparseArray<>();
 
   public SensorMetrics() {
@@ -176,6 +180,8 @@ public class SensorMetrics extends SystemMetrics<SensorMetrics> {
   }
 
   public static class Consumption extends SystemMetrics<Consumption> {
+    private static final long serialVersionUID = 1L;
+
     public double powerMah;
     public long activeTimeMs;
     public long wakeUpTimeMs;
