@@ -70,7 +70,6 @@ public class CompositeMetricsCollector extends SystemMetricsCollector<CompositeM
    * @param metricsClass Type of metric
    * @return Instance of metric collector if metrics class present in map, else null
    */
-  @SuppressWarnings("unchecked")
   public <S extends SystemMetrics<S>, T extends SystemMetricsCollector<S>> T getMetricsCollector(
       Class<S> metricsClass) {
     return (T) mMetricsCollectorMap.get(metricsClass);
