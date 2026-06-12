@@ -184,6 +184,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
   }
 
   @VisibleForTesting
+  @SuppressWarnings("unchecked")
   static <K> SparseArray<K> op(int op, SparseArray<K> a, SparseArray<K> b, SparseArray<K> output) {
     output.clear();
 
@@ -206,6 +207,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
 
   /** Acts as a union of the maps and sums values when they overlap. */
   @VisibleForTesting
+  @SuppressWarnings("unchecked")
   static <K, V> ArrayMap<K, V> opArrayMaps(int op, ArrayMap<K, V> a, @Nullable ArrayMap<K, V> b) {
     int aSize = a.size();
 
@@ -232,6 +234,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
   }
 
   /** Kind of a hack to avoid a lot of boilerplate; icky but it works */
+  @SuppressWarnings("unchecked")
   private static <V> Object opValues(int op, V a, @Nullable V b) {
     if (a instanceof Long) {
       return (Long) a + (b == null ? 0 : (op * (Long) b));
