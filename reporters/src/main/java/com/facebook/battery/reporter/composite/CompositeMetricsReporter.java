@@ -45,6 +45,7 @@ public class CompositeMetricsReporter implements SystemMetricsReporter<Composite
     return this;
   }
 
+  @SuppressWarnings("unchecked")
   @Nullable
   public <S extends SystemMetrics<S>, T extends SystemMetricsReporter<S>> T getReporter(
       Class<S> metricsClass) {
