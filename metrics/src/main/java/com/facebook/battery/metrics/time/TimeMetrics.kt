@@ -13,7 +13,7 @@ import com.facebook.battery.metrics.core.SystemMetrics
  * Maintain uptime and realtime for the application: remember to use real time for normalizing
  * metrics for comparison.
  */
-class TimeMetrics : SystemMetrics<TimeMetrics?>() {
+class TimeMetrics : SystemMetrics<TimeMetrics>() {
 
   @JvmField var uptimeMs: Long = 0
 

@@ -18,7 +18,7 @@ import com.facebook.infer.annotation.ThreadSafe
  * all other collectors for comparison.
  */
 @ThreadSafe
-class TimeMetricsCollector : SystemMetricsCollector<TimeMetrics?>() {
+class TimeMetricsCollector : SystemMetricsCollector<TimeMetrics>() {
 
   @ThreadSafe(enableChecks = false)
   override fun getSnapshot(p0: TimeMetrics): Boolean {

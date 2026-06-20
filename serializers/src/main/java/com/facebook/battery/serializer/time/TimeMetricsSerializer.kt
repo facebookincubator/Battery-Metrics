@@ -13,7 +13,7 @@ import java.io.DataInput
 import java.io.DataOutput
 import java.io.IOException
 
-class TimeMetricsSerializer : SystemMetricsSerializer<TimeMetrics?>() {
+class TimeMetricsSerializer : SystemMetricsSerializer<TimeMetrics>() {
 
   override fun getTag(): Long = serialVersionUID
 
