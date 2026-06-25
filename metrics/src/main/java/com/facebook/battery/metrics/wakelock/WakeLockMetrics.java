@@ -62,9 +62,10 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
         for (int i = 0, size = tagTimeMs.size(); i < size; i++) {
           String tag = tagTimeMs.keyAt(i);
           Long currentTimeMs = b.tagTimeMs.get(tag);
-          output.tagTimeMs.put(
-              // NULLSAFE_FIXME[Nullable Dereference]
-              tag, tagTimeMs.valueAt(i) + (currentTimeMs == null ? 0 : currentTimeMs));
+          Long valueAtI = tagTimeMs.valueAt(i);
+          if (valueAtI != null) {
+            output.tagTimeMs.put(tag, valueAtI + (currentTimeMs == null ? 0 : currentTimeMs));
+          }
         }
         for (int i = 0, size = b.tagTimeMs.size(); i < size; i++) {
           String tag = b.tagTimeMs.keyAt(i);
@@ -95,10 +96,12 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
         for (int i = 0, size = tagTimeMs.size(); i < size; i++) {
           String tag = tagTimeMs.keyAt(i);
           Long currentTimeMs = b.tagTimeMs.get(tag);
-          // NULLSAFE_FIXME[Nullable Dereference]
-          long difference = tagTimeMs.valueAt(i) - (currentTimeMs == null ? 0 : currentTimeMs);
-          if (difference != 0) {
-            output.tagTimeMs.put(tag, difference);
+          Long valueAtI = tagTimeMs.valueAt(i);
+          if (valueAtI != null) {
+            long difference = valueAtI - (currentTimeMs == null ? 0 : currentTimeMs);
+            if (difference != 0) {
+              output.tagTimeMs.put(tag, difference);
+            }
           }
         }
       }
