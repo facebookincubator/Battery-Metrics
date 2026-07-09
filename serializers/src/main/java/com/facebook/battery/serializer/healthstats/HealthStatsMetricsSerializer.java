@@ -14,6 +14,7 @@ import androidx.collection.ArrayMap;
 import com.facebook.battery.metrics.healthstats.HealthStatsMetrics;
 import com.facebook.battery.metrics.healthstats.HealthStatsMetrics.TimerMetrics;
 import com.facebook.battery.serializer.core.SystemMetricsSerializer;
+import com.facebook.common.preconditions.Preconditions;
 import com.facebook.infer.annotation.Nullsafe;
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -71,8 +72,7 @@ public class HealthStatsMetricsSerializer extends SystemMetricsSerializer<Health
       output.writeInt(currentTimerLength);
       for (int j = 0; j < currentTimerLength; j++) {
         writeString(currentTimer.keyAt(j), output);
-        // NULLSAFE_FIXME[Parameter Not Nullable]
-        writeTimer(currentTimer.valueAt(j), output);
+        writeTimer(Preconditions.checkNotNull(currentTimer.valueAt(j)), output);
       }
     }
 
