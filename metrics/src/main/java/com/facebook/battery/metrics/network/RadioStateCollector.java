@@ -45,7 +45,7 @@ public class RadioStateCollector extends SystemMetricsCollector<RadioStateMetric
         (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
   }
 
-  private static int getNetworkType(NetworkInfo info) {
+  private static int getNetworkType(@Nullable NetworkInfo info) {
     return info == null ? NONE : info.getType();
   }
 
@@ -75,7 +75,6 @@ public class RadioStateCollector extends SystemMetricsCollector<RadioStateMetric
   @Nullable
   private MonotonicRadioMonitor getCurrentRadioMonitor() {
     final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
-    // NULLSAFE_FIXME[Parameter Not Nullable]
     final int currentNetworkType = getNetworkType(info);
     switch (currentNetworkType) {
       case NONE:
