@@ -85,8 +85,7 @@ public class HealthStatsMetricsSerializer extends SystemMetricsSerializer<Health
       output.writeInt(currentStatsLength);
       for (int j = 0; j < currentStatsLength; j++) {
         writeString(currentStats.keyAt(j), output);
-        // NULLSAFE_FIXME[Parameter Not Nullable]
-        serializeContents(currentStats.valueAt(j), output);
+        serializeContents(Preconditions.checkNotNull(currentStats.valueAt(j)), output);
       }
     }
   }
