@@ -13,7 +13,7 @@ import java.io.DataInput
 import java.io.DataOutput
 import java.io.IOException
 
-class SensorMetricsSerializer : SystemMetricsSerializer<SensorMetrics?>() {
+class SensorMetricsSerializer : SystemMetricsSerializer<SensorMetrics>() {
 
   override fun getTag(): Long = serialVersionUID
 
