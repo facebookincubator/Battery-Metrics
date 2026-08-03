@@ -13,7 +13,7 @@ import java.io.DataInput
 import java.io.DataOutput
 import java.io.IOException
 
-class DeviceBatteryMetricsSerializer : SystemMetricsSerializer<DeviceBatteryMetrics?>() {
+class DeviceBatteryMetricsSerializer : SystemMetricsSerializer<DeviceBatteryMetrics>() {
 
   override fun getTag(): Long = serialVersionUID
 
