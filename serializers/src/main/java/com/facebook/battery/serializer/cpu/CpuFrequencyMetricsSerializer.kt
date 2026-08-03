@@ -13,8 +13,7 @@ import java.io.DataInput
 import java.io.DataOutput
 import java.io.IOException
 
-class CpuFrequencyMetricsSerializer constructor() :
-    SystemMetricsSerializer<CpuFrequencyMetrics?>() {
+class CpuFrequencyMetricsSerializer constructor() : SystemMetricsSerializer<CpuFrequencyMetrics>() {
 
   override fun getTag(): Long = serialVersionUID
 
