@@ -108,8 +108,18 @@ public class MonotonicRadioMonitor {
     return mWakeupCounter.get();
   }
 
+  /** Maximum value representable by the 16-bit totalTransferS / totalTailS fields. */
+  private static final long PACKED_FIELD_MAX_S = 0xFFFFL;
+
   private static long makeIdleValue(long nextIdleS, long totalTransferS, long totalTailS) {
-    return (nextIdleS << 32) | (totalTransferS << 16) | totalTailS;
+    // Saturate both 16-bit totals. Without clamping, a total exceeding 0xFFFF is not truncated --
+    // its high bits carry into the neighbouring field, so a tail overflow (reachable after roughly
+    // 65535s of accumulated tail) silently corrupts totalTransferS, and a transfer overflow
+    // corrupts nextIdleS. Saturating caps very long-lived processes instead of reporting one
+    // field's overflow as another field's value.
+    return (nextIdleS << 32)
+        | (Math.min(totalTransferS, PACKED_FIELD_MAX_S) << 16)
+        | Math.min(totalTailS, PACKED_FIELD_MAX_S);
   }
 
   private static long nextIdle(long nextIdleTimeActive) {

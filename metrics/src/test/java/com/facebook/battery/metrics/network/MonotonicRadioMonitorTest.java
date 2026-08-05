@@ -142,6 +142,34 @@ public class MonotonicRadioMonitorTest {
     assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(3);
   }
 
+  /**
+   * The three counters are packed into a single long as (nextIdleS &lt;&lt; 32) | (totalTransferS
+   * &lt;&lt; 16) | totalTailS, so each total only has 16 bits. Previously nothing clamped them, and
+   * once the accumulated tail passed 0xFFFF its high bit carried into totalTransferS -- silently
+   * inflating reported active radio time and resetting tail to a near-zero value. Both totals must
+   * now saturate instead.
+   */
+  @Test
+  public void testTailOverflowDoesNotCorruptTransferTotal() throws Exception {
+    MonotonicRadioMonitor radioMonitor = new MonotonicRadioMonitor(WAKEUP_INTERVAL_S);
+
+    // Each event is isolated (gap > WAKEUP_INTERVAL_S), so it contributes 1s of transfer and a
+    // full WAKEUP_INTERVAL_S of tail. 7000 events => 7000s transfer, 70000s tail, which overruns
+    // the 16-bit tail field.
+    final int events = 7000;
+    final long spacingMs = TimeUnit.SECONDS.toMillis(WAKEUP_INTERVAL_S + 2);
+    for (int i = 0; i < events; i++) {
+      long startMs = i * spacingMs;
+      radioMonitor.onRadioActivate(startMs, startMs + 1000L);
+    }
+
+    final long totals = radioMonitor.mNextIdleTimeActive.get();
+    assertThat(MonotonicRadioMonitor.totalTailS(totals)).isEqualTo(0xFFFF);
+    // Would be events + 1 (or more) if the tail overflow carried into this field.
+    assertThat(MonotonicRadioMonitor.totalTxS(totals)).isEqualTo(events);
+    assertThat(radioMonitor.mWakeupCounter.get()).isEqualTo(events);
+  }
+
   private static int getRadioActiveS(MonotonicRadioMonitor radioMonitor) {
     final long totals = radioMonitor.mNextIdleTimeActive.get();
     return MonotonicRadioMonitor.totalTxS(totals) + MonotonicRadioMonitor.totalTailS(totals);
