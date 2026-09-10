@@ -66,11 +66,11 @@ public class EnhancedNetworkMetrics extends SystemMetrics<EnhancedNetworkMetrics
   }
 
   @Override
-  public boolean equals(@Nullable Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+  public boolean equals(@Nullable Object other) {
+    if (this == other) return true;
+    if (other == null || getClass() != other.getClass()) return false;
 
-    EnhancedNetworkMetrics that = (EnhancedNetworkMetrics) o;
+    EnhancedNetworkMetrics that = (EnhancedNetworkMetrics) other;
 
     if (supportsBgDetection != that.supportsBgDetection) return false;
     if (!fgMetrics.equals(that.fgMetrics)) return false;
