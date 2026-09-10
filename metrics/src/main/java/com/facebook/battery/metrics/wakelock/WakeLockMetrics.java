@@ -122,16 +122,16 @@ public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
   }
 
   @Override
-  public boolean equals(@Nullable Object o) {
-    if (this == o) {
+  public boolean equals(@Nullable Object other) {
+    if (this == other) {
       return true;
     }
 
-    if (o == null || getClass() != o.getClass()) {
+    if (other == null || getClass() != other.getClass()) {
       return false;
     }
 
-    WakeLockMetrics that = (WakeLockMetrics) o;
+    WakeLockMetrics that = (WakeLockMetrics) other;
 
     if (isAttributionEnabled != that.isAttributionEnabled
         || heldTimeMs != that.heldTimeMs
