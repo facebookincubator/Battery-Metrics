@@ -74,11 +74,11 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(@Nullable Object other) {
+      if (this == other) return true;
+      if (other == null || getClass() != other.getClass()) return false;
 
-      TimerMetrics that = (TimerMetrics) o;
+      TimerMetrics that = (TimerMetrics) other;
 
       if (count != that.count) return false;
       return timeMs == that.timeMs;
@@ -526,10 +526,10 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
   }
 
   @Override
-  public boolean equals(@Nullable Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    HealthStatsMetrics that = (HealthStatsMetrics) o;
+  public boolean equals(@Nullable Object other) {
+    if (this == other) return true;
+    if (other == null || getClass() != other.getClass()) return false;
+    HealthStatsMetrics that = (HealthStatsMetrics) other;
 
     if (dataType != null ? !dataType.equals(that.dataType) : that.dataType != null) return false;
 
