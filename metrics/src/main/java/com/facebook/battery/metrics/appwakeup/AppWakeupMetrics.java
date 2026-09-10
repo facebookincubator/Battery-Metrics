@@ -92,11 +92,11 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
   }
 
   @Override
-  public boolean equals(@Nullable Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+  public boolean equals(@Nullable Object other) {
+    if (this == other) return true;
+    if (other == null || getClass() != other.getClass()) return false;
 
-    AppWakeupMetrics that = (AppWakeupMetrics) o;
+    AppWakeupMetrics that = (AppWakeupMetrics) other;
 
     return Utilities.simpleArrayMapEquals(this.appWakeups, that.appWakeups);
   }
@@ -195,11 +195,11 @@ public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(@Nullable Object other) {
+      if (this == other) return true;
+      if (other == null || getClass() != other.getClass()) return false;
 
-      WakeupDetails that = (WakeupDetails) o;
+      WakeupDetails that = (WakeupDetails) other;
 
       if (count != that.count) return false;
       if (wakeupTimeMs != that.wakeupTimeMs) return false;
