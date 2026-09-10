@@ -150,15 +150,15 @@ public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
   }
 
   @Override
-  public boolean equals(@Nullable Object o) {
-    if (this == o) {
+  public boolean equals(@Nullable Object other) {
+    if (this == other) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (other == null || getClass() != other.getClass()) {
       return false;
     }
 
-    CompositeMetrics that = (CompositeMetrics) o;
+    CompositeMetrics that = (CompositeMetrics) other;
 
     return Utilities.simpleArrayMapEquals(mMetricsValid, that.mMetricsValid)
         && Utilities.simpleArrayMapEquals(mMetricsMap, that.mMetricsMap);
