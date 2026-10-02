@@ -211,9 +211,11 @@ public class WakeLockMetricsCollector extends SystemMetricsCollector<WakeLockMet
       for (int i = 0, size = mPrevWakeLockMs.size(); i < size; i++) {
         String tag = mPrevWakeLockMs.keyAt(i);
         Long existingValue = snapshot.tagTimeMs.get(tag);
-        snapshot.tagTimeMs.put(
-            // NULLSAFE_FIXME[Nullable Dereference]
-            tag, (existingValue == null ? 0 : existingValue) + mPrevWakeLockMs.valueAt(i));
+        Long previousWakeLockMs = mPrevWakeLockMs.valueAt(i);
+        if (previousWakeLockMs != null) {
+          snapshot.tagTimeMs.put(
+              tag, (existingValue == null ? 0 : existingValue) + previousWakeLockMs);
+        }
       }
     }
 
