@@ -176,10 +176,12 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
 
   /** Checks the age difference of snapshots, similar to String comparisons. */
   private static long compareSnapshotAge(HealthStatsMetrics a, HealthStatsMetrics b) {
-    // NULLSAFE_FIXME[Nullable Dereference]
-    long aRealtimeBatteryMs = a.measurement.get(UidHealthStats.MEASUREMENT_REALTIME_BATTERY_MS, 0L);
-    // NULLSAFE_FIXME[Nullable Dereference]
-    long bRealtimeBatteryMs = b.measurement.get(UidHealthStats.MEASUREMENT_REALTIME_BATTERY_MS, 0L);
+    Long aRealtimeBatteryMsValue =
+        a.measurement.get(UidHealthStats.MEASUREMENT_REALTIME_BATTERY_MS, 0L);
+    long aRealtimeBatteryMs = aRealtimeBatteryMsValue != null ? aRealtimeBatteryMsValue : 0L;
+    Long bRealtimeBatteryMsValue =
+        b.measurement.get(UidHealthStats.MEASUREMENT_REALTIME_BATTERY_MS, 0L);
+    long bRealtimeBatteryMs = bRealtimeBatteryMsValue != null ? bRealtimeBatteryMsValue : 0L;
     return aRealtimeBatteryMs - bRealtimeBatteryMs;
   }
 
@@ -218,13 +220,11 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
       output.put(key, bValue == null ? a.valueAt(i) : (V) opValues(op, a.valueAt(i), bValue));
     }
 
-    if (op == OP_SUM) {
-      int bSize = b == null ? 0 : b.size();
+    if (op == OP_SUM && b != null) {
+      int bSize = b.size();
       for (int i = 0; i < bSize; i++) {
-        // NULLSAFE_FIXME[Nullable Dereference]
         K key = b.keyAt(i);
         if (a.get(key) == null) {
-          // NULLSAFE_FIXME[Nullable Dereference]
           output.put(key, b.valueAt(i));
         }
       }
@@ -242,16 +242,14 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
 
     if (a instanceof TimerMetrics) {
       TimerMetrics timerMetricsA = (TimerMetrics) a;
-      TimerMetrics timerMetricsB = (TimerMetrics) b;
 
       if (b == null) {
         return new TimerMetrics(timerMetricsA);
       }
 
+      TimerMetrics timerMetricsB = (TimerMetrics) b;
       TimerMetrics timerMetrics = new TimerMetrics();
-      // NULLSAFE_FIXME[Nullable Dereference]
       timerMetrics.count = timerMetricsA.count + op * timerMetricsB.count;
-      // NULLSAFE_FIXME[Nullable Dereference]
       timerMetrics.timeMs = timerMetricsA.timeMs + op * timerMetricsB.timeMs;
       return timerMetrics;
     }
@@ -465,9 +463,8 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
       ArrayMap<String, Long> value = measurements.valueAt(i);
       JSONObject valueOutput = new JSONObject();
       for (int j = 0, valueSize = value.size(); j < valueSize; j++) {
-        // NULLSAFE_FIXME[Nullable Dereference]
-        long v = value.valueAt(j);
-        if (v != 0) {
+        Long v = value.valueAt(j);
+        if (v != null && v != 0) {
           valueOutput.put(value.keyAt(j), v);
         }
       }
@@ -488,9 +485,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
       ArrayMap<String, TimerMetrics> value = timers.valueAt(i);
       for (int j = 0, valueCount = value.size(); j < valueCount; j++) {
         TimerMetrics v = value.valueAt(j);
-        // NULLSAFE_FIXME[Nullable Dereference]
-        if (v.count != 0 || v.timeMs != 0) {
-          // NULLSAFE_FIXME[Nullable Dereference]
+        if (v != null && (v.count != 0 || v.timeMs != 0)) {
           valueOutput.put(value.keyAt(j), v.toJSONObject());
         }
       }
@@ -509,10 +504,12 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
       JSONObject valueOutput = new JSONObject();
       ArrayMap<String, HealthStatsMetrics> value = stats.valueAt(i);
       for (int j = 0, valueCount = value.size(); j < valueCount; j++) {
-        // NULLSAFE_FIXME[Nullable Dereference]
-        JSONObject v = value.valueAt(j).toJSONObject();
-        if (v.length() > 0) {
-          valueOutput.put(value.keyAt(j), v);
+        HealthStatsMetrics statsValue = value.valueAt(j);
+        if (statsValue != null) {
+          JSONObject v = statsValue.toJSONObject();
+          if (v.length() > 0) {
+            valueOutput.put(value.keyAt(j), v);
+          }
         }
       }
       if (valueOutput.length() > 0) {
