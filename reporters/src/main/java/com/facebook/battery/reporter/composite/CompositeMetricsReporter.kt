@@ -12,7 +12,7 @@ import com.facebook.battery.metrics.composite.CompositeMetrics
 import com.facebook.battery.metrics.core.SystemMetrics
 import com.facebook.battery.reporter.core.SystemMetricsReporter
 
-class CompositeMetricsReporter : SystemMetricsReporter<CompositeMetrics> {
+class CompositeMetricsReporter() : SystemMetricsReporter<CompositeMetrics> {
 
   private val metricsReporterMap =
       SimpleArrayMap<Class<out SystemMetrics<*>?>, SystemMetricsReporter<*>>()
