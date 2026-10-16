@@ -27,12 +27,15 @@ import org.json.JSONObject;
 @Nullsafe(Nullsafe.Mode.RUNTIME)
 public class AppWakeupMetrics extends SystemMetrics<AppWakeupMetrics> {
 
+  private static final long serialVersionUID = 1L;
+
   public enum WakeupReason {
     JOB_SCHEDULER,
     GCM,
     ALARM
   }
 
+  @SuppressWarnings("serial")
   public SimpleArrayMap<String, WakeupDetails> appWakeups = new SimpleArrayMap<>();
 
   @Override

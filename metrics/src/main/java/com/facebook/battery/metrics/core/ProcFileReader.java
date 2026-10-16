@@ -247,6 +247,8 @@ public class ProcFileReader {
 
   public static class ParseException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     public ParseException(String message) {
       super(message);
     }

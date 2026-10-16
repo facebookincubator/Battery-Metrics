@@ -18,6 +18,7 @@ import com.facebook.infer.annotation.Nullsafe;
  * call to the android camera api.
  */
 @Nullsafe(Nullsafe.Mode.LOCAL)
+@SuppressWarnings("rawtypes")
 public abstract class SystemMetricsCollector<T extends SystemMetrics> {
 
   /**

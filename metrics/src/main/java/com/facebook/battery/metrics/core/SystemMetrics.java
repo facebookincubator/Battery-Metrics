@@ -20,6 +20,8 @@ import java.io.Serializable;
 @Nullsafe(Nullsafe.Mode.LOCAL)
 public abstract class SystemMetrics<T extends SystemMetrics<T>> implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+
   /**
    * Add values from the SystemMetrics object passed in and sets them on the output object, if
    * available. Does not modify the original object.
