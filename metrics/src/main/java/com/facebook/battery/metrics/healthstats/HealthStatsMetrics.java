@@ -46,7 +46,10 @@ import org.json.JSONObject;
  */
 @Nullsafe(Nullsafe.Mode.LOCAL)
 @RequiresApi(api = Build.VERSION_CODES.N)
+@SuppressWarnings("serial")
 public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
+
+  private static final long serialVersionUID = 1L;
 
   @VisibleForTesting static final int OP_SUM = 1;
   @VisibleForTesting static final int OP_DIFF = -1;
@@ -112,10 +115,12 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
 
   public HealthStatsMetrics() {}
 
+  @SuppressWarnings("this-escape")
   public HealthStatsMetrics(HealthStats healthStats) {
     set(healthStats);
   }
 
+  @SuppressWarnings("this-escape")
   public HealthStatsMetrics(HealthStatsMetrics metrics) {
     set(metrics);
   }
@@ -389,6 +394,7 @@ public class HealthStatsMetrics extends SystemMetrics<HealthStatsMetrics> {
     return sKeyNames.get(key, String.valueOf(key));
   }
 
+  @SuppressWarnings({"rawtypes", "unchecked"})
   private static void readKeyNames() {
     try {
       Class[] healthStatsClasses = {

@@ -24,10 +24,13 @@ import org.json.JSONObject;
 @Nullsafe(Nullsafe.Mode.LOCAL)
 public class WakeLockMetrics extends SystemMetrics<WakeLockMetrics> {
 
+  private static final long serialVersionUID = 1L;
+
   /** Whether this object should also record attribution */
   public boolean isAttributionEnabled;
 
   /** Attribution data */
+  @SuppressWarnings("serial")
   public final SimpleArrayMap<String, Long> tagTimeMs = new SimpleArrayMap<>();
 
   /** Total held time */
