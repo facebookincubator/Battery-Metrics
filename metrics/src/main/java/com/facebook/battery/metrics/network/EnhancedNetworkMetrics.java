@@ -15,6 +15,8 @@ import com.facebook.infer.annotation.Nullsafe;
 @Nullsafe(Nullsafe.Mode.LOCAL)
 public class EnhancedNetworkMetrics extends SystemMetrics<EnhancedNetworkMetrics> {
 
+  private static final long serialVersionUID = 1L;
+
   /**
    * True if fg/bg distinction was possible; false otherwise and all data will have been assumed to
    * have happened in the foreground.

@@ -15,6 +15,8 @@ import com.facebook.infer.annotation.Nullsafe;
 @Nullsafe(Nullsafe.Mode.LOCAL)
 public class RadioStateMetrics extends SystemMetrics<RadioStateMetrics> {
 
+  private static final long serialVersionUID = 1L;
+
   public long mobileLowPowerActiveS;
   public long mobileHighPowerActiveS;
   public int mobileRadioWakeupCount;

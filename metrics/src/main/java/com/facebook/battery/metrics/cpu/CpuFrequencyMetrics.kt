@@ -126,15 +126,15 @@ class CpuFrequencyMetrics : SystemMetrics<CpuFrequencyMetrics>() {
     return this
   }
 
-  override fun equals(o: Any?): Boolean {
-    if (this === o) {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) {
       return true
     }
-    if (o == null || javaClass != o.javaClass) {
+    if (other == null || javaClass != other.javaClass) {
       return false
     }
 
-    val that = o as CpuFrequencyMetrics
+    val that = other as CpuFrequencyMetrics
     if (timeInStateS.size != that.timeInStateS.size) {
       return false
     }
