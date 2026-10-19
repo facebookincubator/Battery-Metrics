@@ -89,6 +89,27 @@ public class DeviceBatteryMetricsCollectorTest {
     assertThat(metrics.batteryLevelPct).isEqualTo(DeviceBatteryMetricsCollector.UNKNOWN_LEVEL);
   }
 
+  /**
+   * The sticky ACTION_BATTERY_CHANGED intent can carry a malformed extras parcel (e.g. an OEM-added
+   * extra serialized with duplicate keys), which throws IllegalArgumentException during lazy
+   * unparcel inside getIntExtra. The collector must degrade gracefully instead of crashing app
+   * init.
+   */
+  @Test
+  public void testCorruptBatteryIntentExtras() {
+    Intent corruptIntent = mock(Intent.class);
+    when(corruptIntent.getIntExtra(ArgumentMatchers.anyString(), ArgumentMatchers.anyInt()))
+        .thenThrow(new IllegalArgumentException("Duplicate key in ArrayMap: invalid_charger"));
+    when(mContext.registerReceiver(
+            ArgumentMatchers.isNull(BroadcastReceiver.class),
+            ArgumentMatchers.any(IntentFilter.class)))
+        .thenReturn(corruptIntent);
+    DeviceBatteryMetrics metrics = new DeviceBatteryMetrics();
+    DeviceBatteryMetricsCollector collector = new DeviceBatteryMetricsCollector(mContext);
+    collector.getSnapshot(metrics);
+    assertThat(metrics.batteryLevelPct).isEqualTo(DeviceBatteryMetricsCollector.UNKNOWN_LEVEL);
+  }
+
   @Test
   public void testSnapshotAfterValidBroadcasts() {
     // Set up the collector

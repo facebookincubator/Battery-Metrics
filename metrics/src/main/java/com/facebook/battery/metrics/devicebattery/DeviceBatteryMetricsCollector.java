@@ -146,8 +146,18 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
       return UNKNOWN_LEVEL;
     }
 
-    int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-    int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+    final int level;
+    final int scale;
+    try {
+      level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+      scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+    } catch (IllegalArgumentException ex) {
+      // The sticky ACTION_BATTERY_CHANGED intent can carry a malformed extras parcel
+      // (e.g. an OEM-added extra serialized with duplicate keys), which throws during
+      // lazy unparcel inside getIntExtra. Treat it like an unknown level instead of crashing.
+      SystemMetricsLogger.wtf(TAG, "Corrupt battery intent extras reading level", ex);
+      return UNKNOWN_LEVEL;
+    }
     if (level < 0 || scale <= 0) {
       return UNKNOWN_LEVEL;
     }
@@ -155,8 +165,18 @@ public class DeviceBatteryMetricsCollector extends SystemMetricsCollector<Device
   }
 
   private static boolean isCharging(@Nullable Intent batteryStatus) {
-    int status =
-        batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1) : -1;
+    final int status;
+    try {
+      status =
+          batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1) : -1;
+    } catch (IllegalArgumentException ex) {
+      // The sticky ACTION_BATTERY_CHANGED intent can carry a malformed extras parcel
+      // (e.g. an OEM-added extra serialized with duplicate keys), which throws during
+      // lazy unparcel inside getIntExtra. Assume not charging instead of crashing;
+      // this keeps the constructor (and app init) alive on affected firmware.
+      SystemMetricsLogger.wtf(TAG, "Corrupt battery intent extras reading status", ex);
+      return false;
+    }
     return status == BatteryManager.BATTERY_STATUS_CHARGING
         || status == BatteryManager.BATTERY_STATUS_FULL;
   }
