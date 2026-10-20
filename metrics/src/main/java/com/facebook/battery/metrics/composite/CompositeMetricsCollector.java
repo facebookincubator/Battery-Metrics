@@ -119,4 +119,34 @@ public class CompositeMetricsCollector extends SystemMetricsCollector<CompositeM
     }
     return metrics;
   }
+
+  /**
+   * Creates the starting metrics for a session that begins at process start, to pass as the initial
+   * metrics of a {@link com.facebook.battery.metrics.core.StatefulSystemMetricsCollector}.
+   *
+   * <p>Every metric is marked valid and left at zero, so cumulative per-process counters (CPU, wake
+   * locks, camera, ...) are diffed against process start. Metrics that don't start at zero with the
+   * process (uptime, network, device battery, ...) are snapshotted now instead.
+   *
+   * @param snapshotAtStart Types of metrics to snapshot rather than leave at zero
+   * @return Metrics representing the state at process start
+   */
+  @SafeVarargs
+  public final CompositeMetrics createInitialMetrics(
+      Class<? extends SystemMetrics>... snapshotAtStart) {
+    CompositeMetrics initialMetrics = createMetrics();
+    SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetrics> metrics =
+        initialMetrics.getMetrics();
+    for (int i = 0, size = metrics.size(); i < size; i++) {
+      initialMetrics.setIsValid(metrics.keyAt(i), true);
+    }
+    for (Class<? extends SystemMetrics> metricsClass : snapshotAtStart) {
+      SystemMetricsCollector collector = mMetricsCollectorMap.get(metricsClass);
+      SystemMetrics metric = metrics.get(metricsClass);
+      if (collector != null && metric != null) {
+        collector.getSnapshot(metric);
+      }
+    }
+    return initialMetrics;
+  }
 }
