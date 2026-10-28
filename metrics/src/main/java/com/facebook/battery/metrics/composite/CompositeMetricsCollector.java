@@ -28,6 +28,7 @@ import com.facebook.infer.annotation.ThreadSafe;
  */
 @Nullsafe(Nullsafe.Mode.LOCAL)
 @ThreadSafe
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class CompositeMetricsCollector extends SystemMetricsCollector<CompositeMetrics> {
 
   /**

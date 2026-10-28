@@ -18,6 +18,7 @@ import com.facebook.infer.annotation.Nullsafe;
  * with this class.
  */
 @Nullsafe(Nullsafe.Mode.LOCAL)
+@SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class CompositeMetrics extends SystemMetrics<CompositeMetrics> {
 
   private final SimpleArrayMap<Class<? extends SystemMetrics>, SystemMetrics> mMetricsMap =
