@@ -23,6 +23,12 @@ class CompositeMetricsReporter() : SystemMetricsReporter<CompositeMetrics> {
       if (metrics.isValid(metricsClass)) {
         val systemMetrics = metrics.getMetric(metricsClass)
         val reporter = metricsReporterMap[metricsClass]
+        @Suppress(
+            "UNCHECKED_CAST",
+            "UPPER_BOUND_VIOLATED_IN_TYPE_OPERATOR_OR_PARAMETER_BOUNDS_WARNING",
+        )
+        // Heterogeneous map keyed by Class; cast sound by addMetricsReporter contract (KTLC-358:
+        // star cannot satisfy F-bound; real fix is 2.4 migration)
         (checkNotNull(reporter) as SystemMetricsReporter<SystemMetrics<*>>).reportTo(
             systemMetrics,
             event,
@@ -46,6 +52,7 @@ class CompositeMetricsReporter() : SystemMetricsReporter<CompositeMetrics> {
     return this
   }
 
+  @Suppress("UNCHECKED_CAST") // heterogeneous map read (input contract)
   fun <S : SystemMetrics<S>?, T : SystemMetricsReporter<S>?> getReporter(
       metricsClass: Class<S>,
   ): T? = metricsReporterMap[metricsClass] as T
