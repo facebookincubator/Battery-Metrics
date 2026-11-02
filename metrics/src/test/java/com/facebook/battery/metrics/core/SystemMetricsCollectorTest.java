@@ -11,7 +11,7 @@ import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
 public abstract class SystemMetricsCollectorTest<
-    S extends SystemMetrics, T extends SystemMetricsCollector<S>> {
+    S extends SystemMetrics<?>, T extends SystemMetricsCollector<S>> {
 
   @Rule public final ExpectedException mExpectedException = ExpectedException.none();
 
