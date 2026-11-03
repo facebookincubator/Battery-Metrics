@@ -14,6 +14,7 @@ import org.json.JSONException
 
 class AppWakeupMetricsReporter : SystemMetricsReporter<AppWakeupMetrics> {
 
+  @Suppress("SENSELESS_COMPARISON")
   override fun reportTo(metrics: AppWakeupMetrics, event: SystemMetricsReporter.Event) {
     try {
       val representation = metrics.toJSON()
